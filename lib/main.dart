@@ -1,0 +1,163 @@
+import 'package:altogic_flutter/altogic_flutter.dart';
+import 'package:altogic_flutter_example/src/controller/user_controller.dart';
+import 'package:altogic_flutter_example/src/view/pages/authorization/authorization.dart';
+import 'package:altogic_flutter_example/src/view/pages/chat/chat_main.dart';
+import 'package:altogic_flutter_example/src/view/pages/database/database.dart';
+import 'package:altogic_flutter_example/src/view/pages/main_page.dart';
+import 'package:altogic_flutter_example/src/view/pages/redirect/magic_link_redirect.dart';
+import 'package:altogic_flutter_example/src/view/pages/redirect/password_reset_redirect.dart';
+import 'package:altogic_flutter_example/src/view/pages/redirect/provider_redirect.dart';
+import 'package:altogic_flutter_example/src/view/pages/redirect/verify_mail.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:url_strategy/url_strategy.dart';
+
+import 'src/view/pages/cache.dart';
+import 'src/view/pages/endpoint.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (kIsWeb) {
+    setPathUrlStrategy();
+  }
+
+  await CurrentUserController().setUser();
+  CurrentUserController().listenUser();
+  runApp(const MyApp());
+}
+
+// USE THIS FOR WEB DEPLOYMENT
+AltogicClient altogic = createClient(
+    "https://c1-na.altogic.com/e:62d3ea1510b444043a4f80b7",
+    "eb673068d11b468997bbe93c33fdc5f5");
+
+// USE THIS FOR LOCAL DEPLOYMENT
+// AltogicClient altogic = createClient(
+//     "https://c4-na.altogic.com/e:633bd89b98cd8243629533e3",
+//     "eb673068d11b468997bbe93c33fdc5f5");
+
+final Map<String, WidgetBuilder> pages = {
+  '/': (c) => const MainPage(),
+  '/auth': (c) => const AuthorizationPage(),
+  '/database': (c) => const DatabasePage(),
+  '/chat': (c) => const ChatMain(),
+  '/endpoint': (c) => const EndpointPage(),
+  '/cache' : (c) => const CachePage(),
+};
+
+final routeNames = {
+  '/': 'Main',
+  '/auth': 'Authorization',
+  '/database': 'Database',
+  '/chat': 'Chat',
+  '/endpoint': 'Endpoint',
+  '/cache': 'Cache',
+};
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final primaryColor = const Color.fromRGBO(25, 118, 210, 1);
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      initialRoute: '/',
+      routes: pages,
+      onGenerateInitialRoutes: (path) {
+        var uri = Uri.parse(path);
+
+        if (uri.queryParameters.isNotEmpty) {
+          switch (uri.queryParameters["action"]) {
+            case "email-confirm":
+              return [
+                MaterialPageRoute(
+                    builder: (c) =>
+                        RedirectEmail(arguments: uri.queryParameters))
+              ];
+            case "oauth-signin":
+              return [
+                MaterialPageRoute(
+                    builder: (c) =>
+                        RedirectProvider(arguments: uri.queryParameters))
+              ];
+            case "reset-pwd":
+              return [
+                MaterialPageRoute(
+                    builder: (c) =>
+                        ResetPwdRedirect(arguments: uri.queryParameters))
+              ];
+            case "magic-link":
+              return [
+                MaterialPageRoute(
+                    builder: (c) =>
+                        MagicLinkRedirect(arguments: uri.queryParameters))
+              ];
+            default:
+              return [
+                MaterialPageRoute(
+                  builder: (context) =>
+                      RedirectProvider(arguments: uri.queryParameters),
+                ),
+              ];
+          }
+        }
+
+        if (pages.containsKey(uri.path)) {
+          return [
+            MaterialPageRoute(
+              builder: pages[uri.path]!,
+            )
+          ];
+        }
+        return [
+          MaterialPageRoute(
+            builder: pages['/']!,
+          )
+        ];
+      },
+      debugShowCheckedModeBanner: false,
+      title: 'Altogic Flutter Demo',
+      theme: ThemeData(
+        useMaterial3: false,
+        fontFamily: 'WorkSans',
+        primarySwatch:
+            MaterialColor(primaryColor.value, getSwatch(primaryColor)),
+        buttonTheme: const ButtonThemeData(
+          buttonColor: Color.fromRGBO(25, 118, 210, 1),
+          textTheme: ButtonTextTheme.primary,
+        ),
+      ),
+    );
+  }
+
+  Map<int, Color> getSwatch(Color color) {
+    final hslColor = HSLColor.fromColor(color);
+    final lightness = hslColor.lightness;
+    const lowDivisor = 6;
+
+    const highDivisor = 5;
+
+    final lowStep = (1.0 - lightness) / lowDivisor;
+    final highStep = lightness / highDivisor;
+
+    return {
+      50: (hslColor.withLightness(lightness + (lowStep * 5))).toColor(),
+      100: (hslColor.withLightness(lightness + (lowStep * 4))).toColor(),
+      200: (hslColor.withLightness(lightness + (lowStep * 3))).toColor(),
+      300: (hslColor.withLightness(lightness + (lowStep * 2))).toColor(),
+      400: (hslColor.withLightness(lightness + lowStep)).toColor(),
+      500: (hslColor.withLightness(lightness)).toColor(),
+      600: (hslColor.withLightness(lightness - highStep)).toColor(),
+      700: (hslColor.withLightness(lightness - (highStep * 2))).toColor(),
+      800: (hslColor.withLightness(lightness - (highStep * 3))).toColor(),
+      900: (hslColor.withLightness(lightness - (highStep * 4))).toColor(),
+    };
+  }
+}
