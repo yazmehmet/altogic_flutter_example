@@ -27,9 +27,9 @@ class AuthService extends ServiceBase {
       'session': res.session?.toJson(),
     }));
 
-    // if (res.session != null && res.user != null) {
-    //   await currentUserController.setUserFromDb();
-    // }
+    if (res.session != null && res.user != null) {
+      await currentUserController.setUser();
+    }
   }
 
   Future<void> signUpWithPhone(
@@ -47,9 +47,9 @@ class AuthService extends ServiceBase {
       'session': res.session?.toJson(),
     }));
 
-    // if (res.session != null && res.user != null) {
-    //   await currentUserController.setUserFromDb();
-    // }
+    if (res.session != null && res.user != null) {
+      await currentUserController.setUser();
+    }
   }
 
   Future<void> signInWithEmail(String email, String password) async {
@@ -66,9 +66,9 @@ class AuthService extends ServiceBase {
       'session': res.session?.toJson(),
     }));
 
-    // if (res.session != null && res.user != null) {
-    //   await currentUserController.setUserFromDb();
-    // }
+    if (res.session != null && res.user != null) {
+      await currentUserController.setUser();
+    }
   }
 
   Future<void> signInWithPhone(String phone, String password) async {
@@ -85,9 +85,9 @@ class AuthService extends ServiceBase {
       'session': res.session?.toJson(),
     }));
 
-    // if (res.session != null && res.user != null) {
-    //   await currentUserController.setUserFromDb();
-    // }
+    if (res.session != null && res.user != null) {
+      await currentUserController.setUser();
+    }
   }
 
   Future<void> signInWithCode(String phone, String code) async {
@@ -104,9 +104,9 @@ class AuthService extends ServiceBase {
       'session': res.session?.toJson(),
     }));
 
-    // if (res.session != null && res.user != null) {
-    //   await currentUserController.setUserFromDb();
-    // }
+    if (res.session != null && res.user != null) {
+      await currentUserController.setUser();
+    }
   }
 
   Future<void> signInWithProvider(String provider) async {
@@ -208,9 +208,9 @@ class AuthService extends ServiceBase {
       'session': res.session?.toJson(),
     }));
 
-    // if (res.session != null && res.user != null) {
-    //   await currentUserController.setUserFromDb();
-    // }
+    if (res.session != null && res.user != null) {
+      await currentUserController.setUser();
+    }
   }
 
   Future<void> resendVerificationEmail(String email) async {
@@ -357,8 +357,8 @@ class AuthService extends ServiceBase {
       'session': res.session?.toJson(),
     }));
 
-    // if (res.session != null && res.user != null) {
-    //   await currentUserController.setUserFromDb();
-    // }
+    if (res.session != null && res.user != null) {
+      await currentUserController.setUser();
+    }
   }
 }

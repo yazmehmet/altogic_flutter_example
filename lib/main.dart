@@ -4,10 +4,14 @@ import 'package:altogic_flutter_example/src/view/pages/authorization/authorizati
 import 'package:altogic_flutter_example/src/view/pages/chat/chat_main.dart';
 import 'package:altogic_flutter_example/src/view/pages/database/database.dart';
 import 'package:altogic_flutter_example/src/view/pages/main_page.dart';
+import 'package:altogic_flutter_example/src/view/pages/queue_page.dart';
 import 'package:altogic_flutter_example/src/view/pages/redirect/magic_link_redirect.dart';
 import 'package:altogic_flutter_example/src/view/pages/redirect/password_reset_redirect.dart';
 import 'package:altogic_flutter_example/src/view/pages/redirect/provider_redirect.dart';
 import 'package:altogic_flutter_example/src/view/pages/redirect/verify_mail.dart';
+import 'package:altogic_flutter_example/src/view/pages/storage/bucket_manager_page.dart';
+import 'package:altogic_flutter_example/src/view/pages/storage/storage_page.dart';
+import 'package:altogic_flutter_example/src/view/pages/task_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_strategy/url_strategy.dart';
@@ -22,7 +26,7 @@ void main() async {
   }
 
   await CurrentUserController().setUser();
-  CurrentUserController().listenUser();
+  //CurrentUserController().listenUser();
   runApp(const MyApp());
 }
 
@@ -40,9 +44,12 @@ final Map<String, WidgetBuilder> pages = {
   '/': (c) => const MainPage(),
   '/auth': (c) => const AuthorizationPage(),
   '/database': (c) => const DatabasePage(),
-  '/chat': (c) => const ChatMain(),
+  //'/chat': (c) => const ChatMain(),
   '/endpoint': (c) => const EndpointPage(),
-  '/cache' : (c) => const CachePage(),
+  '/cache': (c) => const CachePage(),
+  '/task': (c) => const TaskManagerPage(),
+  '/queue': (c) => const QueuePage(),
+  '/storage': (c) => const StoragePage(),
 };
 
 final routeNames = {
@@ -52,6 +59,9 @@ final routeNames = {
   '/chat': 'Chat',
   '/endpoint': 'Endpoint',
   '/cache': 'Cache',
+  '/task': 'Task',
+  '/queue': 'Queue',
+  '/storage': 'Storage',
 };
 
 class MyApp extends StatefulWidget {
@@ -70,9 +80,23 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       initialRoute: '/',
       routes: pages,
+      onGenerateRoute: (s) {
+        if (s.name?.startsWith('/bucket') ?? false) {
+          return MaterialPageRoute(
+              builder: (c) => BucketManagerPage(
+                  bucket: s.name!.replaceAll('/bucket/', '')));
+        }
+        return null;
+      },
       onGenerateInitialRoutes: (path) {
         var uri = Uri.parse(path);
-
+        if (path.startsWith('/bucket')) {
+          return [
+            MaterialPageRoute(
+                builder: (c) =>
+                    BucketManagerPage(bucket: path.replaceAll('/bucket/', '')))
+          ];
+        }
         if (uri.queryParameters.isNotEmpty) {
           switch (uri.queryParameters["action"]) {
             case "email-confirm":

@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:altogic_flutter/altogic_flutter.dart';
 import 'package:altogic_flutter_example/main.dart';

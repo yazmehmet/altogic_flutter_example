@@ -1,4 +1,3 @@
-import 'package:altogic_flutter_example/main.dart';
 import 'package:altogic_flutter_example/src/service/endpoints_service.dart';
 import 'package:altogic_flutter_example/src/service/service_base.dart';
 import 'package:altogic_flutter_example/src/service/suggestion_service.dart';
