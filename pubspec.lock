@@ -4,17 +4,17 @@ packages:
   altogic_dart:
     dependency: transitive
     description:
-      path: "../../projects/altogic-dart"
-      relative: true
-    source: path
-    version: "0.0.3+3"
+      name: altogic_dart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.4"
   altogic_flutter:
     dependency: "direct main"
     description:
-      path: "../altogic_flutter"
-      relative: true
-    source: path
-    version: "0.0.1"
+      name: altogic_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2"
   async:
     dependency: transitive
     description:
@@ -370,7 +370,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.1.5"
+    version: "6.1.6"
   url_launcher_android:
     dependency: transitive
     description:
