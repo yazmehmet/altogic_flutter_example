@@ -10,12 +10,9 @@ Uint8List getUintList(PlatformFile file) {
 }
 
 void download(String name, Uint8List data) {
-
-
   final content = base64Encode(data);
-   AnchorElement(
+  AnchorElement(
       href: "data:application/octet-stream;charset=utf-16le;base64,$content")
-    ..setAttribute("download",name)
+    ..setAttribute("download", name)
     ..click();
-
 }

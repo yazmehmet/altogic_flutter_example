@@ -7,7 +7,8 @@ class Product {
       required this.description,
       required this.category,
       required this.createdAt,
-      required this.updatedAt, required this.amount});
+      required this.updatedAt,
+      required this.amount});
 
   factory Product.fromMap(Map<String, dynamic> map) {
     return Product(
@@ -31,7 +32,7 @@ class Product {
       'price': price,
       'description': description,
       'category': category,
-      'amount' : 0
+      'amount': 0
     };
   }
 

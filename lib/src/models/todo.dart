@@ -1,3 +1,1 @@
-class Todo {
-
-}
+class Todo {}

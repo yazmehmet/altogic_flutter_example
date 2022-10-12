@@ -57,8 +57,7 @@ class RunTaskMethod extends MethodWrap {
   RunTaskMethod();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicButton(
           body: "Run Once",
@@ -109,8 +108,7 @@ class EnsureMethod extends MethodWrap {
   EnsureMethod();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicButton(
           body: "Get Cache",
@@ -146,8 +144,7 @@ class GetTaskStatus extends MethodWrap {
   GetTaskStatus();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(
           hint: 'Task ID',

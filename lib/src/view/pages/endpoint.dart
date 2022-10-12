@@ -100,8 +100,7 @@ abstract class EndpointWrap extends MethodWrap {
   Future<void> run(BuildContext context, int a, int b);
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: "Value a", editingController: controllerA),
       AltogicInput(hint: "Value b", editingController: controllerB),
@@ -270,8 +269,7 @@ class DeleteMethod extends MethodWrap {
   final SuggestionService suggestion = SuggestionService();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: "Object ID", editingController: controller),
       ...suggestion.getWidget(

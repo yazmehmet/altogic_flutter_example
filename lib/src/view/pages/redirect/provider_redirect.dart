@@ -1,8 +1,3 @@
-
-
-
-
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -37,8 +32,7 @@ class _RedirectProviderState extends State<RedirectProvider> {
   _get() async {
     await Future.delayed(const Duration(milliseconds: 200));
     if (!widget.arguments.containsKey('access_token')) {
-      response.value =
-      'Path arguments *incorrect*. For verify email,'
+      response.value = 'Path arguments *incorrect*. For verify email,'
           ' `access_token` *must be provided*.';
       return;
     }

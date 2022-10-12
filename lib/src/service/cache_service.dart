@@ -1,4 +1,3 @@
-
 import 'package:altogic_flutter/altogic_flutter.dart';
 import 'package:altogic_flutter_example/main.dart';
 import 'package:altogic_flutter_example/src/service/service_base.dart';

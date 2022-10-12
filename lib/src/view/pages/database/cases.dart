@@ -18,8 +18,7 @@ class GetMarketWithObjectId extends MethodWrap {
   GetMarketWithObjectId();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicButton(
           body: 'Get Market',
@@ -79,8 +78,7 @@ class GetMarketWithFilter extends MethodWrap {
   GetMarketWithFilter();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicButton(
           body: 'Get Market',
@@ -125,8 +123,7 @@ class GetMarketWithLookup extends MethodWrap {
   GetMarketWithLookup();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicButton(
           body: 'Get Market',
@@ -174,8 +171,7 @@ class GetContact extends MethodWrap {
   GetContact();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(
         editingController: contactIdController,
@@ -231,8 +227,7 @@ class CreateMarketCase extends MethodWrap {
   CreateMarketCase();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(
         editingController: nameController,
@@ -283,8 +278,7 @@ class ChangeMarketName extends MethodWrap {
   ChangeMarketName();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(
         editingController: nameController,
@@ -337,8 +331,7 @@ class AddMarketContact extends MethodWrap {
   AddMarketContact();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(
         editingController: nameController,
@@ -565,8 +558,7 @@ class ChangeMarketAddress extends MethodWrap {
   ChangeMarketAddress();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(
         editingController: addressController,
@@ -621,8 +613,7 @@ class UnsetMarketAddress extends MethodWrap {
   UnsetMarketAddress();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicButton(
         body: 'Unset Market Address',
@@ -679,8 +670,7 @@ class CreateProduct extends MethodWrap {
   CreateProduct();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(
         editingController: nameController,
@@ -894,8 +884,7 @@ class GetMarketProducts extends MethodWrap {
   GetMarketProducts();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     var sorting = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -1024,8 +1013,7 @@ class SearchProducts extends MethodWrap {
   SearchProducts();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(
         editingController: searchController,
@@ -1092,8 +1080,7 @@ class SearchFuzzyProducts extends MethodWrap {
   SearchFuzzyProducts();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       Container(
         width: MediaQuery.of(context).size.width,
@@ -1187,8 +1174,7 @@ class OmitProduct extends MethodWrap {
   final OmitService omit = OmitService();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       ...omit.omitFields.entries.map((e) {
         var tile = CheckboxListTile(
@@ -1304,8 +1290,7 @@ class ChangePrice extends MethodWrap {
   final SuggestionService suggestion = SuggestionService();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(
         editingController: idController,
@@ -1394,8 +1379,7 @@ class DeleteProduct extends MethodWrap {
   //
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(
         editingController: idController,
@@ -1486,8 +1470,7 @@ class DeleteProductWithQueryBuilder extends MethodWrap {
   //
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(
         editingController: idController,
@@ -1577,8 +1560,7 @@ class IncrementDecrement extends MethodWrap {
   IncrementDecrement();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(editingController: idController, hint: 'Product ID'),
       AltogicInput(hint: 'Amount', editingController: amountController),
@@ -1674,8 +1656,7 @@ class PushProperty extends MethodWrap {
   PushProperty();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(editingController: idController, hint: 'Product ID'),
       AltogicInput(hint: 'Property', editingController: propertyController),
@@ -1758,8 +1739,7 @@ class PullProperty extends MethodWrap {
   PullProperty();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(editingController: idController, hint: 'Product ID'),
       AltogicInput(hint: 'Property', editingController: propertyController),
@@ -1836,8 +1816,7 @@ class GroupCategories extends MethodWrap {
   GroupCategories();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicButton(
         body: 'Group Categories',
@@ -1884,8 +1863,7 @@ class GetMarketWithAvgPrice extends MethodWrap {
   GetMarketWithAvgPrice();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicButton(
         body: 'Get Market Avg Price',
@@ -1930,8 +1908,7 @@ class GetMarketWithTotalStockValue extends MethodWrap {
   GetMarketWithTotalStockValue();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicButton(
         body: 'Get Market Total Stock Value',
@@ -1976,8 +1953,7 @@ class GetMarketProductCount extends MethodWrap {
   GetMarketProductCount();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicButton(
         body: 'Get Market Product Count',

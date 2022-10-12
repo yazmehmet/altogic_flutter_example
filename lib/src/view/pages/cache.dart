@@ -260,8 +260,7 @@ class IncrementCacheMethod extends MethodWrap {
   final TextEditingController amountController = TextEditingController();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: "Key", editingController: keyController),
       AltogicInput(hint: "Amount", editingController: amountController),
@@ -320,8 +319,7 @@ class DecrementCacheMethod extends MethodWrap {
   final TextEditingController amountController = TextEditingController();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: "Key", editingController: keyController),
       AltogicInput(hint: "Amount", editingController: amountController),
@@ -380,8 +378,7 @@ class ExpireCacheMethod extends MethodWrap {
   final TextEditingController ttlController = TextEditingController();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: "Key", editingController: keyController),
       AltogicInput(hint: "TTL", editingController: ttlController),
@@ -431,8 +428,7 @@ class GetStatsCacheMethod extends MethodWrap {
   final TextEditingController keyController = TextEditingController();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicButton(
         body: "Get Stats",
@@ -478,8 +474,7 @@ class ListKeysMethod extends MethodWrap {
   final TextEditingController nextController = TextEditingController();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: "Pattern", editingController: expressionController),
       AltogicInput(hint: "Next", editingController: nextController),

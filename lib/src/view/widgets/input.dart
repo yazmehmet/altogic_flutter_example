@@ -48,9 +48,11 @@ class _AltogicInputState extends State<AltogicInput> {
         maxWidth: 300,
       ),
       child: TextField(
-        onChanged: widget.suffixIcon != null ? (value) {
-          setState(() {});
-        } : null,
+        onChanged: widget.suffixIcon != null
+            ? (value) {
+                setState(() {});
+              }
+            : null,
         controller: widget.editingController,
         decoration: InputDecoration(
           label: Text(widget.hint),

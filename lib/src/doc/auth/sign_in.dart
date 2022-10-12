@@ -149,7 +149,7 @@ var response = altogic.auth.signInWithPhone(
 
   static List<DocumentationObject> signInWithCode(BuildContext context) {
     return const [
-     AutoSpan(
+      AutoSpan(
           "Log in an existing user using phone number and SMS code (OTP - one time"
           " password) that is sent to the phone. In order to use phone and password"
           " based log in, the authentication provider needs to be Altogic, meaning a"
@@ -173,7 +173,7 @@ var response = altogic.auth.signInWithCode(
 
   static List<DocumentationObject> signOut(BuildContext context) {
     return const [
-     AutoSpan(
+      AutoSpan(
           'If an input token is *not* provided, signs out the user from the'
           ' current session, clears user and session data in local storage and'
           ' removes the *Session* header in `Fetcher`. Otherwise, signs out'

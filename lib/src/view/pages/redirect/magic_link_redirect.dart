@@ -38,9 +38,7 @@ class _MagicLinkRedirectState extends State<MagicLinkRedirect> {
       return;
     }
     response.value = '';
-    await authService
-        .getAuthGrant(widget.arguments['access_token']!)
-       ;
+    await authService.getAuthGrant(widget.arguments['access_token']!);
     if (authService.currentUserController.isLogged) {
       response.value = 'Signed in';
     } else {
@@ -49,9 +47,6 @@ class _MagicLinkRedirectState extends State<MagicLinkRedirect> {
   }
 
   final TextEditingController password = TextEditingController();
-
-
-
 
   @override
   Widget build(BuildContext context) {

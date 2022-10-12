@@ -763,8 +763,6 @@ class UpdateInfoFileManager extends MethodWrap {
 
   late final List<String> tagging = (file['tags'] as List).cast<String>();
 
-
-
   @override
   List<Widget> children(BuildContext context) {
     return [
@@ -853,7 +851,6 @@ class UpdateInfoFileManager extends MethodWrap {
               );
               tagsController.clear();
               newName.clear();
-
             });
           })
     ];

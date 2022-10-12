@@ -3,14 +3,9 @@ import 'package:altogic_flutter_example/main.dart';
 import 'package:altogic_flutter_example/src/service/service_base.dart';
 import 'package:flutter/cupertino.dart';
 
-class TaskService extends ServiceBase  {
-
-
-
-
+class TaskService extends ServiceBase {
   static TaskService of(BuildContext context) =>
       InheritedService.of<TaskService>(context);
-
 
   TextEditingController idController = TextEditingController();
 
@@ -21,7 +16,6 @@ class TaskService extends ServiceBase  {
       data: res.data?.toJson(),
     ));
     idController.text = res.data?.taskId ?? '';
-
   }
 
   ValueNotifier<String?> id = ValueNotifier<String?>(null);

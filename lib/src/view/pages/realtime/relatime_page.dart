@@ -47,9 +47,7 @@ class _RealtimePageState extends State<RealtimePage> {
       debugPrint("On disconnect : $p0");
       _set();
     });
-    service.on('members', (p0) {
-      print('members : $p0');
-    });
+
     WidgetsBinding.instance.addObserver(LifecycleEventHandler(
       detachedCallBack: () async {
         RealtimeService.of(context).realtime.close();
@@ -444,8 +442,7 @@ class JoinChannel extends MethodWrap {
 
   @override
   List<Widget> children(BuildContext context) {
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) { });
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {});
 
     return [
       AltogicInput(
@@ -457,9 +454,7 @@ class JoinChannel extends MethodWrap {
           onPressed: () {
             asyncWrapper(() async {
               RealtimeService.of(context).join(channelNameController.text);
-              RealtimeService.of(context).realtime.onUpdate((data) {
-                print('ON UPDATE: $data');
-              });
+
               setState(() {});
             });
           })

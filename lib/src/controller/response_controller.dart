@@ -42,6 +42,4 @@ class ResponseViewController with ChangeNotifier {
       success(const JsonEncoder.withIndent("    ").convert(data.data));
     }
   }
-
-
 }

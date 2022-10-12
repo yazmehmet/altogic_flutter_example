@@ -95,10 +95,7 @@ class DbService extends ServiceBase {
   }
 
   Future<Contact?> getContact(String contactId) async {
-    var res = await altogic.db
-        .model('market.contacts')
-        .object(contactId)
-        .get();
+    var res = await altogic.db.model('market.contacts').object(contactId).get();
     response.response(res);
     if (res.errors == null) {
       return Contact.fromMap(res.data!);

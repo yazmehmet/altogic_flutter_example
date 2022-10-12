@@ -31,8 +31,7 @@ class SignUpWithEmailMethod extends MethodWrap {
   String get name => 'Sign Up With Email';
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: 'Email', editingController: emailController),
       AltogicInput(hint: 'Password', editingController: passwordController),
@@ -84,8 +83,7 @@ class SignUpWithPhoneMethod extends MethodWrap {
   String get name => 'Sign Up With Phone';
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: 'Phone', editingController: phoneController),
       AltogicInput(hint: 'Password', editingController: passwordController),
@@ -128,8 +126,7 @@ class SignInWithEmailMethod extends MethodWrap {
   String get name => 'Sign In With Email';
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: 'Email', editingController: emailController),
       AltogicInput(hint: 'Password', editingController: passwordController),
@@ -170,8 +167,7 @@ class SignInWithPhoneMethod extends MethodWrap {
   String get name => 'Sign In With Phone';
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: 'Phone', editingController: phoneController),
       AltogicInput(hint: 'Password', editingController: passwordController),
@@ -214,8 +210,7 @@ class SignInWithCodeMethod extends MethodWrap {
   String get name => 'Sign In With Code';
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: 'Phone', editingController: phoneController),
       AltogicInput(hint: 'Code', editingController: codeController),
@@ -252,8 +247,7 @@ class SignInWithProviderMethod extends MethodWrap {
   String get name => 'Sign In With Provider';
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicButton(
           body: 'Google',
@@ -286,8 +280,7 @@ class SignOutMethod extends MethodWrap {
   SignOutMethod();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(
           hint: 'Session Token (optional)', editingController: sessionToken),
@@ -322,8 +315,7 @@ class SignOutAllMethod extends MethodWrap {
   SignOutAllMethod();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicButton(
         body: 'Sign Out All',
@@ -356,8 +348,7 @@ class SignOutMethodAllEx extends MethodWrap {
   SignOutMethodAllEx();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicButton(
         body: 'Sign Out All Except Current',
@@ -422,8 +413,7 @@ if (errors != null) {
   String get name => 'Re-Send Verification Email';
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: 'Email', editingController: emailController),
       AltogicButton(
@@ -480,8 +470,7 @@ if (errors != null) {
   String get name => 'Re-Send Verification Code';
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: 'Phone', editingController: phoneController),
       AltogicButton(
@@ -548,8 +537,7 @@ if (errors != null) {
   String get name => 'Send Magic Link';
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: 'Email', editingController: emailController),
       AltogicButton(
@@ -619,8 +607,7 @@ if (errors != null) {
   String get name => 'Send Reset Password Email';
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: 'Email', editingController: emailController),
       AltogicButton(
@@ -686,8 +673,7 @@ if (errors != null) {
   String get name => 'Send Reset Password Code';
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: 'Phone Number', editingController: phoneController),
       AltogicButton(
@@ -757,8 +743,7 @@ if (errors != null) {
   String get name => 'Send Sign In Code';
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: 'Phone Number', editingController: phoneController),
       AltogicButton(
@@ -817,8 +802,7 @@ if (errors != null) {
   String get name => 'Reset Password With Token';
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: 'Token', editingController: tokenController),
       AltogicInput(hint: 'New Password', editingController: newPwdController),
@@ -878,8 +862,7 @@ if (errors != null) {
   String get name => 'Reset Password With Code';
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: 'Phone', editingController: phoneController),
       AltogicInput(hint: 'Code', editingController: codeController),
@@ -938,8 +921,7 @@ if (res.errors != null) {
   String get name => 'Get All Sessions';
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicButton(
           body: 'Get All Sessions',
@@ -986,8 +968,7 @@ if (res.errors != null) {
   String get name => 'Get User From Db';
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicButton(
         body: 'Get User From Db',
@@ -1042,8 +1023,7 @@ if (res.errors != null) {
   String get name => 'Get Auth Grant';
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: 'Access Token', editingController: tokenController),
       AltogicButton(
@@ -1068,8 +1048,7 @@ class ChangeEmail extends MethodWrap {
   ChangeEmail();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: 'New Email', editingController: emailController),
       AltogicInput(hint: 'Password', editingController: passwordController),
@@ -1123,8 +1102,7 @@ class ChangePhone extends MethodWrap {
   ChangePhone();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: 'New Phone', editingController: phoneController),
       AltogicInput(hint: 'Password', editingController: passwordController),
@@ -1194,8 +1172,7 @@ class VerifyPhone extends MethodWrap {
   VerifyPhone();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: 'Phone', editingController: phoneController),
       AltogicInput(hint: 'Code', editingController: codeController),
@@ -1256,8 +1233,7 @@ class ChangePassword extends MethodWrap {
   ChangePassword();
 
   @override
-  List<Widget> children(
-      BuildContext context) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: 'New Password', editingController: newPassword),
       AltogicInput(hint: 'Password', editingController: passwordController),

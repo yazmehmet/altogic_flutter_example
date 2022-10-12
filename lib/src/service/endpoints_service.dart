@@ -8,13 +8,10 @@ class EndpointService extends ServiceBase {
       InheritedService.of<EndpointService>(context);
 
   Future<void> getMethod(int a, int b) async {
-    var res = await altogic
-        .endpoint
-        .get('/test/get',queryParams: {
-          'a': a,
-          'b': b,
-        })
-        .asMap();
+    var res = await altogic.endpoint.get('/test/get', queryParams: {
+      'a': a,
+      'b': b,
+    }).asMap();
     response.response(res);
   }
 
@@ -24,7 +21,7 @@ class EndpointService extends ServiceBase {
     response.response(res);
   }
 
-  Future<APIResponse<Map<String,dynamic>>> deleteMethod(String id) async {
+  Future<APIResponse<Map<String, dynamic>>> deleteMethod(String id) async {
     var res = await altogic.endpoint.delete('/test/delete/$id').asMap();
     response.response(res);
     return res;

@@ -51,7 +51,7 @@ class RealtimeService extends ServiceBase {
 
   void getMembers(String room) async {
     var res = await realtime.getMembers(room);
-    response.value = "Members of $room : \n${res}";
+    response.value = "Members of $room : \n$res";
   }
 
   void updateUserData(String data) async {
@@ -61,10 +61,5 @@ class RealtimeService extends ServiceBase {
     response.value = "Updated user data";
   }
 
-void message(){
-
-}
-
-
-
+  void message() {}
 }
