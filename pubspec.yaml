@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  path_provider: ^2.0.11
   altogic_flutter:
     path: ../altogic_flutter
   string_scanner: ^1.1.1

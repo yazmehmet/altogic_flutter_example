@@ -20,15 +20,15 @@ class CachePage extends StatefulWidget {
 class _CachePageState extends State<CachePage> {
   CacheService cacheService = CacheService();
 
-  List<Widget> widgets = [
-    SetCacheMethod(),
-    GetCacheMethod(),
-    DeleteCacheMethod(),
-    IncrementCacheMethod(),
-    DecrementCacheMethod(),
-    ExpireCacheMethod(),
-    GetStatsCacheMethod(),
-    ListKeysMethod()
+  List<MethodState Function()> widgets = [
+    SetCacheMethod.new,
+    GetCacheMethod.new,
+    DeleteCacheMethod.new,
+    IncrementCacheMethod.new,
+    DecrementCacheMethod.new,
+    ExpireCacheMethod.new,
+    GetStatsCacheMethod.new,
+    ListKeysMethod.new
   ];
 
   @override
@@ -36,50 +36,57 @@ class _CachePageState extends State<CachePage> {
     return InheritedService(
         service: cacheService,
         child: BaseViewer(
-            body: Column(
-          children: [
-            const Documentation(children: [
-              Header("Cache Manager"),
-              vSpace,
-              AutoSpan(
-                  'The cache manager provides simple key-value storage at a high-speed'
-                  ' data storage layer (Redis) speeding up data set and get operations.'
-                  '\n\n'
-                  'The values stored can be a single JSON object, an array of objects or'
-                  ' primitive values (e.g., numbers, text, boolean). Values can be stored with'
-                  ' an optional time-to-live (TTL) to automatically expire entries.'
-                  '\n\n'
-                  'You can directly store primitive values such as integers, strings, etc.,'
-                  ' however, when you try to get them Altogic returns them wrapped in a simple'
-                  ' object with a key named `value`. As an example if you store a text field'
-                  ' "Hello world!" at a key named "welcome", when you try to get the value of'
-                  ' this key using the [get] method, you will receive the following'
-                  ' response: { value: "Hello world"}.'),
-              vSpace,
-              AutoSpan("This page is used to show cache operations"),
-              vSpace,
-              AutoSpan("To get an `CacheManager`, you need to use an "
-                  "expression: `altogic.cache` "),
-              vSpace,
-              AutoSpan("With `CacheManager`, you can call following methods."),
-              vSpace,
-            ]),
-            ...widgets
-          ],
+            body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 30,
+          ),
+          child: Column(
+            children: [
+              const Documentation(children: [
+                Header("Cache Manager"),
+                vSpace,
+                AutoSpan(
+                    'The cache manager provides simple key-value storage at a high-speed'
+                    ' data storage layer (Redis) speeding up data set and get operations.'
+                    '\n\n'
+                    'The values stored can be a single JSON object, an array of objects or'
+                    ' primitive values (e.g., numbers, text, boolean). Values can be stored with'
+                    ' an optional time-to-live (TTL) to automatically expire entries.'
+                    '\n\n'
+                    'You can directly store primitive values such as integers, strings, etc.,'
+                    ' however, when you try to get them Altogic returns them wrapped in a simple'
+                    ' object with a key named `value`. As an example if you store a text field'
+                    ' "Hello world!" at a key named "welcome", when you try to get the value of'
+                    ' this key using the [get] method, you will receive the following'
+                    ' response: { value: "Hello world"}.'),
+                vSpace,
+                AutoSpan("This page is used to show cache operations"),
+                vSpace,
+                AutoSpan("To get an `CacheManager`, you need to use an "
+                    "expression: `altogic.cache` "),
+                vSpace,
+                AutoSpan(
+                    "With `CacheManager`, you can call following methods."),
+                vSpace,
+              ]),
+              ...(widgets.map((e) =>
+                  MethodWidget(create: e, response: cacheService.response)))
+            ],
+          ),
         )));
   }
 }
 
 class SetCacheMethod extends MethodWrap {
-  SetCacheMethod({super.key});
+  SetCacheMethod();
 
   final TextEditingController keyController = TextEditingController();
   final TextEditingController valueController = TextEditingController();
   final TextEditingController ttlController = TextEditingController();
 
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: "Key", editingController: keyController),
       AltogicInput(hint: "Value (integer)", editingController: valueController),
@@ -140,13 +147,12 @@ if (res == null) {
 }
 
 class GetCacheMethod extends MethodWrap {
-  GetCacheMethod({super.key});
+  GetCacheMethod();
 
   final TextEditingController keyController = TextEditingController();
 
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: "Key", editingController: keyController),
       AltogicButton(
@@ -202,13 +208,12 @@ if (res == null) {
 
 // delete cache
 class DeleteCacheMethod extends MethodWrap {
-  DeleteCacheMethod({super.key});
+  DeleteCacheMethod();
 
   final TextEditingController keyController = TextEditingController();
 
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: "Key", editingController: keyController),
       AltogicButton(
@@ -249,14 +254,14 @@ if (errors == null) {
 }
 
 class IncrementCacheMethod extends MethodWrap {
-  IncrementCacheMethod({super.key});
+  IncrementCacheMethod();
 
   final TextEditingController keyController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: "Key", editingController: keyController),
       AltogicInput(hint: "Amount", editingController: amountController),
@@ -309,14 +314,14 @@ if (res.errors == null) {
 }
 
 class DecrementCacheMethod extends MethodWrap {
-  DecrementCacheMethod({super.key});
+  DecrementCacheMethod();
 
   final TextEditingController keyController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: "Key", editingController: keyController),
       AltogicInput(hint: "Amount", editingController: amountController),
@@ -369,14 +374,14 @@ if (res.errors == null) {
 }
 
 class ExpireCacheMethod extends MethodWrap {
-  ExpireCacheMethod({super.key});
+  ExpireCacheMethod();
 
   final TextEditingController keyController = TextEditingController();
   final TextEditingController ttlController = TextEditingController();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: "Key", editingController: keyController),
       AltogicInput(hint: "TTL", editingController: ttlController),
@@ -421,13 +426,13 @@ if (errors == null) {
 }
 
 class GetStatsCacheMethod extends MethodWrap {
-  GetStatsCacheMethod({super.key});
+  GetStatsCacheMethod();
 
   final TextEditingController keyController = TextEditingController();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicButton(
         body: "Get Stats",
@@ -467,14 +472,14 @@ if (res.errors == null) {
 }
 
 class ListKeysMethod extends MethodWrap {
-  ListKeysMethod({super.key});
+  ListKeysMethod();
 
   final TextEditingController expressionController = TextEditingController();
   final TextEditingController nextController = TextEditingController();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: "Pattern", editingController: expressionController),
       AltogicInput(hint: "Next", editingController: nextController),

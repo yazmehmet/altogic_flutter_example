@@ -21,7 +21,8 @@ class _MainPageState extends State<MainPage> {
     '/chat',
     '/task',
     '/queue',
-    '/storage'
+    '/storage',
+    '/realtime',
   };
 
   @override

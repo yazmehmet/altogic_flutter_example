@@ -21,11 +21,11 @@ class EndpointPage extends StatefulWidget {
 
 class _DatabasePageState extends State<EndpointPage> {
   EndpointService endpointService = EndpointService();
-  List<Widget> widgets = [
-    GetMethod(),
-    PostMethod(),
-    DeleteMethod(),
-    PutMethod(),
+  final widgets = [
+    GetMethod.new,
+    PostMethod.new,
+    DeleteMethod.new,
+    PutMethod.new,
   ];
 
   @override
@@ -33,30 +33,36 @@ class _DatabasePageState extends State<EndpointPage> {
     return InheritedService(
       service: endpointService,
       child: BaseViewer(
-          body: Column(
-        children: [
-          const Documentation(children: [
-            Header("Endpoint Manager"),
-            vSpace,
-            AutoSpan("This page is used to show endpoint operations"),
-            vSpace,
-            Header('Calling Endpoint\n', level: 2),
-            AutoSpan("To call an endpoint, you need to use an "
-                "`EndpointManager` instance : `altogic.endpoint`"),
-            vSpace,
-            AutoSpan("With EndpointManager, you can call any endpoint "
-                "with the following methods : `get` , `post` , `put` , `delete`."),
-            vSpace,
-            Header('Getting Result\n', level: 2),
-            AutoSpan("Each of these methods returns a `FutureApiResponse` that "
-                "you can use to get the result with casting:"),
-            vSpace,
-            DartCode("""
+          body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 30,
+        ),
+        child: Column(
+          children: [
+            const Documentation(children: [
+              Header("Endpoint Manager"),
+              vSpace,
+              AutoSpan("This page is used to show endpoint operations"),
+              vSpace,
+              Header('Calling Endpoint\n', level: 2),
+              AutoSpan("To call an endpoint, you need to use an "
+                  "`EndpointManager` instance : `altogic.endpoint`"),
+              vSpace,
+              AutoSpan("With EndpointManager, you can call any endpoint "
+                  "with the following methods : `get` , `post` , `put` , `delete`."),
+              vSpace,
+              Header('Getting Result\n', level: 2),
+              AutoSpan(
+                  "Each of these methods returns a `FutureApiResponse` that "
+                  "you can use to get the result with casting:"),
+              vSpace,
+              DartCode("""
 var response = await altogic
-                  .endpoint
-                  .get('<path>')
-                  .asMap();
-                  
+                    .endpoint
+                    .get('<path>')
+                    .asMap();
+                    
 print(response.runtimeType); 
 // out APIResponse<Map<String,dynamic>>
 
@@ -65,19 +71,23 @@ if (response.errors == null) {
 }                  
 
 """)
-          ]),
-          const SizedBox(
-            height: 40,
-          ),
-          ...widgets
-        ],
+            ]),
+            const SizedBox(
+              height: 40,
+            ),
+            ...widgets.map((e) => MethodWidget(
+                  create: e,
+                  response: endpointService.response,
+                ))
+          ],
+        ),
       )),
     );
   }
 }
 
 abstract class EndpointWrap extends MethodWrap {
-  EndpointWrap({super.key});
+  EndpointWrap();
 
   String get method;
 
@@ -91,7 +101,7 @@ abstract class EndpointWrap extends MethodWrap {
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: "Value a", editingController: controllerA),
       AltogicInput(hint: "Value b", editingController: controllerB),
@@ -114,7 +124,7 @@ abstract class EndpointWrap extends MethodWrap {
 }
 
 class GetMethod extends EndpointWrap {
-  GetMethod({super.key});
+  GetMethod();
 
   @override
   List<DocumentationObject> get description => [
@@ -183,7 +193,7 @@ altogic
 }
 
 class PostMethod extends EndpointWrap {
-  PostMethod({super.key});
+  PostMethod();
 
   @override
   List<DocumentationObject> get description => [
@@ -248,7 +258,7 @@ altogic
 }
 
 class DeleteMethod extends MethodWrap {
-  DeleteMethod({super.key});
+  DeleteMethod();
 
   final TextEditingController controller = TextEditingController();
 
@@ -261,7 +271,7 @@ class DeleteMethod extends MethodWrap {
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: "Object ID", editingController: controller),
       ...suggestion.getWidget(
@@ -336,7 +346,7 @@ altogic
 }
 
 class PutMethod extends EndpointWrap {
-  PutMethod({super.key});
+  PutMethod();
 
   @override
   String get method => "PUT";

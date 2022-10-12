@@ -21,35 +21,44 @@ class TaskManagerPage extends StatefulWidget {
 class _TaskManagerPageState extends State<TaskManagerPage> {
   TaskService taskService = TaskService();
 
-  List<Widget> widgets = [RunTaskMethod(), GetTaskStatus()];
+  final widgets = [RunTaskMethod.new, GetTaskStatus.new];
 
   @override
   Widget build(BuildContext context) {
     return InheritedService(
         service: taskService,
-        child: BaseViewer(
-          body: Column(
-            children: [
-              const Documentation(children: [
-                Header("Task Manager"),
-                vSpace,
-                AutoSpan(
-                    "This page is used to manage tasks. It is used to run and get status."),
-                vSpace
-              ]),
-              ...widgets
-            ],
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 30,
+          ),
+          child: BaseViewer(
+            body: Column(
+              children: [
+                const Documentation(children: [
+                  Header("Task Manager"),
+                  vSpace,
+                  AutoSpan(
+                      "This page is used to manage tasks. It is used to run and get status."),
+                  vSpace
+                ]),
+                ...widgets.map((e) => MethodWidget(
+                      create: e,
+                      response: taskService.response,
+                    ))
+              ],
+            ),
           ),
         ));
   }
 }
 
 class RunTaskMethod extends MethodWrap {
-  RunTaskMethod({super.key});
+  RunTaskMethod();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicButton(
           body: "Run Once",
@@ -97,11 +106,11 @@ if (res.errors == null) {
 }
 
 class EnsureMethod extends MethodWrap {
-  EnsureMethod({super.key});
+  EnsureMethod();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicButton(
           body: "Get Cache",
@@ -134,11 +143,11 @@ class EnsureMethod extends MethodWrap {
 }
 
 class GetTaskStatus extends MethodWrap {
-  GetTaskStatus({super.key});
+  GetTaskStatus();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(
           hint: 'Task ID',

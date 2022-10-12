@@ -19,50 +19,49 @@ class QueuePage extends StatefulWidget {
 class _QueuePagePageState extends State<QueuePage> {
   QueueService taskService = QueueService();
 
-  final TextEditingController idController = TextEditingController();
-
-  late List<Widget> widgets = [
-    RunQueueMethod(controller: idController),
-    GetMessageStatus(
-      controller: idController,
-    )
-  ];
+  late final widgets = [RunQueueMethod.new, GetMessageStatus.new];
 
   @override
   Widget build(BuildContext context) {
     return InheritedService(
         service: taskService,
         child: BaseViewer(
-          body: Column(
-            children: [
-              const Documentation(children: [
-                Header("Queue Manager"),
-                vSpace,
-                AutoSpan(
-                    "This page is used to manage queue. It is used to run and get status."),
-                vSpace
-              ]),
-              ...widgets
-            ],
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 30,
+            ),
+            child: Column(
+              children: [
+                const Documentation(children: [
+                  Header("Queue Manager"),
+                  vSpace,
+                  AutoSpan(
+                      "This page is used to manage queue. It is used to run and get status."),
+                  vSpace
+                ]),
+                ...widgets.map((e) => MethodWidget(
+                      create: e,
+                      response: taskService.response,
+                    ))
+              ],
+            ),
           ),
         ));
   }
 }
 
 class RunQueueMethod extends MethodWrap {
-  RunQueueMethod({super.key, required this.controller});
-
-  final TextEditingController controller;
+  RunQueueMethod();
 
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicButton(
           body: "Submit Message",
           onPressed: () {
             asyncWrapper(() async {
-              await QueueService.of(context).submitMessage(controller);
+              await QueueService.of(context).submitMessage();
             });
           })
     ];
@@ -106,23 +105,21 @@ if (res.errors == null) {
 }
 
 class GetMessageStatus extends MethodWrap {
-  GetMessageStatus({super.key, required this.controller});
-
-  final TextEditingController controller;
+  GetMessageStatus();
 
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
+    var queue = QueueService.of(context).idController;
     return [
-      AltogicInput(hint: 'Message ID', editingController: controller),
+      AltogicInput(hint: 'Message ID', editingController: queue),
       AltogicButton(
           body: "Get Status",
-          enabled: () => controller.text.length == 24,
-          listenable: controller,
+          enabled: () => queue.text.length == 24,
+          listenable: queue,
           onPressed: () {
             asyncWrapper(() async {
               await QueueService.of(context).getMessageStatus(
-                controller.text,
+                queue.text,
               );
             });
           })
@@ -146,7 +143,7 @@ class GetMessageStatus extends MethodWrap {
                 "To get task status you need to call `getMessageStatus`"),
             vSpace,
             DartCode("""
-var res = await altogic.task.getMessageStatus("${controller.text}");
+var res = await altogic.task.getMessageStatus("${QueueService.of(context).idController.text}");
 if (res.errors == null) {
   // success
 }

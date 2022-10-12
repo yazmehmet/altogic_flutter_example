@@ -1,15 +1,16 @@
 import 'package:altogic_flutter/altogic_flutter.dart';
 import 'package:altogic_flutter_example/src/controller/user_controller.dart';
 import 'package:altogic_flutter_example/src/view/pages/authorization/authorization.dart';
-import 'package:altogic_flutter_example/src/view/pages/chat/chat_main.dart';
 import 'package:altogic_flutter_example/src/view/pages/database/database.dart';
 import 'package:altogic_flutter_example/src/view/pages/main_page.dart';
 import 'package:altogic_flutter_example/src/view/pages/queue_page.dart';
+import 'package:altogic_flutter_example/src/view/pages/realtime/relatime_page.dart';
 import 'package:altogic_flutter_example/src/view/pages/redirect/magic_link_redirect.dart';
 import 'package:altogic_flutter_example/src/view/pages/redirect/password_reset_redirect.dart';
 import 'package:altogic_flutter_example/src/view/pages/redirect/provider_redirect.dart';
 import 'package:altogic_flutter_example/src/view/pages/redirect/verify_mail.dart';
 import 'package:altogic_flutter_example/src/view/pages/storage/bucket_manager_page.dart';
+import 'package:altogic_flutter_example/src/view/pages/storage/file_manager.dart';
 import 'package:altogic_flutter_example/src/view/pages/storage/storage_page.dart';
 import 'package:altogic_flutter_example/src/view/pages/task_page.dart';
 import 'package:flutter/foundation.dart';
@@ -31,14 +32,14 @@ void main() async {
 }
 
 // USE THIS FOR WEB DEPLOYMENT
-AltogicClient altogic = createClient(
-    "https://c1-na.altogic.com/e:62d3ea1510b444043a4f80b7",
-    "eb673068d11b468997bbe93c33fdc5f5");
+// AltogicClient altogic = createClient(
+//     "https://c1-na.altogic.com/e:62d3ea1510b444043a4f80b7",
+//     "eb673068d11b468997bbe93c33fdc5f5");
 
 // USE THIS FOR LOCAL DEPLOYMENT
-// AltogicClient altogic = createClient(
-//     "https://c4-na.altogic.com/e:633bd89b98cd8243629533e3",
-//     "eb673068d11b468997bbe93c33fdc5f5");
+AltogicClient altogic = createClient(
+    "https://c4-na.altogic.com/e:633bd89b98cd8243629533e3",
+    "eb673068d11b468997bbe93c33fdc5f5");
 
 final Map<String, WidgetBuilder> pages = {
   '/': (c) => const MainPage(),
@@ -50,6 +51,7 @@ final Map<String, WidgetBuilder> pages = {
   '/task': (c) => const TaskManagerPage(),
   '/queue': (c) => const QueuePage(),
   '/storage': (c) => const StoragePage(),
+  '/realtime': (c) => const RealtimePage(),
 };
 
 final routeNames = {
@@ -62,6 +64,7 @@ final routeNames = {
   '/task': 'Task',
   '/queue': 'Queue',
   '/storage': 'Storage',
+  '/realtime': 'Realtime',
 };
 
 class MyApp extends StatefulWidget {
@@ -81,10 +84,36 @@ class _MyAppState extends State<MyApp> {
       initialRoute: '/',
       routes: pages,
       onGenerateRoute: (s) {
+        switch (s.name) {
+          case '/bucket':
+            var args = s.arguments as Map<String, dynamic>;
+            return MaterialPageRoute(
+                settings: RouteSettings(name: '/bucket/${args['bucket']}'),
+                builder: (c) => BucketManagerPage(
+                      bucket: args['bucket']!,
+                    ));
+          case '/file':
+            var args = s.arguments as Map<String, dynamic>;
+            return MaterialPageRoute(
+                settings: RouteSettings(
+                    name: '/file/${args['bucket']}/${args['file']}'),
+                builder: (c) => FileManagerPage(
+                      bucket: args['bucket']!,
+                      file: args['file']!,
+                    ));
+        }
+
         if (s.name?.startsWith('/bucket') ?? false) {
           return MaterialPageRoute(
+              settings: s,
               builder: (c) => BucketManagerPage(
                   bucket: s.name!.replaceAll('/bucket/', '')));
+        }
+        if (s.name?.startsWith('/file') ?? false) {
+          var args = s.name!.replaceAll('/file/', '').split('/');
+          return MaterialPageRoute(
+              settings: s,
+              builder: (c) => FileManagerPage(bucket: args[0], file: args[1]));
         }
         return null;
       },
@@ -93,10 +122,21 @@ class _MyAppState extends State<MyApp> {
         if (path.startsWith('/bucket')) {
           return [
             MaterialPageRoute(
+                settings:
+                    RouteSettings(name: path, arguments: uri.queryParameters),
                 builder: (c) =>
                     BucketManagerPage(bucket: path.replaceAll('/bucket/', '')))
           ];
         }
+
+        if (path.startsWith('/file')) {
+          var args = path.replaceAll('/file/', '').split('/');
+          return [
+            MaterialPageRoute(
+                builder: (c) => FileManagerPage(bucket: args[0], file: args[1]))
+          ];
+        }
+
         if (uri.queryParameters.isNotEmpty) {
           switch (uri.queryParameters["action"]) {
             case "email-confirm":

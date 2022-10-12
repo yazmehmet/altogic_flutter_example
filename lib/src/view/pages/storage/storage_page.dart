@@ -23,13 +23,13 @@ class StoragePage extends StatefulWidget {
 class _StoragePageState extends State<StoragePage> {
   final StorageService service = StorageService();
 
-  List<Widget> widgets = [
-    CreateBucket(),
-    ListBuckets(),
-    GetStorageStats(),
-    SearchFilesStorage(),
-    DeleteFileStorage(),
-    CreateBucketManager()
+  final widgets = [
+    CreateBucket.new,
+    ListBuckets.new,
+    GetStorageStats.new,
+    SearchFilesStorage.new,
+    DeleteFileStorage.new,
+    CreateBucketManager.new
   ];
 
   @override
@@ -39,16 +39,19 @@ class _StoragePageState extends State<StoragePage> {
         child: BaseViewer(
           leadingHome: true,
           body: Center(
-            child: Column(
-              children: [
-                const Documentation(children: [
-                  Header('Storage'),
-                  Description(
-                      'Storage Manager , Bucket Manager and File Manager'),
-                  vSpace,
-                ]),
-                ...widgets,
-              ],
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
+              child: Column(
+                children: [
+                  const Documentation(children: [
+                    Header('Storage'),
+                    Description(
+                        'Storage Manager , Bucket Manager and File Manager'),
+                    vSpace,
+                  ]),
+                  ...widgets.map((e) => MethodWidget(create: e)),
+                ],
+              ),
             ),
           ),
         ));
@@ -61,15 +64,14 @@ class BucketCreatingManager {
 }
 
 class CreateBucket extends MethodWrap {
-  CreateBucket({super.key});
+  CreateBucket();
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController tagController = TextEditingController();
   final BucketCreatingManager manager = BucketCreatingManager();
 
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: 'Bucket Name', editingController: nameController),
       AltogicInput(
@@ -170,13 +172,12 @@ class ListBuckets extends MethodWrap {
 
   final FilterBucketService filter = FilterBucketService();
 
-  ListBuckets({super.key});
+  ListBuckets();
 
   final TextEditingController expressionController = TextEditingController();
 
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     var sorting = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -323,11 +324,10 @@ class ListBuckets extends MethodWrap {
 }
 
 class GetStorageStats extends MethodWrap {
-  GetStorageStats({super.key});
+  GetStorageStats();
 
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicButton(
         body: 'Get Storage Stats',
@@ -372,13 +372,12 @@ class SearchFilesStorage extends MethodWrap {
 
   final SearchFileStorageService filter = SearchFileStorageService();
 
-  SearchFilesStorage({super.key});
+  SearchFilesStorage();
 
   final TextEditingController expressionController = TextEditingController();
 
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     var sorting = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -521,15 +520,14 @@ class SearchFilesStorage extends MethodWrap {
 }
 
 class DeleteFileStorage extends MethodWrap {
-  DeleteFileStorage({super.key});
+  DeleteFileStorage();
 
   final TextEditingController urlController = TextEditingController();
 
   final ValueNotifier<String?> preview = ValueNotifier<String?>(null);
 
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(
         editingController: urlController,
@@ -582,15 +580,14 @@ class DeleteFileStorage extends MethodWrap {
 }
 
 class CreateBucketManager extends MethodWrap {
-  CreateBucketManager({super.key});
+  CreateBucketManager();
 
   final TextEditingController nameOrIdController = TextEditingController();
 
   final SuggestionService suggestionService = SuggestionService();
 
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(
           hint: "Bucket Name Or ID", editingController: nameOrIdController),
@@ -637,8 +634,8 @@ class CreateBucketManager extends MethodWrap {
       AltogicButton(
         body: "Create BucketManager",
         onPressed: () {
-          Navigator.of(context)
-              .pushReplacementNamed('/bucket/${nameOrIdController.text}');
+          Navigator.of(context).pushNamed('/bucket',
+              arguments: <String, dynamic>{'bucket': nameOrIdController.text});
           return;
         },
         enabled: () => nameOrIdController.text.isNotEmpty,

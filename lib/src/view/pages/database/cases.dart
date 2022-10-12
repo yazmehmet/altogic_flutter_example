@@ -15,11 +15,11 @@ CurrentUserController currentUser = CurrentUserController();
 
 // get market
 class GetMarketWithObjectId extends MethodWrap {
-  GetMarketWithObjectId({super.key});
+  GetMarketWithObjectId();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicButton(
           body: 'Get Market',
@@ -76,11 +76,11 @@ var res = altogic.db
 }
 
 class GetMarketWithFilter extends MethodWrap {
-  GetMarketWithFilter({super.key});
+  GetMarketWithFilter();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicButton(
           body: 'Get Market',
@@ -122,11 +122,11 @@ var res = await altogic
 }
 
 class GetMarketWithLookup extends MethodWrap {
-  GetMarketWithLookup({super.key});
+  GetMarketWithLookup();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicButton(
           body: 'Get Market',
@@ -171,11 +171,11 @@ var res = await altogic
 class GetContact extends MethodWrap {
   final TextEditingController contactIdController = TextEditingController();
 
-  GetContact({super.key});
+  GetContact();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(
         editingController: contactIdController,
@@ -228,11 +228,11 @@ class CreateMarketCase extends MethodWrap {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
 
-  CreateMarketCase({super.key, super.response});
+  CreateMarketCase();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(
         editingController: nameController,
@@ -280,11 +280,11 @@ altogic.db.model('market').create({
 class ChangeMarketName extends MethodWrap {
   final TextEditingController nameController = TextEditingController();
 
-  ChangeMarketName({super.key});
+  ChangeMarketName();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(
         editingController: nameController,
@@ -334,11 +334,11 @@ class AddMarketContact extends MethodWrap {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
 
-  AddMarketContact({super.key});
+  AddMarketContact();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(
         editingController: nameController,
@@ -396,10 +396,10 @@ class DeleteContact extends MethodWrap {
 
   final SuggestionService suggestion = SuggestionService();
 
-  DeleteContact({super.key});
+  DeleteContact();
 
   @override
-  List<Widget> children(BuildContext context, StateSetter setState) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(
         editingController: idController,
@@ -480,10 +480,10 @@ class DeleteContactWithFilter extends MethodWrap {
 
   final SuggestionService suggestion = SuggestionService();
 
-  DeleteContactWithFilter({super.key});
+  DeleteContactWithFilter();
 
   @override
-  List<Widget> children(BuildContext context, StateSetter setState) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(
         editingController: idController,
@@ -562,11 +562,11 @@ if (res.errors == null) {
 class ChangeMarketAddress extends MethodWrap {
   final TextEditingController addressController = TextEditingController();
 
-  ChangeMarketAddress({super.key});
+  ChangeMarketAddress();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(
         editingController: addressController,
@@ -618,11 +618,11 @@ if (res.errors == null) {
 }
 
 class UnsetMarketAddress extends MethodWrap {
-  UnsetMarketAddress({super.key});
+  UnsetMarketAddress();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicButton(
         body: 'Unset Market Address',
@@ -676,11 +676,11 @@ class CreateProduct extends MethodWrap {
   final List<String> categories = [];
   final List<String> properties = [];
 
-  CreateProduct({super.key});
+  CreateProduct();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(
         editingController: nameController,
@@ -891,11 +891,11 @@ class GetMarketProducts extends MethodWrap {
     text: '1',
   );
 
-  GetMarketProducts({super.key});
+  GetMarketProducts();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     var sorting = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -1021,11 +1021,11 @@ var res = await altogic.db
 class SearchProducts extends MethodWrap {
   final TextEditingController searchController = TextEditingController();
 
-  SearchProducts({super.key});
+  SearchProducts();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(
         editingController: searchController,
@@ -1089,11 +1089,11 @@ class SearchFuzzyProducts extends MethodWrap {
 
   final ValueNotifier<String> currentField = ValueNotifier('name');
 
-  SearchFuzzyProducts({super.key});
+  SearchFuzzyProducts();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       Container(
         width: MediaQuery.of(context).size.width,
@@ -1180,7 +1180,7 @@ class OmitService {
 class OmitProduct extends MethodWrap {
   final TextEditingController idController = TextEditingController();
 
-  OmitProduct({super.key});
+  OmitProduct();
 
   final SuggestionService suggestion = SuggestionService();
 
@@ -1188,7 +1188,7 @@ class OmitProduct extends MethodWrap {
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       ...omit.omitFields.entries.map((e) {
         var tile = CheckboxListTile(
@@ -1299,13 +1299,13 @@ class ChangePrice extends MethodWrap {
   final TextEditingController priceController = TextEditingController();
   final TextEditingController idController = TextEditingController();
 
-  ChangePrice({super.key});
+  ChangePrice();
 
   final SuggestionService suggestion = SuggestionService();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(
         editingController: idController,
@@ -1389,13 +1389,13 @@ class DeleteProduct extends MethodWrap {
 
   final SuggestionService suggestion = SuggestionService();
 
-  DeleteProduct({super.key});
+  DeleteProduct();
 
   //
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(
         editingController: idController,
@@ -1481,13 +1481,13 @@ class DeleteProductWithQueryBuilder extends MethodWrap {
 
   final SuggestionService suggestion = SuggestionService();
 
-  DeleteProductWithQueryBuilder({super.key});
+  DeleteProductWithQueryBuilder();
 
   //
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(
         editingController: idController,
@@ -1574,11 +1574,11 @@ class IncrementDecrement extends MethodWrap {
 
   final SuggestionService suggestion = SuggestionService();
 
-  IncrementDecrement({super.key});
+  IncrementDecrement();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(editingController: idController, hint: 'Product ID'),
       AltogicInput(hint: 'Amount', editingController: amountController),
@@ -1671,11 +1671,11 @@ class PushProperty extends MethodWrap {
 
   final SuggestionService suggestion = SuggestionService();
 
-  PushProperty({super.key});
+  PushProperty();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(editingController: idController, hint: 'Product ID'),
       AltogicInput(hint: 'Property', editingController: propertyController),
@@ -1755,11 +1755,11 @@ class PullProperty extends MethodWrap {
 
   final SuggestionService suggestion = SuggestionService();
 
-  PullProperty({super.key});
+  PullProperty();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(editingController: idController, hint: 'Product ID'),
       AltogicInput(hint: 'Property', editingController: propertyController),
@@ -1833,11 +1833,11 @@ class PullProperty extends MethodWrap {
 }
 
 class GroupCategories extends MethodWrap {
-  GroupCategories({super.key});
+  GroupCategories();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicButton(
         body: 'Group Categories',
@@ -1881,11 +1881,11 @@ var res = await altogic.db
 }
 
 class GetMarketWithAvgPrice extends MethodWrap {
-  GetMarketWithAvgPrice({super.key});
+  GetMarketWithAvgPrice();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicButton(
         body: 'Get Market Avg Price',
@@ -1927,11 +1927,11 @@ var res = await altogic.db.model('product')
 }
 
 class GetMarketWithTotalStockValue extends MethodWrap {
-  GetMarketWithTotalStockValue({super.key});
+  GetMarketWithTotalStockValue();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicButton(
         body: 'Get Market Total Stock Value',
@@ -1973,11 +1973,11 @@ var res = await altogic.db.model('product')
 }
 
 class GetMarketProductCount extends MethodWrap {
-  GetMarketProductCount({super.key});
+  GetMarketProductCount();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicButton(
         body: 'Get Market Product Count',

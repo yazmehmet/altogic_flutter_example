@@ -80,9 +80,15 @@ class BucketService extends ServiceBase {
 
   final String bucket;
 
+  ValueNotifier<Map<String, dynamic>?> bucketInfo =
+      ValueNotifier<Map<String, dynamic>?>(null);
+
   Future<void> getBucketInfo() async {
     response.value = 'Loading...';
     var res = await altogic.storage.bucket(bucket).getInfo();
+    if (res.data != null) {
+      bucketInfo.value = res.data;
+    }
     response.response(res);
   }
 
@@ -161,12 +167,14 @@ class BucketService extends ServiceBase {
     response.value = 'Loading...';
     var res = await altogic.storage.bucket(bucket).addTags(tags);
     response.response(res);
+    getBucketInfo();
   }
 
   Future<void> removeTags(List<String> tags) async {
     response.value = 'Loading...';
     var res = await altogic.storage.bucket(bucket).removeTags(tags);
     response.response(res);
+    getBucketInfo();
   }
 
   Future<void> updateInfo(
@@ -181,5 +189,6 @@ class BucketService extends ServiceBase {
         newName: newName,
         tags: tags);
     response.response(res);
+    getBucketInfo();
   }
 }

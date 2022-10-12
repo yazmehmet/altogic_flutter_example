@@ -8,7 +8,6 @@ import '../../widgets/base_viewer.dart';
 import '../../widgets/documentation/base.dart';
 import '../../widgets/documentation/texts.dart';
 
-
 class DatabasePage extends StatefulWidget {
   const DatabasePage({Key? key}) : super(key: key);
 
@@ -24,21 +23,27 @@ class _DatabasePageState extends State<DatabasePage> {
     return InheritedService(
       service: dbService,
       child: BaseViewer(
-          body: Column(
-            children: [
-              const Documentation(children: [
-                Header("Database Manager"),
-                vSpace,
-                AutoSpan("This page is used to show database operations"),
-              ]),
-              const SizedBox(
-                height: 40,
-              ),
-              MarketView(
-                responseViewController: dbService.response,
-              ),
-            ],
-          )),
+          body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 30,
+        ),
+        child: Column(
+          children: [
+            const Documentation(children: [
+              Header("Database Manager"),
+              vSpace,
+              AutoSpan("This page is used to show database operations"),
+            ]),
+            const SizedBox(
+              height: 40,
+            ),
+            MarketView(
+              responseViewController: dbService.response,
+            ),
+          ],
+        ),
+      )),
     );
   }
 }

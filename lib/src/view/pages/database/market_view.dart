@@ -4,6 +4,7 @@ import 'package:altogic_flutter_example/src/controller/response_controller.dart'
 import 'package:altogic_flutter_example/src/controller/user_controller.dart';
 import 'package:altogic_flutter_example/src/service/db_service.dart';
 import 'package:altogic_flutter_example/src/view/pages/database/cases.dart';
+import 'package:altogic_flutter_example/src/view/widgets/case.dart';
 import 'package:altogic_flutter_example/src/view/widgets/documentation/base.dart';
 import 'package:altogic_flutter_example/src/view/widgets/documentation/code.dart';
 import 'package:altogic_flutter_example/src/view/widgets/documentation/texts.dart';
@@ -38,31 +39,31 @@ class _MarketViewState extends State<MarketView> {
   }
 
   final widgets = [
-    GetMarketWithObjectId(), // object.get
-    GetMarketWithFilter(), // query.filter
-    GetMarketWithLookup(), // query.lookup
-    ChangeMarketName(), // object.update
-    GetContact(), // object.get for sub
-    AddMarketContact(), // append
-    DeleteContact(), // object.delete for sub
-    DeleteContactWithFilter(), // query.filter.delete sub
-    ChangeMarketAddress(), // object.update // set
-    UnsetMarketAddress(), // query.filter.update // unset
-    CreateProduct(), // create
-    GetMarketProducts(), // query.filter // page // limit
-    OmitProduct(),
-    ChangePrice(), // query.filter.update
-    DeleteProduct(), // object.delete
-    DeleteProductWithQueryBuilder(), // query.delete
-    IncrementDecrement(), // (amount) // object.updateFields // inc // dec
-    PushProperty(), // query.filter.updateFields // push
-    PullProperty(), // object.updateFields // pull
-    SearchProducts(), // search
-    SearchFuzzyProducts(), // search fuzzy
-    GroupCategories(), // filter / group / compute / count
-    GetMarketWithAvgPrice(), // filter / compute / avg
-    GetMarketWithTotalStockValue(),
-    GetMarketProductCount() // filter / compute / count
+    GetMarketWithObjectId.new, // object.get
+    GetMarketWithFilter.new, // query.filter
+    GetMarketWithLookup.new, // query.lookup
+    ChangeMarketName.new, // object.update
+    GetContact.new, // object.get for sub
+    AddMarketContact.new, // append
+    DeleteContact.new, // object.delete for sub
+    DeleteContactWithFilter.new, // query.filter.delete sub
+    ChangeMarketAddress.new, // object.update // set
+    UnsetMarketAddress.new, // query.filter.update // unset
+    CreateProduct.new, // create
+    GetMarketProducts.new, // query.filter // page // limit
+    OmitProduct.new,
+    ChangePrice.new, // query.filter.update
+    DeleteProduct.new, // object.delete
+    DeleteProductWithQueryBuilder.new, // query.delete
+    IncrementDecrement.new, // (amount) // object.updateFields // inc // dec
+    PushProperty.new, // query.filter.updateFields // push
+    PullProperty.new, // object.updateFields // pull
+    SearchProducts.new, // search
+    SearchFuzzyProducts.new, // search fuzzy
+    GroupCategories.new, // filter / group / compute / count
+    GetMarketWithAvgPrice.new, // filter / compute / avg
+    GetMarketWithTotalStockValue.new,
+    GetMarketProductCount.new // filter / compute / count
   ];
 
   @override
@@ -82,7 +83,10 @@ class _MarketViewState extends State<MarketView> {
           const AutoSpan("You can create a market with the following form:")
               .doc(context),
           vSpace.doc(context),
-          CreateMarketCase(response: DbService.of(context).response)
+          MethodWidget(
+            create: CreateMarketCase.new,
+            response: DbService.of(context).response,
+          )
         ],
         if (currentUserController.hasMarket) ...[
           Documentation(children: [
@@ -110,7 +114,10 @@ altogic.db.model('model_name');
                 " `QueryBuilder` and `DbObject`:"),
             vSpace,
           ]),
-          ...widgets
+          ...widgets.map((e) => MethodWidget(
+                create: e,
+                response: DbService.of(context).response,
+              ))
         ],
       ],
     );

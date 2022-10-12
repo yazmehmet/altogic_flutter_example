@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:altogic_flutter_example/main.dart';
 import 'package:altogic_flutter_example/src/service/service_base.dart';
 import 'package:altogic_flutter_example/src/service/storage_service.dart';
 import 'package:altogic_flutter_example/src/view/widgets/base_viewer.dart';
+import 'package:altogic_flutter_example/src/view/widgets/case.dart';
 import 'package:altogic_flutter_example/src/view/widgets/documentation/base.dart';
 import 'package:altogic_flutter_example/src/view/widgets/documentation/texts.dart';
 import 'package:flutter/material.dart';
@@ -22,35 +22,13 @@ class BucketManagerPage extends StatefulWidget {
 class _BucketManagerPageState extends State<BucketManagerPage> {
   late BucketService bucketService = BucketService(bucket: widget.bucket);
 
-  List<Widget> widgets = [
-    GetBucketExists(),
-    GetBucketInfo(),
-    EmptyBucket(),
-    RenameBucket(),
-    DeleteBucket(),
-    MakePublicBucket(),
-    MakePrivateBucket(),
-    ListFilesBucket(),
-    UploadFileFromBucket(),
-    DeleteFilesMethod(),
-  ];
-
   @override
   void initState() {
-    _getBucket();
+    bucketService.getBucketInfo();
     super.initState();
   }
 
-  Map<String, dynamic>? bucket;
-  bool loaded = false;
-
-  Future<void> _getBucket() async {
-    var bucket = await altogic.storage.bucket(widget.bucket).getInfo();
-    setState(() {
-      loaded = true;
-      this.bucket = bucket.data;
-    });
-  }
+  Map<String, dynamic> get bucket => bucketService.bucketInfo.value!;
 
   @override
   Widget build(BuildContext context) {
@@ -58,30 +36,66 @@ class _BucketManagerPageState extends State<BucketManagerPage> {
       service: bucketService,
       child: BaseViewer(
         leadingHome: !Navigator.canPop(context),
-        body: Center(
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 30,
+          ),
           child: Column(
             children: [
-              Documentation(children: [
-                const Header("Bucket Manager"),
-                AutoSpan("Bucket : ${widget.bucket}"),
-                vSpace,
-                if (loaded)
-                  if (bucket != null)
-                    AutoSpan(
-                        'Bucket Info : \n${const JsonEncoder.withIndent('   ').convert(bucket)}')
-                  else
-                    const AutoSpan('There is no bucket with this name or ID'),
-                vSpace,
-              ]),
-              ...widgets,
-              if (bucket != null) ...[
-                AddTagsBucketManager(onAdd: _getBucket),
-                RemoveTagsBucketManager(
-                  tags: (bucket!['tags'] as List).cast<String>(),
-                  onRemove: _getBucket,
-                ),
-                UpdateInfoBucketManager(bucket: bucket!, onUpdate: _getBucket)
-              ],
+              ValueListenableBuilder(
+                  valueListenable: bucketService.bucketInfo,
+                  builder: (context, v, w) {
+                    return Documentation(children: [
+                      const Header("Bucket Manager"),
+                      AutoSpan("Bucket : ${widget.bucket}"),
+                      vSpace,
+                      if (v != null)
+                        Description(
+                            'Bucket Info : \n${const JsonEncoder.withIndent('   ').convert(bucket)}')
+                      else
+                        const AutoSpan(
+                            'There is no bucket with this name or ID'),
+                      vSpace,
+                    ]);
+                  }),
+              ...[
+                GetBucketExists.new,
+                GetBucketInfo.new,
+                EmptyBucket.new,
+                RenameBucket.new,
+                DeleteBucket.new,
+                MakePublicBucket.new,
+                MakePrivateBucket.new,
+                ListFilesBucket.new,
+                UploadFileFromBucket.new,
+                DeleteFilesMethod.new,
+              ].map((e) => MethodWidget(
+                    create: e,
+                    response: bucketService.response,
+                  )),
+              ValueListenableBuilder(
+                  valueListenable: bucketService.bucketInfo,
+                  builder: (context, v, w) {
+                    return v != null
+                        ? Column(
+                            children: [
+                              AddTagsBucketManager.new,
+                              RemoveTagsBucketManager.new,
+                              UpdateInfoBucketManager.new,
+                            ]
+                                .map((e) => MethodWidget(
+                                      create: e,
+                                      response: bucketService.response,
+                                    ))
+                                .toList(),
+                          )
+                        : const SizedBox();
+                  }),
+              MethodWidget(
+                create: CreateFileManager.new,
+                response: bucketService.response,
+              ),
             ],
           ),
         ),

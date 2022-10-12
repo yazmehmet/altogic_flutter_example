@@ -24,22 +24,7 @@ class _BaseViewerState extends State<BaseViewer> {
       body: Column(
         children: [
           Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: widget.body,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                ],
-              ),
-            ),
+            child: widget.body,
           ),
           AreaResizer(notifier: _responseAreaHeight),
           ValueListenableBuilder(

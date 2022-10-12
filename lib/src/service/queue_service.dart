@@ -7,7 +7,9 @@ class QueueService extends ServiceBase {
   static QueueService of(BuildContext context) =>
       InheritedService.of<QueueService>(context);
 
-  Future<void> submitMessage(TextEditingController controller) async {
+  final TextEditingController idController = TextEditingController();
+
+  Future<void> submitMessage() async {
     var res = await altogic.queue.submitMessage('hello', {
       'entry': {
         "key1": "value1",
@@ -17,7 +19,7 @@ class QueueService extends ServiceBase {
       errors: res.errors,
       data: res.data?.toJson(),
     ));
-    controller.text = res.data?.messageId ?? '';
+    idController.text = res.data?.messageId ?? '';
   }
 
   ValueNotifier<String?> id = ValueNotifier<String?>(null);

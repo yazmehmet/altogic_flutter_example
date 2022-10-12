@@ -10,7 +10,7 @@ import '../../widgets/documentation/code.dart';
 import '../../widgets/documentation/texts.dart';
 
 class SignUpWithEmailMethod extends MethodWrap {
-  SignUpWithEmailMethod({super.key});
+  SignUpWithEmailMethod();
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -32,7 +32,7 @@ class SignUpWithEmailMethod extends MethodWrap {
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: 'Email', editingController: emailController),
       AltogicInput(hint: 'Password', editingController: passwordController),
@@ -58,7 +58,7 @@ class SignUpWithEmailMethod extends MethodWrap {
 }
 
 class SignUpWithPhoneMethod extends MethodWrap {
-  SignUpWithPhoneMethod({super.key});
+  SignUpWithPhoneMethod();
 
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -85,7 +85,7 @@ class SignUpWithPhoneMethod extends MethodWrap {
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: 'Phone', editingController: phoneController),
       AltogicInput(hint: 'Password', editingController: passwordController),
@@ -111,7 +111,7 @@ class SignUpWithPhoneMethod extends MethodWrap {
 }
 
 class SignInWithEmailMethod extends MethodWrap {
-  SignInWithEmailMethod({super.key});
+  SignInWithEmailMethod();
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -129,7 +129,7 @@ class SignInWithEmailMethod extends MethodWrap {
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: 'Email', editingController: emailController),
       AltogicInput(hint: 'Password', editingController: passwordController),
@@ -152,7 +152,7 @@ class SignInWithEmailMethod extends MethodWrap {
 }
 
 class SignInWithPhoneMethod extends MethodWrap {
-  SignInWithPhoneMethod({super.key});
+  SignInWithPhoneMethod();
 
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -171,7 +171,7 @@ class SignInWithPhoneMethod extends MethodWrap {
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: 'Phone', editingController: phoneController),
       AltogicInput(hint: 'Password', editingController: passwordController),
@@ -194,7 +194,7 @@ class SignInWithPhoneMethod extends MethodWrap {
 }
 
 class SignInWithCodeMethod extends MethodWrap {
-  SignInWithCodeMethod({super.key});
+  SignInWithCodeMethod();
 
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController codeController = TextEditingController();
@@ -215,7 +215,7 @@ class SignInWithCodeMethod extends MethodWrap {
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: 'Phone', editingController: phoneController),
       AltogicInput(hint: 'Code', editingController: codeController),
@@ -238,7 +238,7 @@ class SignInWithCodeMethod extends MethodWrap {
 }
 
 class SignInWithProviderMethod extends MethodWrap {
-  SignInWithProviderMethod({super.key});
+  SignInWithProviderMethod();
 
   @override
   List<DocumentationObject> get description =>
@@ -253,7 +253,7 @@ class SignInWithProviderMethod extends MethodWrap {
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicButton(
           body: 'Google',
@@ -283,11 +283,11 @@ class SignInWithProviderMethod extends MethodWrap {
 class SignOutMethod extends MethodWrap {
   final TextEditingController sessionToken = TextEditingController();
 
-  SignOutMethod({super.key});
+  SignOutMethod();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(
           hint: 'Session Token (optional)', editingController: sessionToken),
@@ -319,11 +319,11 @@ class SignOutMethod extends MethodWrap {
 }
 
 class SignOutAllMethod extends MethodWrap {
-  SignOutAllMethod({super.key});
+  SignOutAllMethod();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicButton(
         body: 'Sign Out All',
@@ -353,11 +353,11 @@ class SignOutAllMethod extends MethodWrap {
 class SignOutMethodAllEx extends MethodWrap {
   final TextEditingController sessionToken = TextEditingController();
 
-  SignOutMethodAllEx({super.key});
+  SignOutMethodAllEx();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicButton(
         body: 'Sign Out All Except Current',
@@ -385,7 +385,7 @@ class SignOutMethodAllEx extends MethodWrap {
 }
 
 class ReSendVerificationEmailMethod extends MethodWrap {
-  ReSendVerificationEmailMethod({super.key});
+  ReSendVerificationEmailMethod();
 
   final TextEditingController emailController = TextEditingController();
 
@@ -423,7 +423,7 @@ if (errors != null) {
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: 'Email', editingController: emailController),
       AltogicButton(
@@ -443,7 +443,7 @@ if (errors != null) {
 }
 
 class ReSendVerificationCodeMethod extends MethodWrap {
-  ReSendVerificationCodeMethod({super.key});
+  ReSendVerificationCodeMethod();
 
   final TextEditingController phoneController = TextEditingController();
 
@@ -481,7 +481,7 @@ if (errors != null) {
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: 'Phone', editingController: phoneController),
       AltogicButton(
@@ -501,7 +501,7 @@ if (errors != null) {
 }
 
 class SendMagicLinkMethod extends MethodWrap {
-  SendMagicLinkMethod({super.key});
+  SendMagicLinkMethod();
 
   final TextEditingController emailController = TextEditingController();
 
@@ -549,7 +549,7 @@ if (errors != null) {
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: 'Email', editingController: emailController),
       AltogicButton(
@@ -568,7 +568,7 @@ if (errors != null) {
 }
 
 class SendResetPwdEmailMethod extends MethodWrap {
-  SendResetPwdEmailMethod({super.key});
+  SendResetPwdEmailMethod();
 
   final TextEditingController emailController = TextEditingController();
 
@@ -620,7 +620,7 @@ if (errors != null) {
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: 'Email', editingController: emailController),
       AltogicButton(
@@ -640,7 +640,7 @@ if (errors != null) {
 }
 
 class SendResetPwdCodeMethod extends MethodWrap {
-  SendResetPwdCodeMethod({super.key});
+  SendResetPwdCodeMethod();
 
   final TextEditingController phoneController = TextEditingController();
 
@@ -687,7 +687,7 @@ if (errors != null) {
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: 'Phone Number', editingController: phoneController),
       AltogicButton(
@@ -707,7 +707,7 @@ if (errors != null) {
 }
 
 class SendSignInCodeMethod extends MethodWrap {
-  SendSignInCodeMethod({super.key});
+  SendSignInCodeMethod();
 
   final TextEditingController phoneController = TextEditingController();
 
@@ -758,7 +758,7 @@ if (errors != null) {
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: 'Phone Number', editingController: phoneController),
       AltogicButton(
@@ -778,7 +778,7 @@ if (errors != null) {
 }
 
 class ResetPwdWithToken extends MethodWrap {
-  ResetPwdWithToken({super.key});
+  ResetPwdWithToken();
 
   final TextEditingController tokenController = TextEditingController();
   final TextEditingController newPwdController = TextEditingController();
@@ -818,7 +818,7 @@ if (errors != null) {
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: 'Token', editingController: tokenController),
       AltogicInput(hint: 'New Password', editingController: newPwdController),
@@ -841,7 +841,7 @@ if (errors != null) {
 }
 
 class ResetPwdWithCode extends MethodWrap {
-  ResetPwdWithCode({super.key});
+  ResetPwdWithCode();
 
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController codeController = TextEditingController();
@@ -879,7 +879,7 @@ if (errors != null) {
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: 'Phone', editingController: phoneController),
       AltogicInput(hint: 'Code', editingController: codeController),
@@ -907,7 +907,7 @@ if (errors != null) {
 }
 
 class GetAllSessionsMethod extends MethodWrap {
-  GetAllSessionsMethod({super.key});
+  GetAllSessionsMethod();
 
   @override
   List<DocumentationObject> get description => const [
@@ -939,7 +939,7 @@ if (res.errors != null) {
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicButton(
           body: 'Get All Sessions',
@@ -953,7 +953,7 @@ if (res.errors != null) {
 }
 
 class GetAllUserFromDbMethod extends MethodWrap {
-  GetAllUserFromDbMethod({super.key});
+  GetAllUserFromDbMethod();
 
   @override
   List<DocumentationObject> get description => const [
@@ -987,7 +987,7 @@ if (res.errors != null) {
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicButton(
         body: 'Get User From Db',
@@ -1002,7 +1002,7 @@ if (res.errors != null) {
 }
 
 class GetAuthGrant extends MethodWrap {
-  GetAuthGrant({super.key});
+  GetAuthGrant();
 
   final TextEditingController tokenController = TextEditingController();
 
@@ -1043,7 +1043,7 @@ if (res.errors != null) {
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: 'Access Token', editingController: tokenController),
       AltogicButton(
@@ -1065,11 +1065,11 @@ class ChangeEmail extends MethodWrap {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  ChangeEmail({super.key});
+  ChangeEmail();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: 'New Email', editingController: emailController),
       AltogicInput(hint: 'Password', editingController: passwordController),
@@ -1120,11 +1120,11 @@ class ChangePhone extends MethodWrap {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  ChangePhone({super.key});
+  ChangePhone();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: 'New Phone', editingController: phoneController),
       AltogicInput(hint: 'Password', editingController: passwordController),
@@ -1191,11 +1191,11 @@ class VerifyPhone extends MethodWrap {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController codeController = TextEditingController();
 
-  VerifyPhone({super.key});
+  VerifyPhone();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: 'Phone', editingController: phoneController),
       AltogicInput(hint: 'Code', editingController: codeController),
@@ -1253,11 +1253,11 @@ class ChangePassword extends MethodWrap {
   final TextEditingController newPassword = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  ChangePassword({super.key});
+  ChangePassword();
 
   @override
   List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+      BuildContext context) {
     return [
       AltogicInput(hint: 'New Password', editingController: newPassword),
       AltogicInput(hint: 'Password', editingController: passwordController),

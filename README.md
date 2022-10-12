@@ -1,16 +1,49 @@
 # altogic_flutter_example
 
-Altogic example, test and documentation application. This app shows usage of all methods interactively and shows example codes.
+Altogic Dart/Flutter client package live example.
+
+With this example you can see how to use the Altogic Dart/Flutter client package and you can use all methods.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+For start using this example you need to install the Flutter SDK and the Dart SDK.
 
-A few resources to get you started if this is your first Flutter project:
+If you are ready:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+```
+flutter pub get
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+````
+flutter run -d chrome --web-port 3000
+````
+
+## How to use
+
+You can see managers in the application main page.
+
+All methods are shown separately for each manager. 
+You can fill in the necessary inputs for each method and run it. 
+Just click on the "info" icon to see how it's done.
+
+## Packages
+
+
+
+#### Process
+
+| Manager         | Description                       |
+|-----------------|-----------------------------------|
+| AuthManager     | ✅                                 |
+| DatabaseManager | ✅                                 |
+| ObjectManager   | ✅                                 |
+| EndpointManager | ✅                                 |
+| CacheManager    | ✅                                 |
+| TaskManager     | ✅                                 |
+| QueueManager    | ✅                                 |
+| StorageManager  | Methods Done - Will be documented |
+| BucketManager   | Methods Done - Will be documented |
+| FileManager     | Methods Done - Will be documented |
+| RealtimeManager | Methods Done - Will be documented |
+| Clear code      | ❌                                 |
+

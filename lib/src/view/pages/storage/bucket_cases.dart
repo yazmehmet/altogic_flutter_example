@@ -16,11 +16,10 @@ import '../../widgets/input.dart';
 import 'storage_page.dart';
 
 class GetBucketExists extends MethodWrap {
-  GetBucketExists({super.key});
+  GetBucketExists();
 
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicButton(
           body: "Get Bucket Exists",
@@ -46,11 +45,10 @@ class GetBucketExists extends MethodWrap {
 }
 
 class GetBucketInfo extends MethodWrap {
-  GetBucketInfo({super.key});
+  GetBucketInfo();
 
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicButton(
           body: "Get Bucket Info",
@@ -76,11 +74,10 @@ class GetBucketInfo extends MethodWrap {
 }
 
 class EmptyBucket extends MethodWrap {
-  EmptyBucket({super.key});
+  EmptyBucket();
 
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicButton(
           body: "Empty Bucket (clear bucket)",
@@ -106,13 +103,12 @@ class EmptyBucket extends MethodWrap {
 }
 
 class RenameBucket extends MethodWrap {
-  RenameBucket({super.key});
+  RenameBucket();
 
   final TextEditingController controller = TextEditingController();
 
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: "New Name", editingController: controller),
       AltogicButton(
@@ -141,11 +137,10 @@ class RenameBucket extends MethodWrap {
 }
 
 class DeleteBucket extends MethodWrap {
-  DeleteBucket({super.key});
+  DeleteBucket();
 
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicButton(
           body: "Delete Bucket",
@@ -171,13 +166,12 @@ class DeleteBucket extends MethodWrap {
 }
 
 class MakePublicBucket extends MethodWrap {
-  MakePublicBucket({super.key});
+  MakePublicBucket();
 
   final ValueNotifier<bool> includeFiles = ValueNotifier(false);
 
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     return [
       SizedBox(
         width: 250,
@@ -219,13 +213,12 @@ class MakePublicBucket extends MethodWrap {
 }
 
 class MakePrivateBucket extends MethodWrap {
-  MakePrivateBucket({super.key});
+  MakePrivateBucket();
 
   final ValueNotifier<bool> includeFiles = ValueNotifier(false);
 
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     return [
       SizedBox(
         width: 250,
@@ -276,13 +269,12 @@ class ListFilesBucket extends MethodWrap {
 
   final SearchFileStorageService filter = SearchFileStorageService();
 
-  ListFilesBucket({super.key});
+  ListFilesBucket();
 
   final TextEditingController expressionController = TextEditingController();
 
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     var sorting = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -423,7 +415,7 @@ class ListFilesBucket extends MethodWrap {
 }
 
 class UploadFileFromBucket extends MethodWrap {
-  UploadFileFromBucket({super.key});
+  UploadFileFromBucket();
 
   final ValueNotifier<PlatformFile?> bytes = ValueNotifier<PlatformFile?>(null);
   final TextEditingController nameController = TextEditingController();
@@ -447,8 +439,7 @@ class UploadFileFromBucket extends MethodWrap {
   };
 
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     return [
       ValueListenableBuilder<PlatformFile?>(
         valueListenable: bytes,
@@ -542,6 +533,7 @@ class UploadFileFromBucket extends MethodWrap {
           enabled: () =>
               !loading && bytes.value != null && nameController.text.isNotEmpty,
           body: 'Upload File',
+          listenable: Listenable.merge([bytes, nameController]),
           onPressed: () {
             asyncWrapper(() async {
               await BucketService.of(context)
@@ -580,7 +572,7 @@ class _Deleting {
 }
 
 class DeleteFilesMethod extends MethodWrap {
-  DeleteFilesMethod({super.key});
+  DeleteFilesMethod();
 
   final SuggestionService suggestionService = SuggestionService();
 
@@ -589,8 +581,7 @@ class DeleteFilesMethod extends MethodWrap {
   final _Deleting _deleting = _Deleting();
 
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(
         hint: "File Name Or ID",
@@ -714,17 +705,14 @@ class DeleteFilesMethod extends MethodWrap {
 }
 
 class AddTagsBucketManager extends MethodWrap {
-  AddTagsBucketManager({super.key, required this.onAdd});
+  AddTagsBucketManager();
 
   final TextEditingController tagsController = TextEditingController();
 
   final List<String> tagging = [];
 
-  final VoidCallback onAdd;
-
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(
         hint: "Tags",
@@ -780,7 +768,7 @@ class AddTagsBucketManager extends MethodWrap {
             asyncWrapper(() async {
               await BucketService.of(context).addTags(tagging);
               tagsController.clear();
-              onAdd();
+              //TODO: ON
             });
           })
     ];
@@ -800,18 +788,16 @@ class AddTagsBucketManager extends MethodWrap {
 }
 
 class RemoveTagsBucketManager extends MethodWrap {
-  RemoveTagsBucketManager(
-      {super.key, required this.tags, required this.onRemove});
+  RemoveTagsBucketManager();
 
-  final List<String> tags;
+  List<String> get tags =>
+      (BucketService.of(context).bucketInfo.value!['tags'] as List)
+          .cast<String>();
 
   final List<String> tagsToRemove = [];
 
-  final VoidCallback onRemove;
-
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     return [
       if (tagsToRemove.isNotEmpty)
         Container(
@@ -832,7 +818,7 @@ class RemoveTagsBucketManager extends MethodWrap {
                       label: Text((value)),
                       onPressed: () {
                         tagsToRemove.removeWhere((element) => element == value);
-                        tags.add(value);
+
                         setState(() {});
                       },
                     )
@@ -863,7 +849,6 @@ class RemoveTagsBucketManager extends MethodWrap {
                     ActionChip(
                       label: Text((value)),
                       onPressed: () {
-                        tags.removeWhere((element) => element == value);
                         tagsToRemove.add(value);
                         setState(() {});
                       },
@@ -884,7 +869,6 @@ class RemoveTagsBucketManager extends MethodWrap {
             asyncWrapper(() async {
               await BucketService.of(context).removeTags(tagsToRemove);
               tagsToRemove.clear();
-              onRemove();
             });
           })
     ];
@@ -904,23 +888,25 @@ class RemoveTagsBucketManager extends MethodWrap {
 }
 
 class UpdateInfoBucketManager extends MethodWrap {
-  UpdateInfoBucketManager(
-      {super.key, required this.bucket, required this.onUpdate});
+  UpdateInfoBucketManager();
 
-  final Map<String, dynamic> bucket;
+  Map<String, dynamic> get bucket =>
+      BucketService.of(context).bucketInfo.value!;
+
   final TextEditingController tagsController = TextEditingController();
-  final TextEditingController newName = TextEditingController();
+  late final TextEditingController newName = TextEditingController(
+    text: bucket['name'],
+  );
   late final ValueNotifier<bool> isPublic =
       ValueNotifier(bucket['isPublic'] as bool);
   final ValueNotifier<bool> includeFiles = ValueNotifier(false);
 
-  final List<String> tagging = [];
-
-  final VoidCallback onUpdate;
+  late final List<String> tagging =
+      (BucketService.of(context).bucketInfo.value!['tags'] as List)
+          .cast<String>();
 
   @override
-  List<Widget> children(
-      BuildContext context, void Function(void Function() p1) setState) {
+  List<Widget> children(BuildContext context) {
     return [
       AltogicInput(
         hint: "New Name",
@@ -947,7 +933,7 @@ class UpdateInfoBucketManager extends MethodWrap {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Column(
             children: [
-              const Header('Tags to add', level: 2).doc(context),
+              const Header('Tags', level: 2).doc(context),
               Wrap(
                 runSpacing: 10,
                 spacing: 10,
@@ -991,14 +977,14 @@ class UpdateInfoBucketManager extends MethodWrap {
         height: 4,
       ),
       ValueListenableBuilder(
-          valueListenable: isPublic,
+          valueListenable: includeFiles,
           builder: (c, v, w) {
             return SizedBox(
               width: 300,
               child: CheckboxListTile(
                 value: v,
                 onChanged: (value) {
-                  isPublic.value = value ?? false;
+                  includeFiles.value = value ?? false;
                 },
                 title: const Text('Include Files'),
               ),
@@ -1011,7 +997,7 @@ class UpdateInfoBucketManager extends MethodWrap {
       AltogicButton(
           body: 'Update Info',
           listenable: tagsController,
-          enabled: () => !loading && tagging.isNotEmpty,
+          enabled: () => !loading,
           onPressed: () {
             asyncWrapper(() async {
               await BucketService.of(context).updateInfo(
@@ -1022,7 +1008,6 @@ class UpdateInfoBucketManager extends MethodWrap {
               );
               tagsController.clear();
               newName.clear();
-              onUpdate();
             });
           })
     ];
@@ -1039,4 +1024,77 @@ class UpdateInfoBucketManager extends MethodWrap {
 
   @override
   String get name => "Update Info";
+}
+
+class CreateFileManager extends MethodWrap {
+  CreateFileManager();
+
+  final SuggestionService suggestionService = SuggestionService();
+  final TextEditingController fileNameOrID = TextEditingController();
+
+  @override
+  List<Widget> children(BuildContext context) {
+    return [
+      AltogicInput(hint: "File Name or ID", editingController: fileNameOrID),
+      ...suggestionService.getWidget(
+          context,
+          (limit, page) async {
+            var res = await BucketService.of(context).listFiles(
+                limit: limit,
+                page: page,
+                returnCountInfo: false,
+                sort: FileSortField.fileName,
+                asc: true,
+                expression: '');
+            return (res as List)
+                .map((e) => (e as Map).cast<String, dynamic>())
+                .toList();
+          },
+          (map) => map['fileName'],
+          setState,
+          (id) {
+            fileNameOrID.text = id;
+          }),
+      const SizedBox(
+        height: 2,
+        width: double.infinity,
+      ),
+      AltogicButton(
+          body: 'Get Suggestions',
+          onPressed: () async {
+            var res = await BucketService.of(context).listFiles(
+                limit: 10,
+                page: 1,
+                returnCountInfo: false,
+                sort: FileSortField.fileName,
+                asc: true,
+                expression: '');
+            suggestionService.values = (res as List)
+                .map((e) => (e as Map).cast<String, dynamic>())
+                .toList();
+            setState(() {});
+          }),
+      AltogicButton(
+          body: 'Create File Manager',
+          onPressed: () {
+            Navigator.of(context).pushNamed('/file',
+                arguments: <String, dynamic>{
+                  'file': fileNameOrID.text,
+                  'bucket': BucketService.of(context).bucket
+                });
+          })
+    ];
+  }
+
+  @override
+  // TODO: implement description
+  List<DocumentationObject> get description => [];
+
+  @override
+  // TODO: implement documentationBuilder
+  List<DocumentationObject> Function(BuildContext context)?
+      get documentationBuilder => null;
+
+  @override
+  String get name => "Create File Manager";
 }
