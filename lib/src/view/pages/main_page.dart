@@ -5,6 +5,7 @@ import 'package:altogic_flutter_example/src/view/widgets/documentation/base.dart
 import 'package:altogic_flutter_example/src/view/widgets/documentation/code.dart';
 import 'package:altogic_flutter_example/src/view/widgets/documentation/texts.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../main.dart';
 
@@ -42,13 +43,102 @@ class _MainPageState extends State<MainPage> {
                   height: 40,
                 ),
                 const Documentation(children: [
-                  Header('Setting Up Client'),
+                  Header('Altogic Flutter Client Example'),
                   vSpace,
-                  Description("Inline Code Example"),
+                  AutoSpan(
+                      "This is an example of using the Altogic Flutter Client."
+                      " You can find the source code on managers and their methods."),
+                  vSpace,
+                  Header('Setting Up Client'),
                   vSpace,
                   DartCode(
                       "final client = createClient('<envUrl>', '<clientKey>');")
                 ]),
+                const SizedBox(
+                  height: 40,
+                ),
+                Container(
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                          "Example app in development. Check issues for progress",
+                          style: TextStyle(
+                              fontStyle: FontStyle.italic, fontSize: 18)),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          launchUrlString(
+                              'https://github.com/yazmehmet/altogic_flutter_example/issues');
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.network(
+                              'assets/gh.png',
+                              width: 50,
+                              height: 50,
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            const Text("Issues"),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Text('Issues and Pull Requests are welcome!')
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 40,
+                ),
+                Container(
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text("Altogic Dart package",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18)),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          launchUrlString(
+                              'https://pub.dev/packages/altogic_dart');
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.network(
+                              'assets/pub.png',
+                              width: 50,
+                              height: 50,
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            const Text("pub.dev package"),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Text('Likes are welcome!')
+                    ],
+                  ),
+                ),
                 const SizedBox(
                   height: 40,
                 ),
