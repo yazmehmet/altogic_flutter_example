@@ -8,49 +8,49 @@ class CacheService extends ServiceBase {
       InheritedService.of<CacheService>(context);
 
   Future<void> setCache(String key, dynamic value, int? ttl) async {
-    response.value = 'loading';
+    response.loading();
     var res = await altogic.cache.set(key, value, ttl: ttl);
     response.error(res);
   }
 
   Future<void> getCache(String key) async {
-    response.value = 'loading';
+    response.loading();
     var res = await altogic.cache.get(key).asInt();
     response.response(res);
   }
 
   Future<void> deleteCache(String key) async {
-    response.value = 'loading';
+    response.loading();
     var res = await altogic.cache.delete(key);
     response.error(res);
   }
 
   Future<void> increment(String key, int amount) async {
-    response.value = 'loading';
+    response.loading();
     var res = await altogic.cache.increment(key, amount);
     response.response(res);
   }
 
   Future<void> decrement(String key, int amount) async {
-    response.value = 'loading';
+    response.loading();
     var res = await altogic.cache.decrement(key, amount);
     response.response(res);
   }
 
   Future<void> expire(String key, int ttl) async {
-    response.value = 'loading';
+    response.loading();
     var res = await altogic.cache.expire(key, ttl);
     response.error(res);
   }
 
   Future<void> getStats() async {
-    response.value = 'loading';
+    response.loading();
     var res = await altogic.cache.getStats();
     response.response(res);
   }
 
   Future<void> listKeys(String? expression, String? next) async {
-    response.value = 'loading';
+    response.loading();
     var res = await altogic.cache.listKeys(expression, next);
     response.response(APIResponse(
         data: {'data': res.data, 'next': res.next}, errors: res.errors));

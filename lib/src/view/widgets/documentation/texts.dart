@@ -1,7 +1,9 @@
 import 'dart:collection';
 
 import 'package:altogic_flutter_example/src/view/widgets/documentation/base.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class Header extends DocTextMixin {
   const Header(super.text, {this.level = 1});
@@ -20,9 +22,7 @@ class Description extends DocTextMixin {
 
   @override
   TextStyle get style => const TextStyle(
-        color: Colors.black,
-        fontSize: 15,
-      );
+      color: Colors.black, fontSize: 15, fontFamily: 'WorkSans');
 }
 
 class Bold extends DocTextMixin {
@@ -30,10 +30,10 @@ class Bold extends DocTextMixin {
 
   @override
   TextStyle get style => const TextStyle(
-        color: Colors.black,
-        fontSize: 15,
-        fontWeight: FontWeight.bold,
-      );
+      color: Colors.black,
+      fontSize: 15,
+      fontWeight: FontWeight.bold,
+      fontFamily: 'WorkSans');
 }
 
 class Italic extends DocTextMixin {
@@ -42,6 +42,7 @@ class Italic extends DocTextMixin {
   @override
   TextStyle get style => const TextStyle(
         color: Colors.black,
+        fontFamily: 'WorkSans',
         fontSize: 15,
         fontWeight: FontWeight.bold,
       );
@@ -59,6 +60,28 @@ class InlineCode extends DocTextMixin {
       background: Paint()..color = Colors.black26);
 }
 
+class LinkText extends DocumentationObject {
+  const LinkText(this.text, this.url);
+
+  final String text;
+  final String url;
+
+  TextStyle get style =>
+      const TextStyle(color: Colors.blue, decoration: TextDecoration.underline);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+        onTap: () {
+          launchUrlString(url);
+        },
+        child: Text(
+          text,
+          style: style,
+        ));
+  }
+}
+
 class DocTextSpan extends DocumentationObject {
   const DocTextSpan({Key? key, required this.children}) : super();
 
@@ -68,14 +91,22 @@ class DocTextSpan extends DocumentationObject {
   Widget build(BuildContext context) {
     return RichText(
         text: TextSpan(
+            style: const TextStyle(
+                color: Colors.black, fontSize: 15, fontFamily: 'WorkSans'),
             children: children
-                .map((e) => TextSpan(text: e.text, style: e.style))
+                .map((e) => TextSpan(
+                    text: e.text, style: e.style, recognizer: e.gesture))
                 .toList()));
   }
 }
 
 class LeftSpace extends DocumentationObject {
   const LeftSpace(this.text);
+
+  static const enforceSession = LeftSpace(
+      'If the client library key is set to *enforce session*, an active'
+      ' user session is required (e.g., user needs to be logged in) to call'
+      ' this method.');
 
   final String text;
 
@@ -110,6 +141,7 @@ class AutoSpan extends DocumentationObject {
     var boldRegex = RegExp(r'(\*)(.*?)(\*)');
     var italicRegex = RegExp(r'(\/)(.*?)(\/)');
     var codeRegex = RegExp(r'(\`)(.*?)(\`)');
+    var linkRegex = RegExp(r'(\[)(.*?)(\])');
 
     var splay = SplayTreeMap<int, Match>();
 
@@ -124,6 +156,11 @@ class AutoSpan extends DocumentationObject {
         .asMap()
         .map((key, value) => MapEntry(value.start, value)));
     splay.addAll(codeRegex
+        .allMatches(text)
+        .toList()
+        .asMap()
+        .map((key, value) => MapEntry(value.start, value)));
+    splay.addAll(linkRegex
         .allMatches(text)
         .toList()
         .asMap()

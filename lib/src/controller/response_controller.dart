@@ -10,29 +10,33 @@ class ResponseViewController with ChangeNotifier {
 
   String get value => _value ?? "No response";
 
-  set value(String? value) {
+  set _setValue(String? value) {
     _value = value;
     notifyListeners();
   }
 
   void loading() {
-    value = "Loading...";
+    _setValue = "Loading...";
   }
 
   void error(APIError? error) {
     if (error == null) {
-      value = "No error";
+      _setValue = "No error";
     } else {
-      value = error.toString();
+      _setValue = error.toString();
     }
   }
 
-  void success(String? data) {
-    value = data;
+  void message(String message){
+    _setValue = message;
+  }
+
+  void success([String? data]) {
+    _setValue = data ?? "Success";
   }
 
   void clear() {
-    value = null;
+    _setValue = null;
   }
 
   void response(APIResponse data) {

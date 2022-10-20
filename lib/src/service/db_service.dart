@@ -24,12 +24,12 @@ class DbService extends ServiceBase {
 
   Future<void> createMarket(String name, String? address) async {
     if (!currentUserController.isLogged) {
-      response.value =
-          'Login required. You can log in via the "Authorization" page';
+      response.message(
+          'Login required. You can log in via the "Authorization" page');
       return;
     }
 
-    response.value = 'Market Creating...';
+    response.message('Market Creating...');
     var res = await marketModel.create(Market(
         id: '',
         name: name,
@@ -41,20 +41,21 @@ class DbService extends ServiceBase {
     if (res.errors == null) {
       var market = Market.fromJson(res.data!);
       currentUserController.market = market;
-      response.value = 'Setting market to current user...\n\n${response.value}';
+      response
+          .message('Setting market to current user...\n\n${response.value}');
       var settingField = await altogic.db
           .model('users')
           .object(currentUserController.user.id)
           .updateFields(FieldUpdate(
               field: 'market', updateType: UpdateType.set, value: market.id));
       if (settingField.errors == null) {
-        response.value =
-            'Market field setting successfully\n\n${response.value}';
+        response.message(
+            'Market field setting successfully\n\n${response.value}');
       } else {
-        response.value = 'Market created successfully\n\n'
+        response.message('Market created successfully\n\n'
             'But setting market to current user failed\n\n'
             '${settingField.errors}\n\n'
-            '${response.value}';
+            '${response.value}');
       }
     }
   }
@@ -275,8 +276,8 @@ class DbService extends ServiceBase {
         parsed.add('${item['groupby']['group']}');
       }
 
-      response.value = 'Categories: ${parsed.join(', ')} \n\n'
-          'Response:\n${const JsonEncoder.withIndent('    ').convert(res.data)}';
+      response.message('Categories: ${parsed.join(', ')} \n\n'
+          'Response:\n${const JsonEncoder.withIndent('    ').convert(res.data)}');
       return parsed;
     } else {
       response.response(res);
@@ -301,7 +302,7 @@ class DbService extends ServiceBase {
   // delete product
   Future<bool> deleteProduct(String productId) async {
     var res = await altogic.db.model('product').object(productId).delete();
-    response.value = res.errors != null ? res.errors.toString() : 'Deleted';
+    response.message(res.errors != null ? res.errors.toString() : 'Deleted');
     return res.errors == null;
   }
 
@@ -309,7 +310,7 @@ class DbService extends ServiceBase {
   Future<bool> deleteProductWithQuery(String productId) async {
     var res =
         await altogic.db.model('product').filter('_id == $productId').delete();
-    response.value = res.errors != null ? res.errors.toString() : 'Deleted';
+    response.message(res.errors != null ? res.errors.toString() : 'Deleted');
     return res.errors == null;
   }
 
@@ -317,7 +318,7 @@ class DbService extends ServiceBase {
   Future<bool> deleteContact(String contactId) async {
     var res =
         await altogic.db.model('market.contacts').object(contactId).delete();
-    response.value = res.errors != null ? res.errors.toString() : 'Deleted';
+    response.message(res.errors != null ? res.errors.toString() : 'Deleted');
     return res.errors == null;
   }
 
@@ -327,7 +328,7 @@ class DbService extends ServiceBase {
         .model('market.contacts')
         .filter('_id == "$contactId"')
         .delete();
-    response.value = res.errors != null ? res.errors.toString() : 'Deleted';
+    response.message(res.errors != null ? res.errors.toString() : 'Deleted');
     return res.errors == null;
   }
 

@@ -92,7 +92,7 @@ class SignUpWithPhoneMethod extends MethodWrap {
           body: 'Sign Up',
           onPressed: () {
             asyncWrapper(() async {
-              await AuthService.of(context).signUpWithEmail(
+              await AuthService.of(context).signUpWithPhone(
                   phoneController.text,
                   passwordController.text,
                   nameController.text);

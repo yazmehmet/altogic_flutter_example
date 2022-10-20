@@ -253,7 +253,8 @@ class CreateMarketCase extends MethodWrap {
   @override
   List<DocumentationObject> get description => [
         const AutoSpan(
-            "This case is used to create a new market. The market name is required."),
+            "This case is used to create a new market. The market name is required.\n"
+            "The method `QueryBuilder.create` is used to create a new object in the database.\n"),
       ];
 
   @override

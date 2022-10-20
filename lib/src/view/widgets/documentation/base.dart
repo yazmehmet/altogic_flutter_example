@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class Documentation extends StatelessWidget {
@@ -33,13 +34,20 @@ abstract class DocumentationObject {
 }
 
 class ImageDoc extends DocumentationObject {
-  const ImageDoc(this.path);
+  const ImageDoc(this.path,
+      {this.maxWidth,
+      this.padding = const EdgeInsets.symmetric(horizontal: 16)});
 
   final String path;
+  final EdgeInsets padding;
+  final double? maxWidth;
 
   @override
   Widget build(BuildContext context) {
-    return Image.network(path);
+    return Padding(
+      padding: padding,
+      child: Image.network(path, width: maxWidth, fit: BoxFit.cover),
+    );
   }
 }
 
@@ -73,6 +81,8 @@ abstract class DocTextMixin extends DocumentationObject {
   final String text;
 
   TextStyle get style;
+
+  GestureRecognizer? get gesture => null;
 
   @override
   Widget build(BuildContext context) {

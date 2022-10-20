@@ -1,5 +1,7 @@
 import 'package:altogic_flutter/altogic_flutter.dart';
 import 'package:altogic_flutter_example/src/service/suggestion_service.dart';
+import 'package:altogic_flutter_example/src/view/widgets/documentation/code.dart';
+import 'package:altogic_flutter_example/src/view/widgets/suggestion.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -18,6 +20,12 @@ import 'storage_page.dart';
 class GetBucketExists extends MethodWrap {
   GetBucketExists();
 
+  ///'Check if the bucket exists.'
+  ///''
+
+  ///''
+  ///'Returns true if bucket exists, false otherwise'
+
   @override
   List<Widget> children(BuildContext context) {
     return [
@@ -33,12 +41,33 @@ class GetBucketExists extends MethodWrap {
 
   @override
   List<DocumentationObject> get description => [
-        const AutoSpan("Get bucket exists"),
+        const AutoSpan('Check if the bucket exists.'),
+        vSpace,
+        const AutoSpan('Returns true if bucket exists, false otherwise'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            const AutoSpan('Check if the bucket exists.'),
+            vSpace,
+            const LeftSpace(
+                'If the client library key is set to *enforce session*, an active'
+                ' user session is required (e.g., user needs to be logged in) to call'
+                ' this method.'),
+            vSpace,
+            const AutoSpan('Returns true if bucket exists, false otherwise'),
+            vSpace,
+            DartCode("""
+var res = await altogic
+     .storage
+     .bucket("${BucketService.of(context).bucket}")
+     .exists();
+     
+print(res.data);     
+
+""")
+          ];
 
   @override
   String get name => "Get Bucket exists";
@@ -47,14 +76,31 @@ class GetBucketExists extends MethodWrap {
 class GetBucketInfo extends MethodWrap {
   GetBucketInfo();
 
+  final ValueNotifier<bool> detailed = ValueNotifier(false);
+
   @override
   List<Widget> children(BuildContext context) {
     return [
+      ValueListenableBuilder(
+          valueListenable: detailed,
+          builder: (context, v, w) {
+            return SizedBox(
+              width: 300,
+              child: CheckboxListTile(
+                value: detailed.value,
+                onChanged: (c) => detailed.value = c!,
+                title: const Text("Detailed"),
+              ),
+            );
+          }),
+      const SizedBox(
+        width: double.infinity,
+      ),
       AltogicButton(
           body: "Get Bucket Info",
           onPressed: () {
             asyncWrapper(() async {
-              await BucketService.of(context).getBucketInfo();
+              await BucketService.of(context).getBucketInfo(detailed.value);
             });
           })
     ];
@@ -62,12 +108,42 @@ class GetBucketInfo extends MethodWrap {
 
   @override
   List<DocumentationObject> get description => [
-        const AutoSpan("Get bucket info"),
+        const AutoSpan(
+            'Gets information about the bucket. If `detailed=true`, it provides'
+            ' additional information about the total number of files contained, their'
+            ' overall total size in bytes, average, min and max file size in bytes etc.'),
+        vSpace,
+        const AutoSpan('`detailed` Specifies whether to get detailed bucket'
+            ' statistics or not.'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            const AutoSpan(
+                'Gets information about the bucket. If `detailed=true`, it provides'
+                ' additional information about the total number of files contained, their'
+                ' overall total size in bytes, average, min and max file size in bytes etc.'),
+            vSpace,
+            const LeftSpace(
+                'If the client library key is set to *enforce session*, an active'
+                ' user session is required (e.g., user needs to be logged in) to call'
+                ' this method.'),
+            vSpace,
+            const AutoSpan('`detailed` Specifies whether to get detailed bucket'
+                ' statistics or not.'),
+            vSpace,
+            const AutoSpan(
+                'Returns basic bucket metadata informaton. If `detailed=true`'
+                ' provides additional information about contained files.'),
+            vSpace,
+            DartCode("""
+var res = await altogic
+      .storage
+      .bucket("${BucketService.of(context).bucket}")
+      .getInfo(${detailed.value});
+""")
+          ];
 
   @override
   String get name => "Get Bucket Info";
@@ -91,12 +167,29 @@ class EmptyBucket extends MethodWrap {
 
   @override
   List<DocumentationObject> get description => [
-        const AutoSpan("Empty Bucket"),
+        const AutoSpan(
+            'Removes all objects (e.g., files) inside the bucket. This method does not'
+            ' delete the bucket itself. If you also want to delete the bucket,'
+            ' including all its contained objects, you can use `delete` method.'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            const AutoSpan(
+                'Removes all objects (e.g., files) inside the bucket. This method does not'
+                ' delete the bucket itself. If you also want to delete the bucket,'
+                ' including all its contained objects, you can use `delete` method.'),
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            DartCode("""
+var res = await altogic
+      .storage
+      .bucket("${BucketService.of(context).bucket}")
+      .empty();
+""")
+          ];
 
   @override
   String get name => "Empty Bucket";
@@ -125,12 +218,34 @@ class RenameBucket extends MethodWrap {
 
   @override
   List<DocumentationObject> get description => [
-        const AutoSpan("Rename Bucket"),
+        const AutoSpan('Renames the bucket.'),
+        vSpace,
+        const AutoSpan(
+            '`newName` The new name of the bucket. `root` is a reserved name and'
+            ' cannot be used.'),
+        vSpace,
+        const AutoSpan('Returns the updated bucket information'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            const AutoSpan('Renames the bucket.'),
+            vSpace,
+            const AutoSpan(
+                '`newName` The new name of the bucket. `root` is a reserved name and'
+                ' cannot be used.'),
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            const AutoSpan('Returns the updated bucket information'),
+            DartCode("""
+var res = await altogic
+      .storage
+      .bucket("${BucketService.of(context).bucket}")
+      .rename("${controller.text}");
+ """)
+          ];
 
   @override
   String get name => "Rename Bucket";
@@ -154,12 +269,25 @@ class DeleteBucket extends MethodWrap {
 
   @override
   List<DocumentationObject> get description => [
-        const AutoSpan("Delete Bucket"),
+        const AutoSpan(
+            'Deletes the bucket and all objects (e.g., files) inside the bucket.'
+            ' Returns an error if `root` bucket is tried to be deleted.'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            DartCode("""
+var res = await altogic
+      .storage
+      .bucket("${BucketService.of(context).bucket}")
+      .delete();
+""")
+          ];
 
   @override
   String get name => "Delete Bucket";
@@ -201,12 +329,36 @@ class MakePublicBucket extends MethodWrap {
 
   @override
   List<DocumentationObject> get description => [
-        const AutoSpan("Make Public"),
+        const AutoSpan(
+            'Sets the default privacy of the bucket to *true*. You may also choose'
+            ' to make the contents of the bucket publicly readable by specifying'
+            ' `includeFiles=true`. This will automatically set `isPublic=true` for'
+            ' every file in the bucket.'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            const AutoSpan(
+                '`includeFiles` Specifies whether to make each file in the bucket public.'),
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            const AutoSpan(
+                '`includeFiles` Specifies whether to make each file in '
+                'the bucket public.'),
+            vSpace,
+            const AutoSpan('Returns the updated bucket information'),
+            vSpace,
+            DartCode("""
+var res = await altogic
+      .storage
+      .bucket("${BucketService.of(context).bucket}")
+      .makePublic(${includeFiles.value});
+        """)
+          ];
 
   @override
   String get name => "Make Public";
@@ -248,12 +400,37 @@ class MakePrivateBucket extends MethodWrap {
 
   @override
   List<DocumentationObject> get description => [
-        const AutoSpan("Make Private"),
+        const AutoSpan(
+            'Sets the default privacy of the bucket to *false*. You may also choose'
+            ' to make the contents of the bucket publicly readable by specifying'
+            ' `includeFiles=true`. This will automatically set `isPublic=false` for'
+            ' every file in the bucket.'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            const AutoSpan(
+                '`includeFiles` Specifies whether to make each file in the'
+                ' bucket public.'),
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            const AutoSpan(
+                '`includeFiles` Specifies whether to make each file in '
+                'the bucket private.'),
+            vSpace,
+            const AutoSpan('Returns the updated bucket information'),
+            vSpace,
+            DartCode("""
+var res = await altogic
+      .storage
+      .bucket("${BucketService.of(context).bucket}")
+      .makePrivate(${includeFiles.value});
+        """)
+          ];
 
   @override
   String get name => "Make Private";
@@ -355,7 +532,34 @@ class ListFilesBucket extends MethodWrap {
       vSpace.doc(context),
 
       AltogicInput(
-          hint: 'Filter Expression', editingController: expressionController),
+        hint: 'Filter Expression',
+        editingController: expressionController,
+        vertical: true,
+        suffixIcon: (c) => IconButton(
+          icon: const Icon(Icons.clear),
+          onPressed: () {
+            expressionController.clear();
+          },
+        ),
+      ),
+
+      BasicSuggestions(
+          values: [
+            ...BasicSuggestions.logicalOperators,
+            ...() {
+              var d = DateTime.now();
+              return BasicSuggestions.comparisonSuggestions('uploadedAt',
+                  valueName:
+                      'DATE(${d.year}, ${d.month}, ${d.day}, ${d.hour}, ${d.minute}, ${d.second})',
+                  string: false,
+                  includeEqual: false);
+            }(),
+            ...BasicSuggestions.stringMethodsSuggestions('fileName',
+                valueName: 'value')
+          ],
+          onSelected: (v) {
+            expressionController.text = expressionController.text + v;
+          }),
 
       // Limit
       AltogicInput(
@@ -403,15 +607,55 @@ class ListFilesBucket extends MethodWrap {
 
   @override
   List<DocumentationObject> get description => [
-        const Description('List Files in the bucket.'),
+        const AutoSpan(
+            'Gets the list of files stored in the bucket. If query `expression`'
+            ' is specified, it runs the specified filter query to narrow down returned'
+            ' results, otherwise, returns all files contained in the bucket. You can'
+            ' use the following file fields in your query expressions.'),
+        vSpace,
+        const AutoSpan(
+            'You can paginate through your files and sort them using the input'
+            ' `options` parameter.'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            const AutoSpan(
+                '`expression` The query expression string that will be used'
+                ' to filter file objects'),
+            vSpace,
+            const AutoSpan('`options` Pagination and sorting options'),
+            vSpace,
+            const AutoSpan(
+                'Returns the array of files. If `returnCountInfo=true` in'),
+            vSpace,
+            const AutoSpan(
+                '`FileListOptions`, returns an object which includes count'
+                ' information and array of files.'),
+            vSpace,
+            DartCode("""
+final res = await altogic.storage.bucket(bucket).listFiles(
+       expression: "${expressionController.text}",
+       options: FileListOptions(
+           limit: ${limitController.text},
+           page: ${pageController.text},
+           returnCountInfo: ${filter.returnCount.value},
+           sort: FileSort(
+               field: ${filter.currentField.value},
+               direction: ${(filter.asc.value ? Direction.asc : Direction.desc)}
+           )
+       )
+);
+    """)
+          ];
 
   @override
-  String get name => "List Files.";
+  String get name => "List Files";
 }
 
 class UploadFileFromBucket extends MethodWrap {
@@ -555,12 +799,59 @@ class UploadFileFromBucket extends MethodWrap {
 
   @override
   List<DocumentationObject> get description => [
-        const Description('Upload a file to the bucket.'),
+        const AutoSpan(
+            'Uploads a file to an existing bucket. If there already exists a file with'
+            ' the same name in destination bucket, it ensures the uploaded file name'
+            ' to be unique in its bucket.'),
+        vSpace,
+        const AutoSpan(
+            'If `onProgress` callback function is defined in `FileUploadOptions`, it'
+            ' periodically calls this function to inform about upload progress.'
+            ' (in this example `onProgress` is defined)'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            const AutoSpan(
+                '`fileName` The name of the file e.g., *filename.jpg*'
+                '\n\n\n'
+                '`fileBody` The body of the file that will be stored in the bucket'
+                '\n\n\n'
+                '`options` Content type of the file, privacy setting of the file and'
+                ' whether to create the bucket if not exists. `contentType` is ignored,'
+                ' `contentType` option needs to be specified. If not specified, `contentType` will'
+                ' default to `text/plain;charset=UTF-8`. If `isPublic` is not specified,'
+                ' defaults to the bucket\'s privacy setting. If `createBucket` is set to'
+                ' true (defaults to false), then creates a new bucket if the bucket does'
+                ' not exist.'
+                '\n\n\n'
+                'Returns the metadata of the uploaded file'),
+            vSpace,
+            const LeftSpace("In this example, `contentType` auto defined. "
+                "Auto defined content type available for following extensions: "
+                "'png', 'jpg', 'jpeg', 'webp', 'gif', 'mp4', 'mp3', 'mov',"
+                " 'wav', 'json', 'txt', 'html', 'css','js' "),
+            vSpace,
+            DartCode("""
+var res = await altogic
+      .storage
+      .bucket("${BucketService.of(context).bucket}")
+      .upload(
+          "${nameController.text}",
+          bytes,
+          FileUploadOptions(
+              onProgress: (loaded, total, percent) {
+                print(percent);
+              },
+              contentType: "${bytes.value?.extension != null ? contentTypes[bytes.value!.extension]! : 'text/plain'}"
+          )
+      );
+    """)
+          ];
 
   @override
   String get name => "Upload File";
@@ -791,8 +1082,9 @@ class RemoveTagsBucketManager extends MethodWrap {
   RemoveTagsBucketManager();
 
   List<String> get tags =>
-      (BucketService.of(context).bucketInfo.value!['tags'] as List)
-          .cast<String>();
+      ((BucketService.of(context).bucketInfo.value!['tags'] as List?)
+              ?.cast<String>() ??
+          <String>[]);
 
   final List<String> tagsToRemove = [];
 
@@ -901,9 +1193,10 @@ class UpdateInfoBucketManager extends MethodWrap {
       ValueNotifier(bucket['isPublic'] as bool);
   final ValueNotifier<bool> includeFiles = ValueNotifier(false);
 
-  late final List<String> tagging =
-      (BucketService.of(context).bucketInfo.value!['tags'] as List)
-          .cast<String>();
+  List<String> get tagging =>
+      ((BucketService.of(context).bucketInfo.value!['tags'] as List?)
+              ?.cast<String>() ??
+          <String>[]);
 
   @override
   List<Widget> children(BuildContext context) {

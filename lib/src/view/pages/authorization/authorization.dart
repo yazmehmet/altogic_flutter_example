@@ -18,9 +18,6 @@ class AuthorizationPage extends StatefulWidget {
 class _AuthorizationPageState extends State<AuthorizationPage> {
   AuthService authService = AuthService();
 
-  static const Widget space = SizedBox(
-    height: 10,
-  );
 
   List<MethodState Function()> list = [
     SignUpWithEmailMethod.new,
@@ -54,26 +51,31 @@ class _AuthorizationPageState extends State<AuthorizationPage> {
     return InheritedService(
       service: authService,
       child: BaseViewer(
-          body: SingleChildScrollView(
+          body: ListView.builder(
+        itemCount: list.length + 1,
         padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 16),
-        child: Column(
-          children: [
-            const Documentation(children: [
-              Header("Authorization"),
-              vSpace,
-              AutoSpan("This page is used to authorize user in the system. "
-                  "It is used to get access token and refresh token. "),
-            ]),
-            const SizedBox(
-              height: 40,
-            ),
-            space,
-            ...(list.map((e) => MethodWidget(
-                  create: e,
-                  response: authService.response,
-                ))),
-          ],
-        ),
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return Column(
+              children: const [
+                Documentation(children: [
+                  Header("Authorization"),
+                  vSpace,
+                  AutoSpan("This page is used to authorize user in the system. "
+                      "It is used to get access token and refresh token. "),
+                ]),
+                SizedBox(
+                  height: 40,
+                ),
+              ],
+            );
+          }
+
+          return MethodWidget(
+            create: list[index - 1],
+            response: authService.response,
+          );
+        },
       )),
     );
   }

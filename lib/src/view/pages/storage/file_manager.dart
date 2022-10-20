@@ -38,17 +38,34 @@ class _FileManagerPageState extends State<FileManagerPage> {
 
   @override
   Widget build(BuildContext context) {
+    var list = [
+      FileExistsCase.new,
+      GetFileInfoMethod.new,
+      MakeFilePublic.new,
+      MakeFilePrivate.new,
+      DownloadFileCase.new,
+      if (file != null) ...[
+        RenameFileCase.new,
+        DuplicateFileCase.new,
+      ],
+      DeleteFileMethod.new,
+      ReplaceFileMethod.new,
+      MoveToBucketFileMethod.new,
+      CopyToBucketFileMethod.new,
+      if (file != null) ...[
+        AddTagsFileManager.new,
+        RemoveTagsFileManager.new,
+        UpdateInfoFileManager.new
+      ],
+    ];
+
     return InheritedService(
       service: service,
       child: BaseViewer(
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 30,
-          ),
-          child: Column(
-            children: [
-              Documentation(children: [
+        body: ListView.builder(
+          itemBuilder: (c, i) {
+            if (i == 0) {
+              return Documentation(children: [
                 const Header("File Manager"),
                 vSpace,
                 const AutoSpan("This page is used to manage file."),
@@ -59,31 +76,17 @@ class _FileManagerPageState extends State<FileManagerPage> {
                 else
                   const AutoSpan("Loading file..."),
                 vSpace
-              ]),
-              ...[
-                FileExistsCase.new,
-                GetFileInfoMethod.new,
-                MakeFilePublic.new,
-                MakeFilePrivate.new,
-                DownloadFileCase.new,
-                if (file != null) ...[
-                  RenameFileCase.new,
-                  DuplicateFileCase.new,
-                ],
-                DeleteFileMethod.new,
-                ReplaceFileMethod.new,
-                MoveToBucketFileMethod.new,
-                CopyToBucketFileMethod.new,
-                if (file != null) ...[
-                  AddTagsFileManager.new,
-                  RemoveTagsFileManager.new,
-                  UpdateInfoFileManager.new
-                ],
-              ].map((e) => MethodWidget(
-                    create: e,
-                    response: service.response,
-                  )),
-            ],
+              ]);
+            }
+            return MethodWidget(
+              create: list[i - 1],
+              response: service.response,
+            );
+          },
+          itemCount: list.length + 1,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 30,
           ),
         ),
       ),

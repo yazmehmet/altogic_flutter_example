@@ -23,13 +23,13 @@ class FileManagerService extends ServiceBase {
   FileManager get file => altogic.storage.bucket(bucket).file(fileNameOrId);
 
   Future<void> exists() async {
-    response.value = 'Loading...';
+    response.loading();
     var res = await file.exists();
     response.response(res);
   }
 
   Future<Map<String, dynamic>?> getInfo() async {
-    response.value = 'Loading...';
+    response.loading();
     var res = await file.getInfo();
     response.response(res);
     if (res.data != null) {
@@ -39,43 +39,43 @@ class FileManagerService extends ServiceBase {
   }
 
   Future<void> makePublic() async {
-    response.value = 'Loading...';
+    response.loading();
     var res = await file.makePublic();
     response.response(res);
   }
 
   Future<void> makePrivate() async {
-    response.value = 'Loading...';
+    response.loading();
     var res = await file.makePrivate();
     response.response(res);
   }
 
   Future<Uint8List?> downloadFile() {
-    response.value = 'Loading...';
+    response.loading();
     return file.download().then((value) async {
       var info = await getInfo();
-      response.value = 'Downloaded : ${value.data?.length} bytes';
+      response.message('Downloaded : ${value.data?.length} bytes');
       download(info!['fileName'], value.data!);
     }).catchError((e) {
-      response.value = 'Error: $e';
+      response.message('Error: $e');
     });
   }
 
   Future<void> rename(String newName) async {
-    response.value = 'Loading...';
+    response.loading();
     var res = await file.rename(newName);
     response.response(res);
     getInfo();
   }
 
   Future<void> duplicate(String newName) async {
-    response.value = 'Loading...';
+    response.loading();
     var res = await file.duplicate(newName);
     response.response(res);
   }
 
   Future<void> delete() async {
-    response.value = 'Loading...';
+    response.loading();
     var res = await file.delete();
     getInfo();
     response.error(res);
@@ -83,33 +83,33 @@ class FileManagerService extends ServiceBase {
 
   Future<void> replace(Uint8List data, void Function(int, int, double) onLoad,
       String contentType) async {
-    response.value = 'Loading...';
+    response.loading();
     var res = await file.replace(
         data, FileUploadOptions(contentType: contentType, onProgress: onLoad));
     response.response(res);
   }
 
   Future<void> moveTo(String bucketNameOrId) async {
-    response.value = 'Loading...';
+    response.loading();
     var res = await file.moveTo(bucketNameOrId);
     response.response(res);
   }
 
   Future<void> copyTo(String bucketNameOrId) async {
-    response.value = 'Loading...';
+    response.loading();
     var res = await file.copyTo(bucketNameOrId);
     response.response(res);
   }
 
   Future<void> addTags(List<String> tags) async {
-    response.value = 'Loading...';
+    response.loading();
     var res = await file.addTags(tags);
     response.response(res);
     getInfo();
   }
 
   Future<void> removeTags(List<String> tags) async {
-    response.value = 'Loading...';
+    response.loading();
     var res = await file.removeTags(tags);
     getInfo();
     response.response(res);
@@ -119,7 +119,7 @@ class FileManagerService extends ServiceBase {
       {String? newName,
       required bool isPublic,
       required List<String> tags}) async {
-    response.value = 'Loading...';
+    response.loading();
     var res =
         await file.updateInfo(newName: newName, isPublic: isPublic, tags: tags);
     response.response(res);
@@ -133,7 +133,7 @@ class FileManagerService extends ServiceBase {
       required BucketSortField sort,
       required bool asc,
       String? expression}) async {
-    response.value = 'Loading...';
+    response.loading();
     final res = await altogic.storage.listBuckets(
         expression: expression,
         options: BucketListOptions(

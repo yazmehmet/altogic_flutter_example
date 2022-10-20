@@ -13,7 +13,8 @@ dependencies:
     sdk: flutter
 
   path_provider: ^2.0.11
-  altogic_flutter: ^0.0.2
+  altogic_flutter:
+    path: ../altogic_flutter
   string_scanner: ^1.1.1
   url_strategy: ^0.2.0
   file_picker: ^5.2.1
@@ -30,6 +31,7 @@ flutter:
   assets:
     - assets/gh.png
     - assets/pub.png
+    - assets/pr.png
   fonts:
     - family: Code
       fonts:

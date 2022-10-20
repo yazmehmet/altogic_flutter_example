@@ -27,13 +27,13 @@ class _TaskManagerPageState extends State<TaskManagerPage> {
   Widget build(BuildContext context) {
     return InheritedService(
         service: taskService,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 30,
-          ),
-          child: BaseViewer(
-            body: Column(
+        child: BaseViewer(
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 30,
+            ),
+            child: Column(
               children: [
                 const Documentation(children: [
                   Header("Task Manager"),

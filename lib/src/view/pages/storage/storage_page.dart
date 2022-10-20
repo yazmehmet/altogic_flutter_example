@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:altogic_flutter/altogic_flutter.dart';
 import 'package:altogic_flutter_example/src/service/service_base.dart';
 import 'package:altogic_flutter_example/src/service/storage_service.dart';
@@ -8,6 +10,7 @@ import 'package:altogic_flutter_example/src/view/widgets/button.dart';
 import 'package:altogic_flutter_example/src/view/widgets/case.dart';
 import 'package:altogic_flutter_example/src/view/widgets/documentation/base.dart';
 import 'package:altogic_flutter_example/src/view/widgets/input.dart';
+import 'package:altogic_flutter_example/src/view/widgets/suggestion.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/documentation/code.dart';
@@ -38,22 +41,67 @@ class _StoragePageState extends State<StoragePage> {
         service: service,
         child: BaseViewer(
           leadingHome: true,
-          body: Center(
-            child: SingleChildScrollView(
+          body: ListView.builder(
+              itemCount: widgets.length + 1,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
-              child: Column(
-                children: [
-                  const Documentation(children: [
-                    Header('Storage'),
+              itemBuilder: (c, i) {
+                if (i == 0) {
+                  return const Documentation(children: [
+                    Header('Storage\n'),
                     Description(
-                        'Storage Manager , Bucket Manager and File Manager'),
+                        'You can store and manage files in Altogic\'s cloud '
+                        'infrastructure.'),
                     vSpace,
-                  ]),
-                  ...widgets.map((e) => MethodWidget(create: e)),
-                ],
-              ),
-            ),
-          ),
+                    Description(
+                        'Everything that you store in your app storage must '
+                        'be contained in a bucket. Buckets are the basic '
+                        'containers that hold your application data '
+                        '(i.e., files).'),
+                    vSpace,
+                    AutoSpan('Altogic automatically provides a default *root '
+                        'bucket* where you can store your files. \nYou can pretty '
+                        'much do everything with the *root bucket* that you can'
+                        ' do with a normal bucket except you cannot delete or '
+                        'rename it.'),
+                    vSpace,
+                    ImageDoc(
+                        'https://c4-na.altogic.com/_storage/633bd89b98cd8243629533e3/633bd89b98cd8243629533e3/634e8790801cdbe89e377e72',
+                        maxWidth: 600),
+                    vSpace,
+                    Header('There are three type of managers :', level: 2),
+                    vSpace,
+                    Header('1. Storage Manager', level: 3),
+                    vSpace,
+                    AutoSpan('This manager is used to manage the storage. '
+                        'You can use it to create buckets, list buckets, '
+                        'getting storage stats, search files etc.'),
+                    vSpace,
+                    AutoSpan('Creating StorageManager :\n`altogic.storage`'),
+                    vSpace,
+                    Header('2. Bucket Manager', level: 3),
+                    vSpace,
+                    AutoSpan('This manager is used to manage a bucket. '
+                        'You can use it to manage bucket info (name, tags etc.),'
+                        ' and uploading files to the bucket etc.'),
+                    vSpace,
+                    AutoSpan('Creating BucketManager :\n'
+                        '`altogic.storage.bucket(<bucketName>)`'),
+                    vSpace,
+                    Header('3. FileManager', level: 3),
+                    vSpace,
+                    AutoSpan(
+                        'This manager is used to manage a file. You can use it'
+                        ' to manage file info (name, tags etc.), and downloading'
+                        ' file etc.'),
+                    vSpace,
+                    AutoSpan('Creating FileManager :\n'
+                        '`altogic.storage.bucket(<bucketName>).file(<fileName>)`'),
+                    vSpace,
+                  ]);
+                }
+                return MethodWidget(
+                    create: widgets[i - 1], response: service.response);
+              }),
         ));
   }
 }
@@ -131,12 +179,41 @@ class CreateBucket extends MethodWrap {
   @override
   List<DocumentationObject> get description => [
         const Description('Create a new bucket'),
+        vSpace,
+        const AutoSpan(
+            'You can create a bucket by calling the `createBucket` method. It '
+            'creates a new bucket with the specified name. By default if '
+            'this method is called within the context of a user session, '
+            'it also assigns the `userId` of the session to the bucket '
+            'metadata.'),
+        vSpace,
+        const LeftSpace(
+            'In this application, you are only allowed to test with buckets '
+            'that you have created. Therefore, create a bucket to test it.'),
+        vSpace
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
       get documentationBuilder => (c) => [
-            const Description('Create a new bucket'),
+            const AutoSpan(
+                'Creates a new bucket. If there already exists a bucket with the specified'
+                ' name, it returns an error.'
+                '\n\n'
+                'Files can be specified as *public* or *private*, which defines how the'
+                ' public URL of the file will behave. If a file is marked as private then'
+                ' external apps-parties will not be able to access it through its public'
+                ' URL. With [isPublic] parameter of a bucket, you can specify default'
+                ' privacy setting of the files contained in this bucket, meaning that when'
+                ' you add a file to a bucket and if the file did not specify public-private'
+                ' setting, then the the bucket\'s privacy setting will be applied. You can'
+                ' always override the default privacy setting of a bucket at the individual'
+                ' file level.'),
+            vSpace,
+            const LeftSpace(
+                'If the client library key is set to **enforce session**, an active'
+                ' user session is required (e.g., user needs to be logged in) to call'
+                ' this method.'),
             vSpace,
             DartCode('''
 final res = await altogic.storage.createBucket(
@@ -258,8 +335,33 @@ class ListBuckets extends MethodWrap {
       vSpace.doc(context),
 
       AltogicInput(
-          hint: 'Filter Expression (optional)',
-          editingController: expressionController),
+        hint: 'Filter Expression (optional)',
+        editingController: expressionController,
+        vertical: true,
+        suffixIcon: (c) => IconButton(
+          icon: const Icon(Icons.clear),
+          onPressed: () {
+            expressionController.clear();
+          },
+        ),
+      ),
+
+      BasicSuggestions(
+          values: [
+            ...BasicSuggestions.logicalOperators,
+            BasicSuggestions.arrayIn('tags', valueName: 'tag'),
+            ...() {
+              var d = DateTime.now();
+              return BasicSuggestions.comparisonSuggestions('createdAt',
+                  valueName:
+                      'DATE(${d.year}, ${d.month}, ${d.day}, ${d.hour}, ${d.minute}, ${d.second})',
+                  string: false,
+                  includeEqual: false);
+            }(),
+          ],
+          onSelected: (v) {
+            expressionController.text = expressionController.text + v;
+          }),
 
       // Limit
       AltogicInput(
@@ -312,12 +414,47 @@ class ListBuckets extends MethodWrap {
 
   @override
   List<DocumentationObject> get description => [
-        const Description('List buckets'),
+        const AutoSpan(
+            'Gets the list of buckets in your app cloud storage. If query `expression`'
+            ' is specified, it runs the specified filter query to narrow down returned'
+            ' results, otherwise, returns all buckets contained in your app\'s'
+            ' cloud storage.'),
+        const LinkText('See Filter Expressions',
+            'https://pub.dev/documentation/altogic_dart/latest/altogic_dart/StorageManager/listBuckets.html')
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            const AutoSpan(
+                'Gets the list of buckets in your app cloud storage. If query `expression`'
+                ' is specified, it runs the specified filter query to narrow down returned'
+                ' results, otherwise, returns all buckets contained in your app\'s'
+                ' cloud storage. (TODO: Add link)'),
+            vSpace,
+            const AutoSpan(
+                'You can paginate through your buckets and sort them using the input'
+                ' `BucketListOptions` parameter.'),
+            vSpace,
+            const LeftSpace(
+                'If the client library key is set to *enforce session*, an active'
+                ' user session is required (e.g., user needs to be logged in) to call'
+                ' this method.'),
+            vSpace,
+            DartCode("""
+final res = await altogic.storage.listBuckets(
+    expression: '${expressionController.text}',
+    options: BucketListOptions(
+        limit: ${limitController.text},
+        page: ${pageController.text},
+        returnCountInfo: ${filter.returnCount.value},
+        sort: BucketSortEntry(
+            direction: ${filter.asc.value ? Direction.asc : Direction.desc},
+            field: ${filter.currentField.value})
+            )
+        );
+""")
+          ];
 
   @override
   String get name => "List Buckets";
@@ -341,11 +478,31 @@ class GetStorageStats extends MethodWrap {
   }
 
   @override
-  List<DocumentationObject> get description => [const AutoSpan("Get Stats")];
+  List<DocumentationObject> get description => [
+        const AutoSpan("Get Storage Stats"),
+        const AutoSpan(
+            'Returns the overall information about your apps cloud storage including'
+            ' total number of buckets and files stored, total storage size in bytes'
+            ' and average, min and max file size in bytes.')
+      ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            const AutoSpan(
+                'Returns the overall information about your apps cloud storage including'
+                ' total number of buckets and files stored, total storage size in bytes'
+                ' and average, min and max file size in bytes.'),
+            vSpace,
+            const LeftSpace(
+                'If the client library key is set to *enforce session*, an active'
+                ' user session is required (e.g., user needs to be logged in) to call'
+                ' this method.'),
+            vSpace,
+            const DartCode("""
+final res = await altogic.storage.getStats();
+    """)
+          ];
 
   @override
   String get name => "Get Stats";
@@ -458,8 +615,27 @@ class SearchFilesStorage extends MethodWrap {
       vSpace.doc(context),
 
       AltogicInput(
-          hint: 'Filter Expression', editingController: expressionController),
-
+        hint: 'Filter Expression',
+        vertical: true,
+        editingController: expressionController,
+        suffixIcon: (c) => IconButton(
+          icon: const Icon(Icons.clear),
+          onPressed: () {
+            expressionController.clear();
+          },
+        ),
+      ),
+      BasicSuggestions(
+          values: [
+            ...BasicSuggestions.logicalOperators,
+            ...BasicSuggestions.stringMethodsSuggestions('fileName'),
+            ...BasicSuggestions.equalitySuggestions('mimeType',
+                string: true, valueName: 'image/png'),
+            ...BasicSuggestions.comparisonSuggestions('size'),
+          ],
+          onSelected: (v) {
+            expressionController.text = expressionController.text + v;
+          }),
       // Limit
       AltogicInput(
         editingController: limitController,
@@ -483,7 +659,7 @@ class SearchFilesStorage extends MethodWrap {
       ),
 
       AltogicButton(
-          body: 'List Buckets',
+          body: 'Search Files',
           listenable: Listenable.merge(
               [limitController, pageController, expressionController]),
           enabled: () =>
@@ -509,11 +685,58 @@ class SearchFilesStorage extends MethodWrap {
   @override
   List<DocumentationObject> get description => [
         const Description('Search File in all buckets'),
+        vSpace,
+        const AutoSpan(
+            'Gets the list of files matching the search expression. This method'
+            ' performs a global search across all the files contained in all the'
+            ' buckets. You can use the following file fields in your search expression.'),
+        vSpace,
+        const LinkText("See API Documentation",
+            'https://pub.dev/documentation/altogic_dart/latest/altogic_dart/StorageManager/searchFiles.html'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            const Description('Search File in all buckets'),
+            vSpace,
+            const AutoSpan(
+                'Gets the list of files matching the search expression. This method'
+                ' performs a global search across all the files contained in all the'
+                ' buckets. You can use the following file fields in your search expression.'),
+            vSpace,
+            const LinkText("See API Documentation",
+                'https://pub.dev/documentation/altogic_dart/latest/altogic_dart/StorageManager/searchFiles.html'),
+            vSpace,
+            const AutoSpan(
+                'You can paginate through your files and sort them using the input'
+                ' `FileListOptions` parameter.'),
+            vSpace,
+            const LeftSpace(
+                'If the client library key is set to *enforce session*, an active'
+                ' user session is required (e.g., user needs to be logged in) to call'
+                ' this method.'),
+            vSpace,
+            DartCode("""
+final res = await altogic
+    .storage
+    .searchFiles(
+        '${expressionController.text}',
+        FileListOptions(
+            limit: ${limitController.text},
+            page: ${pageController.text},
+            returnCountInfo: ${filter.returnCount.value},
+            sort: FileSort(
+                field: ${filter.currentField.value},
+                direction: ${(filter.asc.value ? Direction.asc : Direction.desc)}
+            )
+        )
+    );
+if (res.errors == null) {
+  // success
+}
+    """)
+          ];
 
   @override
   String get name => "Search File";
@@ -569,11 +792,37 @@ class DeleteFileStorage extends MethodWrap {
   @override
   List<DocumentationObject> get description => [
         const AutoSpan("Delete File With URL (publicPath)"),
+        vSpace,
+        const AutoSpan(
+            'Deletes a file identified by the url string. You can directly use this'
+            ' method to delete any file that you know its url (e.g., no need to'
+            ' specify bucket name-id and file name-id)'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            const AutoSpan("Delete File With URL (publicPath)"),
+            vSpace,
+            const AutoSpan(
+                'Deletes a file identified by the url string. You can directly use this'
+                ' method to delete any file that you know its url (e.g., no need to'
+                ' specify bucket name-id and file name-id)'),
+            vSpace,
+            const LeftSpace(
+                'If the client library key is set to *enforce session*, an active'
+                ' user session is required (e.g., user needs to be logged in) to call'
+                ' this method.'),
+            vSpace,
+            DartCode("""
+final res = await altogic
+    .storage
+    .deleteFile('${urlController.text}');
+if (res == null) {
+  // success
+}
+    """)
+          ];
 
   @override
   String get name => "Delete File (with url)";
@@ -646,12 +895,28 @@ class CreateBucketManager extends MethodWrap {
 
   @override
   List<DocumentationObject> get description => [
-        const AutoSpan("Create BucketManager to manage the bucket."),
+        const AutoSpan(
+            'Creates an instance of BucketManager to manage a specific'
+            ' bucket of your cloud storage'
+            '\n\n'
+            '`bucketNameOrId` The name or id of the bucket that this'
+            ' bucket manager will be operating on.')
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            const AutoSpan(
+                'Creates an instance of BucketManager to manage a specific'
+                ' bucket of your cloud storage'
+                '\n\n'
+                '`bucketNameOrId` The name or id of the bucket that this'
+                ' bucket manager will be operating on.'),
+            vSpace,
+            DartCode("""
+final bucketManager = altogic.storage.bucket('${nameOrIdController.text}');
+    """)
+          ];
 
   @override
   String get name => "Create BucketManager";

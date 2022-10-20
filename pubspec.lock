@@ -4,16 +4,16 @@ packages:
   altogic_dart:
     dependency: transitive
     description:
-      name: altogic_dart
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "../../projects/altogic-dart"
+      relative: true
+    source: path
     version: "0.0.4"
   altogic_flutter:
     dependency: "direct main"
     description:
-      name: altogic_flutter
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "../altogic_flutter"
+      relative: true
+    source: path
     version: "0.0.2"
   async:
     dependency: transitive

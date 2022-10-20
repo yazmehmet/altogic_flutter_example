@@ -24,81 +24,103 @@ class _BucketManagerPageState extends State<BucketManagerPage> {
 
   @override
   void initState() {
-    bucketService.getBucketInfo();
+    bucketService.getBucketInfo(false);
+    bucketService.bucketInfo.addListener(_listener);
     super.initState();
   }
 
-  Map<String, dynamic> get bucket => bucketService.bucketInfo.value!;
+  @override
+  void dispose() {
+    bucketService.bucketInfo.removeListener(_listener);
+    super.dispose();
+  }
+
+  _listener() {
+    setState(() {});
+  }
+
+  Map<String, dynamic>? get bucket => bucketService.bucketInfo.value;
 
   @override
   Widget build(BuildContext context) {
+    var list = [
+      // test
+      UploadFileFromBucket.new,
+      //
+
+      GetBucketExists.new,
+      GetBucketInfo.new,
+      EmptyBucket.new,
+      RenameBucket.new,
+      DeleteBucket.new,
+      MakePublicBucket.new,
+      MakePrivateBucket.new,
+      ListFilesBucket.new,
+      UploadFileFromBucket.new,
+      DeleteFilesMethod.new,
+      if (bucket != null) ...[
+        AddTagsBucketManager.new,
+        RemoveTagsBucketManager.new,
+        UpdateInfoBucketManager.new,
+      ],
+      CreateFileManager.new
+    ];
+
+    ListView.builder(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 30,
+        ),
+        itemCount: list.length + 1,
+        itemBuilder: (c, i) {
+          if (i == 0) {
+            Documentation(children: [
+              const Header("Bucket Manager"),
+              AutoSpan("Bucket : ${widget.bucket}"),
+              vSpace,
+              if (bucket != null)
+                Description(
+                    'Bucket Info : \n${const JsonEncoder.withIndent('   ').convert(bucket)}')
+              else
+                const AutoSpan('There is no bucket with this name or ID'),
+              vSpace,
+            ]);
+          }
+          return MethodWidget(
+            create: list[i - 1],
+            response: bucketService.response,
+          );
+        });
+
     return InheritedService(
       service: bucketService,
       child: BaseViewer(
         leadingHome: !Navigator.canPop(context),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 30,
-          ),
-          child: Column(
-            children: [
-              ValueListenableBuilder(
-                  valueListenable: bucketService.bucketInfo,
-                  builder: (context, v, w) {
-                    return Documentation(children: [
-                      const Header("Bucket Manager"),
-                      AutoSpan("Bucket : ${widget.bucket}"),
-                      vSpace,
-                      if (v != null)
-                        Description(
-                            'Bucket Info : \n${const JsonEncoder.withIndent('   ').convert(bucket)}')
-                      else
-                        const AutoSpan(
-                            'There is no bucket with this name or ID'),
-                      vSpace,
-                    ]);
-                  }),
-              ...[
-                GetBucketExists.new,
-                GetBucketInfo.new,
-                EmptyBucket.new,
-                RenameBucket.new,
-                DeleteBucket.new,
-                MakePublicBucket.new,
-                MakePrivateBucket.new,
-                ListFilesBucket.new,
-                UploadFileFromBucket.new,
-                DeleteFilesMethod.new,
-              ].map((e) => MethodWidget(
-                    create: e,
-                    response: bucketService.response,
-                  )),
-              ValueListenableBuilder(
-                  valueListenable: bucketService.bucketInfo,
-                  builder: (context, v, w) {
-                    return v != null
-                        ? Column(
-                            children: [
-                              AddTagsBucketManager.new,
-                              RemoveTagsBucketManager.new,
-                              UpdateInfoBucketManager.new,
-                            ]
-                                .map((e) => MethodWidget(
-                                      create: e,
-                                      response: bucketService.response,
-                                    ))
-                                .toList(),
-                          )
-                        : const SizedBox();
-                  }),
-              MethodWidget(
-                create: CreateFileManager.new,
+        body: ListView.builder(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 30,
+            ),
+            itemCount: list.length + 1,
+            itemBuilder: (c, i) {
+              if (i == 0) {
+                return Documentation(children: [
+                  const Header("Bucket Manager"),
+                  AutoSpan("Bucket : ${widget.bucket}"),
+                  vSpace,
+                  if (bucket != null)
+                    Description(
+                        'Bucket Info : \n${const JsonEncoder.withIndent('   ').convert(bucket)}')
+                  else
+                    const AutoSpan('There is no bucket with this name or ID'),
+                  vSpace,
+                ]);
+              }
+              return MethodWidget(
+                create: list[i - 1],
                 response: bucketService.response,
-              ),
-            ],
-          ),
-        ),
+              );
+            }),
       ),
     );
   }

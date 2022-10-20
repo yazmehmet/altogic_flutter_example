@@ -119,9 +119,12 @@ class _AreaResizerState extends State<AreaResizer> {
 }
 
 class AltogicAppBar extends StatefulWidget {
-  const AltogicAppBar({Key? key, this.leadingHome = false}) : super(key: key);
+  const AltogicAppBar(
+      {Key? key, this.leadingHome = false, this.autoImplementLeading = true})
+      : super(key: key);
 
   final bool leadingHome;
+  final bool autoImplementLeading;
 
   @override
   State<AltogicAppBar> createState() => _AltogicAppBarState();
@@ -147,7 +150,8 @@ class _AltogicAppBarState extends State<AltogicAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      automaticallyImplyLeading: !widget.leadingHome,
+      automaticallyImplyLeading:
+          !widget.leadingHome && widget.autoImplementLeading,
       leading: widget.leadingHome
           ? IconButton(
               onPressed: () {
