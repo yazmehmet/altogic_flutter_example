@@ -28,12 +28,19 @@ class _FileManagerPageState extends State<FileManagerPage> {
 
   @override
   void initState() {
-    service.fileInfo.addListener(() {
-      setState(() {});
-    });
+    service.fileInfo.addListener(_listener);
     service.getInfo();
-
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    service.fileInfo.removeListener(_listener);
+    super.dispose();
+  }
+
+  _listener() {
+    setState(() {});
   }
 
   @override

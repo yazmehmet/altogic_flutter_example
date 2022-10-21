@@ -4,6 +4,7 @@ import 'package:altogic_flutter_example/src/service/suggestion_service.dart';
 import 'package:altogic_flutter_example/src/view/widgets/button.dart';
 import 'package:altogic_flutter_example/src/view/widgets/case.dart';
 import 'package:altogic_flutter_example/src/view/widgets/documentation/base.dart';
+import 'package:altogic_flutter_example/src/view/widgets/documentation/code.dart';
 import 'package:altogic_flutter_example/src/view/widgets/documentation/texts.dart';
 import 'package:altogic_flutter_example/src/view/widgets/input.dart';
 import 'package:file_picker/file_picker.dart';
@@ -14,6 +15,14 @@ import '../database/cases.dart';
 import 'utils/upload.dart'
     if (dart.library.io) 'utils/io_upload.dart'
     if (dart.library.html) 'utils/web_upload.dart' show getUintList;
+
+String _getFileManager(BuildContext context) {
+  return """altogic
+        .bucket("${FileManagerService.of(context).bucket}")
+        .file("${FileManagerService.of(context).fileNameOrId}")""";
+}
+
+const String _leftSpace = "        ";
 
 class FileExistsCase extends MethodWrap {
   FileExistsCase();
@@ -32,12 +41,25 @@ class FileExistsCase extends MethodWrap {
   }
 
   @override
-  List<DocumentationObject> get description =>
-      [const AutoSpan('Get File Exists')];
+  List<DocumentationObject> get description => [
+        const AutoSpan(
+            'Check if the file exists. It returns false if file does not exist.'),
+      ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            const AutoSpan('Returns true if file exists, false otherwise'),
+            vSpace,
+            DartCode("""
+var res = await ${_getFileManager(context)}
+        .exists();
+    """)
+          ];
 
   @override
   String get name => 'Get File Exists';
@@ -61,11 +83,22 @@ class GetFileInfoMethod extends MethodWrap {
 
   @override
   List<DocumentationObject> get description =>
-      [const AutoSpan('Get File Info')];
+      [const AutoSpan('Gets information about the file.')];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            const AutoSpan('Returns basic file metadata informaton.'),
+            vSpace,
+            DartCode("""
+var res = await ${_getFileManager(context)}
+        .getInfo();
+    """)
+          ];
 
   @override
   String get name => 'Get File Info';
@@ -89,11 +122,30 @@ class MakeFilePublic extends MethodWrap {
 
   @override
   List<DocumentationObject> get description =>
-      [const AutoSpan('Make File Public')];
+      [const AutoSpan('Sets the default privacy of the file to *true*.')];
+
+  /// Sets the default privacy of the file to **true**.
+  ///
+  /// > *If the client library key is set to **enforce session**, an active
+  /// user session is required (e.g., user needs to be logged in) to call
+  /// this method.*
+  ///
+  /// Returns the updated file information
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            const AutoSpan('Returns the updated file information.'),
+            vSpace,
+            DartCode("""
+var res = await ${_getFileManager(context)}
+        .makePublic();
+    """)
+          ];
 
   @override
   String get name => 'Make File Public';
@@ -115,13 +167,32 @@ class MakeFilePrivate extends MethodWrap {
     ];
   }
 
+  /// Sets the default privacy of the file to **false**.
+  ///
+  /// > *If the client library key is set to **enforce session**, an active
+  /// user session is required (e.g., user needs to be logged in) to call
+  /// this method.*
+  ///
+  /// Returns the updated file information
+
   @override
   List<DocumentationObject> get description =>
-      [const AutoSpan('Make File Private')];
+      [const AutoSpan('Sets the default privacy of the file to *false*.')];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            const AutoSpan('Returns the updated file information.'),
+            vSpace,
+            DartCode("""
+var res = await ${_getFileManager(context)}
+        .makePrivate();
+    """)
+          ];
 
   @override
   String get name => 'Make File Private';
@@ -143,13 +214,35 @@ class DownloadFileCase extends MethodWrap {
     ];
   }
 
+  /// Downloads the file.
+  ///
+  /// > *If the client library key is set to **enforce session**, an active
+  /// user session is required (e.g., user needs to be logged in) to call
+  /// this method.*
+  ///
+  /// Returns the contents of the file in a `Blob`
+
   @override
-  List<DocumentationObject> get description =>
-      [const AutoSpan('Download File')];
+  List<DocumentationObject> get description => [
+        const AutoSpan('Downloads the file.'),
+        vSpace,
+        const AutoSpan('Returns the contents of the file in a `Uint8List`'),
+      ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            const AutoSpan('Returns the contents of the file in a `Uint8List`'),
+            vSpace,
+            DartCode("""
+var res = await ${_getFileManager(context)}
+        .download();
+    """)
+          ];
 
   @override
   String get name => 'Download File';
@@ -181,12 +274,37 @@ class RenameFileCase extends MethodWrap {
     ];
   }
 
+  /// Renames the file.
+  ///
+  /// > *If the client library key is set to **enforce session**, an active
+  /// user session is required (e.g., user needs to be logged in) to call
+  /// this method.*
+  ///
+  /// [newName] The new name of the file.
+  ///
+  /// Returns the updated file information
+
   @override
-  List<DocumentationObject> get description => [const AutoSpan('Rename File')];
+  List<DocumentationObject> get description => [
+        const AutoSpan('Renames the file.'),
+        vSpace,
+        const AutoSpan('Returns the updated file information. '),
+      ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            const AutoSpan('Returns the updated file information.'),
+            vSpace,
+            DartCode("""
+var res = await ${_getFileManager(context)}
+        .rename('${controller.text}');
+    """)
+          ];
 
   @override
   String get name => 'Rename File';
@@ -217,13 +335,38 @@ class DuplicateFileCase extends MethodWrap {
     ];
   }
 
+  /// Duplicates an existing file within the same bucket.
+  ///
+  /// > *If the client library key is set to **enforce session**, an active
+  /// user session is required (e.g., user needs to be logged in) to call
+  /// this method.*
+  ///
+  /// [duplicateName] The new duplicate file name. If not specified, uses the
+  /// `fileName` as template and ensures the duplicated file name to be unique
+  /// in its bucket.
+  /// Returns the new duplicate file information
+
   @override
-  List<DocumentationObject> get description =>
-      [const AutoSpan('Duplicate File')];
+  List<DocumentationObject> get description => [
+        const AutoSpan('Duplicates an existing file within the same bucket.'),
+        vSpace,
+        const AutoSpan('Returns the new duplicate file information.'),
+      ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            const AutoSpan('Returns the new duplicate file information.'),
+            vSpace,
+            DartCode("""
+var res = await ${_getFileManager(context)}
+        .duplicate('${controller.text}');
+    """)
+          ];
 
   @override
   String get name => 'Duplicate File';
@@ -245,12 +388,29 @@ class DeleteFileMethod extends MethodWrap {
     ];
   }
 
+  /// Deletes the file from the bucket.
+  ///
+  /// > *If the client library key is set to **enforce session**, an active
+  /// user session is required (e.g., user needs to be logged in) to call
+  /// this method.*
+
   @override
-  List<DocumentationObject> get description => [const AutoSpan('Delete File')];
+  List<DocumentationObject> get description => [
+        const AutoSpan('Deletes the file from the bucket.'),
+      ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            DartCode("""
+var errors = await ${_getFileManager(context)}
+        .delete();
+    """)
+          ];
 
   @override
   String get name => 'Delete File';
@@ -400,12 +560,56 @@ class ReplaceFileMethod extends MethodWrap {
 
   @override
   List<DocumentationObject> get description => [
-        const Description('Replace file in the bucket with same name.'),
+        const AutoSpan(
+            'Replaces an existing file with another. It keeps the name of the file but'
+            ' replaces file contents, size, encoding and mime-type with the newly'
+            ' uploaded file info.'),
+        vSpace,
+        const AutoSpan(
+            'If `onProgress` callback function is defined in `FileUploadOptions`, it'
+            ' periodically calls this function to inform about upload progress.'
+            ' (in this example `onProgress` is defined)'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            const AutoSpan(
+                ' [fileBody] The body of the new file that will be used to replace the'
+                ' existing file.'
+                '\n\n\n'
+                '`options` Content type of the file, privacy setting of the file and'
+                ' whether to create the bucket if not exists. `contentType` is ignored,'
+                ' `contentType` option needs to be specified. If not specified, `contentType` will'
+                ' default to `text/plain;charset=UTF-8`. If `isPublic` is not specified,'
+                ' defaults to the bucket\'s privacy setting. If `createBucket` is set to'
+                ' true (defaults to false), then creates a new bucket if the bucket does'
+                ' not exist.'
+                '\n\n\n'
+                'Returns the metadata of the file after replacement'),
+            vSpace,
+            const LeftSpace("In this example, `contentType` auto defined. "
+                "Auto defined content type available for following extensions: "
+                "'png', 'jpg', 'jpeg', 'webp', 'gif', 'mp4', 'mp3', 'mov',"
+                " 'wav', 'json', 'txt', 'html', 'css','js' "),
+            vSpace,
+            DartCode("""
+var res = ${_getFileManager(context)}
+        .replace(
+          bytes,
+          options: FileUploadOptions(
+            contentType: "${bytes.value?.extension != null ? contentTypes[bytes.value!.extension]! : 'text/plain'}",
+            onProgress: (loaded, total, percent) {
+                print(percent);
+            },
+          )
+        );
+    """)
+          ];
 
   @override
   String get name => "Replace File";
@@ -475,14 +679,47 @@ class MoveToBucketFileMethod extends MethodWrap {
     ];
   }
 
+  /// Moves the file to another bucket. The file will be removed from its
+  /// current bucket and will be moved to its new bucket. If there already
+  /// exists a file with the same name in destination bucket, it ensures
+  /// the moved file name to be unique in its new destination.
+  ///
+  /// > *If the client library key is set to **enforce session**, an active
+  /// user session is required (e.g., user needs to be logged in) to call
+  /// this method.*
+  ///
+  /// [bucketNameOrId] The name or id of the bucket to move the file into.
+  ///
+  /// Returns the moved file information
+
   @override
   List<DocumentationObject> get description => [
-        const Description('Move file to another bucket.'),
+        const AutoSpan(
+            'Moves the file to another bucket. The file will be removed from its'
+            ' current bucket and will be moved to its new bucket. If there already'
+            ' exists a file with the same name in destination bucket, it ensures'
+            ' the moved file name to be unique in its new destination.'),
+        vSpace,
+        const AutoSpan('Returns the moved file information'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            const AutoSpan(
+                ' [bucketNameOrId] The name or id of the bucket to move the file into.'),
+            vSpace,
+            DartCode("""
+var res = ${_getFileManager(context)}
+        .moveTo(
+          ${bucketName.text},
+        );
+    """)
+          ];
 
   @override
   String get name => "Move To Bucket";
@@ -552,14 +789,45 @@ class CopyToBucketFileMethod extends MethodWrap {
     ];
   }
 
+  /// Copies the file to another bucket. If there already exists a file with
+  /// the same name in destination bucket, it ensures the copied file name
+  /// to be unique in its new destination.
+  ///
+  /// > *If the client library key is set to **enforce session**, an active
+  /// user session is required (e.g., user needs to be logged in) to call
+  /// this method.*
+  ///
+  /// [bucketNameOrId] The name or id of the bucket to copy the file into.
+  ///
+  /// Returns the copied file information
+
   @override
   List<DocumentationObject> get description => [
-        const Description('Copy file to another bucket.'),
+        const AutoSpan(
+            'Copies the file to another bucket. If there already exists a file with'
+            ' the same name in destination bucket, it ensures the copied file name'
+            ' to be unique in its new destination.'),
+        vSpace,
+        const AutoSpan('Returns the copied file information'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            const AutoSpan(
+                ' [bucketNameOrId] The name or id of the bucket to copy the file into.'),
+            vSpace,
+            DartCode("""
+var res = ${_getFileManager(context)}
+        .copyTo(
+          ${bucketName.text},
+        );
+    """)
+          ];
 
   @override
   String get name => "Copy To Bucket";
@@ -634,14 +902,42 @@ class AddTagsFileManager extends MethodWrap {
     ];
   }
 
+  /// Adds the specified tags to file's metadata.
+  ///
+  /// > *If the client library key is set to **enforce session**, an active
+  /// user session is required (e.g., user needs to be logged in) to call
+  /// this method.*
+  ///
+  /// [tags] A single tag or an array of tags to add to file's metadata.
+  /// [tags] can be ``String`` or ``List<String>``
+  ///
+  /// Returns the updated file information
+
   @override
   List<DocumentationObject> get description => [
-        const Description('Add tags to a file.'),
+        const AutoSpan('Adds the specified tags to file\'s metadata.'),
+        vSpace,
+        const AutoSpan('Returns the updated file information'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            const AutoSpan(
+                '`tags` A single tag or an array of tags to add to file\'s metadata.\n'
+                '`tags` can be `String` or `List<String>`'),
+            vSpace,
+            DartCode("""
+var res = ${_getFileManager(context)}
+        .addTags([
+          ${tagging.map((e) => '"$e"').join(',\n          ')},
+        ]);
+    """)
+          ];
 
   @override
   String get name => "Add Tags";
@@ -653,12 +949,14 @@ class RemoveTagsFileManager extends MethodWrap {
   Map<String, dynamic> get file =>
       FileManagerService.of(context).fileInfo.value!;
 
-  late final List<String> tags = (file['tags'] as List).cast<String>();
+  late List<String> tags;
 
   final List<String> tagsToRemove = [];
 
   @override
   List<Widget> children(BuildContext context) {
+    tags = (file['tags'] as List).cast<String>()
+      ..removeWhere((element) => tagsToRemove.contains(element));
     return [
       if (tagsToRemove.isNotEmpty)
         Container(
@@ -699,6 +997,9 @@ class RemoveTagsFileManager extends MethodWrap {
           child: Column(
             children: [
               const Header('Current tags', level: 2).doc(context),
+              const SizedBox(
+                height: 10,
+              ),
               Wrap(
                 runSpacing: 10,
                 spacing: 10,
@@ -736,14 +1037,42 @@ class RemoveTagsFileManager extends MethodWrap {
     ];
   }
 
+  /// Removes the specified tags from file's metadata.
+  ///
+  /// > *If the client library key is set to **enforce session**, an active
+  /// user session is required (e.g., user needs to be logged in) to call
+  /// this method.*
+  ///
+  /// [tags] A single tag or an array of tags to remove from file's metadata.
+  /// [tags] can be ``String`` or ``List<String>``
+  ///
+  /// Returns the updated file information
+
   @override
   List<DocumentationObject> get description => [
-        const Description('Remove tags from a bucket.'),
+        const AutoSpan('Removes the specified tags from file\'s metadata.'),
+        vSpace,
+        const AutoSpan('Returns the updated file information'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            const AutoSpan(
+                '`tags` A single tag or an array of tags to remove from file\'s metadata.\n'
+                '`tags` can be `String` or `List<String>` '),
+            vSpace,
+            DartCode("""'
+var res = ${_getFileManager(context)}'
+        .removeTags([
+          ${tagsToRemove.map((e) => '"$e"').join(',\n          ')},
+        ]);
+    """)
+          ];
 
   @override
   String get name => "Remove Tags";
@@ -755,16 +1084,19 @@ class UpdateInfoFileManager extends MethodWrap {
   Map<String, dynamic> get file =>
       FileManagerService.of(context).fileInfo.value!;
   final TextEditingController tagsController = TextEditingController();
+
   late final TextEditingController newName = TextEditingController(
     text: file['fileName'],
   );
   late final ValueNotifier<bool> isPublic =
       ValueNotifier(file['isPublic'] as bool);
 
-  late final List<String> tagging = (file['tags'] as List).cast<String>();
+  late List<String> tagging;
 
   @override
   List<Widget> children(BuildContext context) {
+    tagging = (file['tags'] as List).cast<String>();
+
     return [
       AltogicInput(
         hint: "New Name",
@@ -856,14 +1188,39 @@ class UpdateInfoFileManager extends MethodWrap {
     ];
   }
 
+
+
   @override
   List<DocumentationObject> get description => [
-        const Description('Update Info'),
+        const AutoSpan(
+            'Updates the overall file metadata (name, isPublic and tags) in a single\n'
+            'method call.'),
+        vSpace,
+        const AutoSpan('Returns the updated file information'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            const AutoSpan('`newName` The new name of the file.\n\n\n'
+                '`isPublic` The privacy setting of the file.\n\n\n'
+                '`tags` Array of string values that will be added to the file metadata.'),
+            vSpace,
+            DartCode("""
+var res = ${_getFileManager(context)}
+        .updateInfo(
+          newName: '${newName.text}',
+          isPublic: ${isPublic.value},
+          tags: [
+            ${tagging.map((e) => '"$e"').join(',\n            ')}
+          ],
+        );
+    """)
+          ];
 
   @override
   String get name => "Update Info";

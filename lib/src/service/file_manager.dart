@@ -76,9 +76,9 @@ class FileManagerService extends ServiceBase {
 
   Future<void> delete() async {
     response.loading();
-    var res = await file.delete();
+    var errors = await file.delete();
     getInfo();
-    response.error(res);
+    response.error(errors);
   }
 
   Future<void> replace(Uint8List data, void Function(int, int, double) onLoad,
