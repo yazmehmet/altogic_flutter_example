@@ -45,7 +45,6 @@ final Map<String, WidgetBuilder> pages = {
   '/': (c) => const MainPage(),
   '/auth': (c) => const AuthorizationPage(),
   '/database': (c) => const DatabasePage(),
-  //'/chat': (c) => const ChatMain(),
   '/endpoint': (c) => const EndpointPage(),
   '/cache': (c) => const CachePage(),
   '/task': (c) => const TaskManagerPage(),

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:altogic_flutter/altogic_flutter.dart';
+import 'package:altogic_flutter_example/main.dart';
 import 'package:altogic_flutter_example/src/service/service_base.dart';
 import 'package:altogic_flutter_example/src/service/storage_service.dart';
 import 'package:altogic_flutter_example/src/service/suggestion_service.dart';
@@ -914,7 +915,7 @@ class CreateBucketManager extends MethodWrap {
                 ' bucket manager will be operating on.'),
             vSpace,
             DartCode("""
-final bucketManager = altogic.storage.bucket('${nameOrIdController.text}');
+final fileManager = altogic.storage.bucket('${nameOrIdController.text}');
     """)
           ];
 

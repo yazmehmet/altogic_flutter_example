@@ -816,6 +816,7 @@ class UploadFileFromBucket extends MethodWrap {
             ...description,
             vSpace,
             LeftSpace.enforceSession,
+            vSpace,
             const AutoSpan(
                 '`fileName` The name of the file e.g., *filename.jpg*'
                 '\n\n\n'
@@ -984,12 +985,39 @@ class DeleteFilesMethod extends MethodWrap {
     ];
   }
 
+  ///' Deletes multiple files identified either by their names or ids.'
+  ///''
+  ///' [fileNamesOrIds] Array of name or ids of the files to delete.'
+
   @override
-  List<DocumentationObject> get description => [const AutoSpan("Delete Files")];
+  List<DocumentationObject> get description => [
+        const AutoSpan(
+            'Deletes multiple files identified either by their names or ids.'),
+        vSpace,
+        const AutoSpan(
+            '`fileNamesOrIds` Array of name or ids of the files to delete.')
+      ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            const AutoSpan(
+                'Deletes multiple files identified either by their names or ids.'),
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            const AutoSpan(
+                '`fileNamesOrIds` Array of name or ids of the files to delete.'),
+            vSpace,
+            DartCode("""
+var res = await altogic
+       .storage
+       .bucket("${BucketService.of(context).bucket}")
+       .deleteFiles([
+          "${_deleting.deleting.join('",\n          "')}"
+       ]);
+    """)
+          ];
 
   @override
   String get name => "Delete Files";
@@ -1067,12 +1095,32 @@ class AddTagsBucketManager extends MethodWrap {
 
   @override
   List<DocumentationObject> get description => [
-        const Description('Add tags to a file.'),
+        const Description('Adds the specified tags to bucket\'s metadata.'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            const AutoSpan('Adds the specified tags to bucket\'s metadata.'),
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            const AutoSpan(
+                '`tags` A single tag or an array of tags to add to bucket\'s metadata.'),
+            vSpace,
+            const AutoSpan('`tags` can be `String` or `List<String>`'),
+            vSpace,
+            const AutoSpan('Returns the updated bucket information'),
+            vSpace,
+            DartCode("""
+var res = await altogic
+       .storage
+       .bucket("${BucketService.of(context).bucket}")
+       .addTags([
+          "${tagging.join('",\n          "')}"
+       ]);
+    """)
+          ];
 
   @override
   String get name => "Add Tags";
@@ -1130,6 +1178,9 @@ class RemoveTagsBucketManager extends MethodWrap {
           child: Column(
             children: [
               const Header('Current tags', level: 2).doc(context),
+              const SizedBox(
+                height: 10,
+              ),
               Wrap(
                 runSpacing: 10,
                 spacing: 10,
@@ -1168,12 +1219,32 @@ class RemoveTagsBucketManager extends MethodWrap {
 
   @override
   List<DocumentationObject> get description => [
-        const Description('Remove tags from a bucket.'),
+        const Description('Removes the specified tags to bucket\'s metadata.'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            const AutoSpan('Removes the specified tags to bucket\'s metadata.'),
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            const AutoSpan(
+                '`tags` A single tag or an array of tags to remove from bucket\'s metadata.'),
+            vSpace,
+            const AutoSpan('`tags` can be `String` or `List<String>`'),
+            vSpace,
+            const AutoSpan('Returns the updated bucket information'),
+            vSpace,
+            DartCode("""
+var res = await altogic
+       .storage
+       .bucket("${BucketService.of(context).bucket}")
+       .removeTags([
+          "${tagsToRemove.join('",\n          "')}"
+       ]);
+    """)
+          ];
 
   @override
   String get name => "Remove Tags";
@@ -1308,12 +1379,46 @@ class UpdateInfoBucketManager extends MethodWrap {
 
   @override
   List<DocumentationObject> get description => [
-        const Description('Update Info'),
+        const AutoSpan(
+            'Updates the overall bucket metadata (name, isPublic and tags) in a single'
+            ' method call.'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            const AutoSpan(
+                '`newName` The new name of the bucket. `root` is a reserved name and cannot be used.'),
+            vSpace,
+            const AutoSpan(
+                '`isPublic` The default privacy setting that will be applied to the files uploaded to this bucket.'),
+            vSpace,
+            const AutoSpan(
+                '`tags` Array of string values that will be added to the bucket metadata. `tags` can be `String` or `List<String>`'),
+            vSpace,
+            const AutoSpan(
+                '`includeFiles` Specifies whether to make each file in the bucket to have the same privacy setting of the bucket.'),
+            vSpace,
+            const AutoSpan('Returns the updated bucket information'),
+            vSpace,
+            DartCode("""
+var res = await altogic
+        .storage
+        .bucket("${BucketService.of(context).bucket}")
+        .updateInfo(
+          newName: "${newName.text}",
+          isPublic: ${isPublic.value},
+          includeFiles: ${includeFiles.value},
+          tags: [
+            "${tagging.join('",\n            "')}"
+          ]
+        );
+    """)
+          ];
 
   @override
   String get name => "Update Info";
@@ -1380,13 +1485,31 @@ class CreateFileManager extends MethodWrap {
   }
 
   @override
-  // TODO: implement description
-  List<DocumentationObject> get description => [];
+  List<DocumentationObject> get description => [
+        const AutoSpan('Creates an instance of FileManager to manage a specific'
+            ' file of your cloud storage'
+            '\n\n'
+            '`fileNameOrId` The name or id of the file that this'
+            ' file manager will be operating on.')
+      ];
 
   @override
-  // TODO: implement documentationBuilder
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            const AutoSpan(
+                'Creates an instance of FileManager to manage a specific'
+                ' file of your cloud storage'
+                '\n\n'
+                '`fileNameOrId` The name or id of the file that this'
+                ' file manager will be operating on.'),
+            vSpace,
+            DartCode("""
+final fileManager = altogic
+        .storage
+        .bucket('${BucketService.of(context).bucket}')
+        .file('${fileNameOrID.text}');
+    """)
+          ];
 
   @override
   String get name => "Create File Manager";

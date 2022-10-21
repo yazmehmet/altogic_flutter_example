@@ -24,8 +24,8 @@ class _BucketManagerPageState extends State<BucketManagerPage> {
 
   @override
   void initState() {
-    bucketService.getBucketInfo(false);
     bucketService.bucketInfo.addListener(_listener);
+    bucketService.getBucketInfo(false);
     super.initState();
   }
 
@@ -44,9 +44,6 @@ class _BucketManagerPageState extends State<BucketManagerPage> {
   @override
   Widget build(BuildContext context) {
     var list = [
-      // test
-      UploadFileFromBucket.new,
-      //
 
       GetBucketExists.new,
       GetBucketInfo.new,

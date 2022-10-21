@@ -40,36 +40,8 @@ class _DatabasePageState extends State<DatabasePage> {
     setState(() {});
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final widgets = [
-      GetMarketWithObjectId.new, // object.get
-      GetMarketWithFilter.new, // query.filter
-      GetMarketWithLookup.new, // query.lookup
-      ChangeMarketName.new, // object.update
-      GetContact.new, // object.get for sub
-      AddMarketContact.new, // append
-      DeleteContact.new, // object.delete for sub
-      DeleteContactWithFilter.new, // query.filter.delete sub
-      ChangeMarketAddress.new, // object.update // set
-      UnsetMarketAddress.new, // query.filter.update // unset
-      CreateProduct.new, // create
-      GetMarketProducts.new, // query.filter // page // limit
-      OmitProduct.new,
-      ChangePrice.new, // query.filter.update
-      DeleteProduct.new, // object.delete
-      DeleteProductWithQueryBuilder.new, // query.delete
-      IncrementDecrement.new, // (amount) // object.updateFields // inc // dec
-      PushProperty.new, // query.filter.updateFields // push
-      PullProperty.new, // object.updateFields // pull
-      SearchProducts.new, // search
-      SearchFuzzyProducts.new, // search fuzzy
-      GroupCategories.new, // filter / group / compute / count
-      GetMarketWithAvgPrice.new, // filter / compute / avg
-      GetMarketWithTotalStockValue.new,
-      GetMarketProductCount.new // filter / compute / count
-    ];
-    final list = [
+  List<Widget> list(BuildContext ctx) {
+    return [
       const Documentation(children: [
         Header("Database Manager"),
         vSpace,
@@ -81,7 +53,7 @@ class _DatabasePageState extends State<DatabasePage> {
       const AutoSpan(
               "This page is used to show database operations with a simple "
               "scenario. The scenario is ... (will be added)")
-          .doc(context),
+          .doc(ctx),
       Container(
         width: double.infinity,
         alignment: Alignment.centerLeft,
@@ -91,16 +63,16 @@ class _DatabasePageState extends State<DatabasePage> {
               'https://c1-na.altogic.com/_storage/62d3ea1510b444043a4f80b7/62d3ea1510b444043a4f80b7/6336f0b778ce5bb8a7f3e0ec'),
         ),
       ),
-      vSpace.doc(context),
+      vSpace.doc(ctx),
       if (!currentUserController.hasMarket) ...[
-        const AutoSpan("You have to create a market first.").doc(context),
-        vSpace.doc(context),
+        const AutoSpan("You have to create a market first.").doc(ctx),
+        vSpace.doc(ctx),
         const AutoSpan("You can create a market with the following form:")
-            .doc(context),
-        vSpace.doc(context),
+            .doc(ctx),
+        vSpace.doc(ctx),
         MethodWidget(
           create: CreateMarketCase.new,
-          response: DbService.of(context).response,
+          response: DbService.of(ctx).response,
         )
       ],
       if (currentUserController.hasMarket) ...[
@@ -131,25 +103,58 @@ altogic.db.model('model_name');
         ]),
       ],
     ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final widgets = [
+      GetMarketWithObjectId.new, // object.get
+      GetMarketWithFilter.new, // query.filter
+      GetMarketWithLookup.new, // query.lookup
+      ChangeMarketName.new, // object.update
+      GetContact.new, // object.get for sub
+      AddMarketContact.new, // append
+      DeleteContact.new, // object.delete for sub
+      DeleteContactWithFilter.new, // query.filter.delete sub
+      ChangeMarketAddress.new, // object.update // set
+      UnsetMarketAddress.new, // query.filter.update // unset
+      CreateProduct.new, // create
+      GetMarketProducts.new, // query.filter // page // limit
+      OmitProduct.new,
+      ChangePrice.new, // query.filter.update
+      DeleteProduct.new, // object.delete
+      DeleteProductWithQueryBuilder.new, // query.delete
+      IncrementDecrement.new, // (amount) // object.updateFields // inc // dec
+      PushProperty.new, // query.filter.updateFields // push
+      PullProperty.new, // object.updateFields // pull
+      SearchProducts.new, // search
+      SearchFuzzyProducts.new, // search fuzzy
+      GroupCategories.new, // filter / group / compute / count
+      GetMarketWithAvgPrice.new, // filter / compute / avg
+      GetMarketWithTotalStockValue.new,
+      GetMarketProductCount.new // filter / compute / count
+    ];
 
     return InheritedService(
       service: dbService,
-      child: BaseViewer(
-          body: ListView.builder(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 30,
-        ),
-        itemCount: list.length + (currentUser.hasMarket ? widgets.length : 0),
-        itemBuilder: (context, index) {
-          if (index < list.length) {
-            return list[index];
-          }
-          return MethodWidget(
-              create: widgets[index - list.length],
-              response: dbService.response);
-        },
-      )),
+      child: BaseViewer(body: Builder(builder: (ctx) {
+        var li = list(ctx);
+        return ListView.builder(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 30,
+          ),
+          itemCount: li.length + (currentUser.hasMarket ? widgets.length : 0),
+          itemBuilder: (context, index) {
+            if (index < li.length) {
+              return li[index];
+            }
+            return MethodWidget(
+                create: widgets[index - li.length],
+                response: dbService.response);
+          },
+        );
+      })),
     );
   }
 }
