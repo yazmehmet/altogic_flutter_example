@@ -54,7 +54,7 @@ class FileManagerService extends ServiceBase {
     response.loading();
     return file.download().then((value) async {
       var info = await getInfo();
-      response.message('Downloaded : ${value.data?.length} bytes');
+      response.message('Downloaded : ${value.data?.length} bytes ');
       download(info!['fileName'], value.data!);
     }).catchError((e) {
       response.message('Error: $e');

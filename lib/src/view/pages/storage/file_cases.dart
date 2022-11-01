@@ -21,9 +21,6 @@ String _getFileManager(BuildContext context) {
         .bucket("${FileManagerService.of(context).bucket}")
         .file("${FileManagerService.of(context).fileNameOrId}")""";
 }
-
-const String _leftSpace = "        ";
-
 class FileExistsCase extends MethodWrap {
   FileExistsCase();
 

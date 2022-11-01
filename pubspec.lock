@@ -4,17 +4,17 @@ packages:
   altogic_dart:
     dependency: transitive
     description:
-      path: "../../projects/altogic-dart"
-      relative: true
-    source: path
-    version: "0.0.4"
+      name: altogic_dart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.5"
   altogic_flutter:
     dependency: "direct main"
     description:
-      path: "../altogic_flutter"
-      relative: true
-    source: path
-    version: "0.0.2"
+      name: altogic_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.5"
   async:
     dependency: transitive
     description:
@@ -77,7 +77,7 @@ packages:
       name: file_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.2.1"
+    version: "5.2.2"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -343,27 +343,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.12"
-  uni_links:
-    dependency: transitive
-    description:
-      name: uni_links
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.5.1"
-  uni_links_platform_interface:
-    dependency: transitive
-    description:
-      name: uni_links_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
-  uni_links_web:
-    dependency: transitive
-    description:
-      name: uni_links_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.0"
   url_launcher:
     dependency: "direct main"
     description:

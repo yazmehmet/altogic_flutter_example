@@ -49,8 +49,8 @@ class DbService extends ServiceBase {
           .updateFields(FieldUpdate(
               field: 'market', updateType: UpdateType.set, value: market.id));
       if (settingField.errors == null) {
-        response.message(
-            'Market field setting successfully\n\n${response.value}');
+        response
+            .message('Market field setting successfully\n\n${response.value}');
       } else {
         response.message('Market created successfully\n\n'
             'But setting market to current user failed\n\n'
@@ -225,6 +225,34 @@ class DbService extends ServiceBase {
     }
   }
 
+  Future<List<Product>?> filterProducts(
+      {required String expression,
+      SortEntry? sortEntry,
+      required int limit,
+      required int page}) async {
+    var res = await altogic.db
+        .model('product')
+        .sort(sortEntry?.field ?? 'createdAt',
+            sortEntry?.direction ?? Direction.desc)
+        .filter(expression)
+        .limit(limit)
+        .page(page)
+        .get();
+
+    response.response(res);
+
+    if (res.errors == null) {
+      var products = <Product>[];
+      for (var product in res.data!) {
+        products.add(Product.fromMap(product));
+      }
+      return products;
+    } else {
+      return null;
+    }
+  }
+
+
   Future<List<Map<String, dynamic>>?> getMarketProductsNames(
       {SortEntry? sortEntry,
       required int limit,
@@ -260,7 +288,7 @@ class DbService extends ServiceBase {
     }
   }
 
-  Future<List<String>?> groupCategories() async {
+  Future<List<String>?> groupCategories(bool write) async {
     var res = await altogic.db
         .model('product')
         .group('category')
@@ -276,11 +304,40 @@ class DbService extends ServiceBase {
         parsed.add('${item['groupby']['group']}');
       }
 
-      response.message('Categories: ${parsed.join(', ')} \n\n'
-          'Response:\n${const JsonEncoder.withIndent('    ').convert(res.data)}');
+      if (write) {
+        response.message('Categories: ${parsed.join(', ')} \n\n'
+            'Response:\n${const JsonEncoder.withIndent('    ').convert(res.data)}');
+      }
       return parsed;
     } else {
-      response.response(res);
+      if (write) response.response(res);
+      return null;
+    }
+  }
+
+  Future<List<String>?> groupProperties(bool write) async {
+    var res = await altogic.db
+        .model('product')
+        .group('properties.\$')
+        .compute(GroupComputation(
+          sort: Direction.desc,
+          name: 'count',
+          type: GroupComputationType.count,
+        ));
+
+    if (res.errors == null) {
+      var parsed = <String>[];
+      for (var item in res.data!) {
+        parsed.add('${item['groupby']['group']}');
+      }
+
+      if (write) {
+        response.message('Properties: ${parsed.join(', ')} \n\n'
+            'Response:\n${const JsonEncoder.withIndent('    ').convert(res.data)}');
+      }
+      return parsed;
+    } else {
+      if (write) response.response(res);
       return null;
     }
   }
@@ -413,6 +470,7 @@ class DbService extends ServiceBase {
   Future<void> getAvgPrices() async {
     var res = await altogic.db
         .model('product')
+        .group('market')
         .filter('market == "${currentUserController.market.id}"')
         .compute(GroupComputation(
             sort: Direction.desc,

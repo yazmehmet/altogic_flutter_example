@@ -118,6 +118,7 @@ class _MyAppState extends State<MyApp> {
       },
       onGenerateInitialRoutes: (path) {
         var uri = Uri.parse(path);
+
         if (path.startsWith('/bucket')) {
           return [
             MaterialPageRoute(
@@ -153,14 +154,17 @@ class _MyAppState extends State<MyApp> {
             case "reset-pwd":
               return [
                 MaterialPageRoute(
-                    builder: (c) =>
-                        ResetPwdRedirect(arguments: uri.queryParameters))
+                    builder: (c) => ResetPwdRedirect(
+                          arguments: uri.queryParameters,
+                          path: uri.toString(),
+                        ))
               ];
             case "magic-link":
               return [
                 MaterialPageRoute(
-                    builder: (c) =>
-                        MagicLinkRedirect(arguments: uri.queryParameters))
+                    builder: (c) => MagicLinkRedirect(
+                          arguments: uri.queryParameters,
+                        ))
               ];
             default:
               return [

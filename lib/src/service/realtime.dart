@@ -30,12 +30,12 @@ class RealtimeService extends ServiceBase {
   }
 
   void broadcast(String event, dynamic data) {
-    realtime.broadcast(event, {"message": data});
+    realtime.broadcast(event, data);
     response.message("Sent to $event");
   }
 
   void send(String channel, String event, dynamic data) {
-    realtime.send(channel, event, {"message": data});
+    realtime.send(channel, event, data);
     response.message("Sent message to $event only $channel members");
   }
 
@@ -49,10 +49,10 @@ class RealtimeService extends ServiceBase {
     response.message("Left $room");
   }
 
-  void getMembers(String room) async {
-    var res = await realtime.getMembers(room);
-    response.message("Members of $room : \n$res");
-  }
+  // void getMembers(String room) async {
+  //   var res = await realtime.getMembers(room);
+  //   response.message("Members of $room : \n$res");
+  // }
 
   void updateUserData(String data) async {
     realtime.updateProfile(MemberData(

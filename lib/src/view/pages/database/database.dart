@@ -120,6 +120,7 @@ altogic.db.model('model_name');
       UnsetMarketAddress.new, // query.filter.update // unset
       CreateProduct.new, // create
       GetMarketProducts.new, // query.filter // page // limit
+      FilterAllProducts.new,
       OmitProduct.new,
       ChangePrice.new, // query.filter.update
       DeleteProduct.new, // object.delete

@@ -122,8 +122,13 @@ class AuthService extends ServiceBase {
       response.error(errors);
       return;
     }
-    currentUserController.user = null;
-    await altogic.auth.clearLocalData();
+
+    var user = await altogic.auth.getUser();
+    if (user == null) {
+      currentUserController.user = null;
+      await altogic.auth.clearLocalData();
+    }
+
     response.success();
   }
 

@@ -6,10 +6,12 @@ import 'package:altogic_flutter_example/src/view/widgets/base_viewer.dart';
 import 'package:altogic_flutter_example/src/view/widgets/button.dart';
 import 'package:altogic_flutter_example/src/view/widgets/case.dart';
 import 'package:altogic_flutter_example/src/view/widgets/documentation/base.dart';
+import 'package:altogic_flutter_example/src/view/widgets/documentation/code.dart';
 import 'package:altogic_flutter_example/src/view/widgets/input.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/documentation/texts.dart';
+import '../database/cases.dart';
 
 class RealtimePage extends StatefulWidget {
   const RealtimePage({Key? key}) : super(key: key);
@@ -17,6 +19,23 @@ class RealtimePage extends StatefulWidget {
   @override
   State<RealtimePage> createState() => _RealtimePageState();
 }
+
+///
+/// - `echoMessages` -  This boolean parmeter enables or prevents realtime
+/// messages originating from this connection being echoed back on the same
+/// connection. By default messsages are echoed back.
+/// - `bufferMessages` -  By default, any event emitted while the realtime
+/// socket is not connected will be buffered until reconnection. You can turn
+/// on/off the message buffering using this parameter. While enabling this
+/// feature is useful in most cases (when the reconnection delay is short), it
+/// could result in a huge spike of events when the connection is restored.
+/// - `autoJoinChannels` -  This parameter enables or disables automatic join
+/// to channels already subscribed in case of websocket reconnection. When
+/// websocket is disconnected, it automatically leaves subscribed channels.
+/// This parameter helps re-joining to already joined channels when the
+/// connection is restored. If this parameter is set to false, you need to
+/// listen to `connect` and `disconnect` events to manage your channel
+/// subscriptions.
 
 class _RealtimePageState extends State<RealtimePage> {
   RealtimeService service = RealtimeService();
@@ -29,7 +48,6 @@ class _RealtimePageState extends State<RealtimePage> {
     JoinChannel.new,
     LeaveChannel.new,
     SendMethod.new,
-    GetMembers.new,
     UpdateUserData.new,
   ];
 
@@ -83,6 +101,19 @@ class _RealtimePageState extends State<RealtimePage> {
                       const Documentation(children: [
                         Header('Realtime Manager'),
                         vSpace,
+                        AutoSpan(
+                            'The realtime manager allows realtime publish and subscribe (pub/sub)'
+                            ' messaging through websockets.'
+                            '\n\n'
+                            'Realtime makes it possible to open a two-way interactive communication'
+                            ' session between the user\'s device (e.g., browser, smartphone) and a server.'
+                            ' With realtime, you can send messages to a server and receive event-driven'
+                            ' responses without having to poll the server for a reply.'
+                            '\n\n'
+                            'The configuration parameters of the realtime module is specified when'
+                            ' creating the Altogic client library instance. In particular three key'
+                            ' parameters affect how realtime messaging works in your apps.'),
+                        vSpace,
                       ]),
                       ...widgets.map((e) => MethodWidget(
                             create: e,
@@ -116,12 +147,21 @@ class ConnectMethod extends MethodWrap {
 
   @override
   List<DocumentationObject> get description => [
-        const Description('Connect to the realtime server'),
+        const Description(
+            'Manually open the realtime connection, connects the socket.'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            const DartCode("""
+altogic.realtime.open();
+    """)
+          ];
 
   @override
   String get name => "Open";
@@ -145,12 +185,20 @@ class DisconnectMethod extends MethodWrap {
 
   @override
   List<DocumentationObject> get description => [
-        const Description('Disconnect to the realtime server'),
+        const Description(
+            'Manually closes the realtime connection. In this case, the socket '
+            'will not try to reconnect.'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            const DartCode("""
+altogic.realtime.close();
+    """)
+          ];
 
   @override
   String get name => "Close";
@@ -314,12 +362,21 @@ class OnMessage extends MethodWrap {
 
   @override
   List<DocumentationObject> get description => [
-        const Description('On message'),
+        const Description(
+            'Register a new listener function for the given event.'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            DartCode("""
+altogic.realtime.on("${nameController.text}", (data) {
+  // do something with data
+});
+    """)
+          ];
 
   @override
   String get name => "On Message";
@@ -378,12 +435,23 @@ class BroadcastMethod extends MethodWrap {
 
   @override
   List<DocumentationObject> get description => [
-        const Description('Broadcast message to channel'),
+        const AutoSpan(
+            'Sends the message identified by the `eventName` to all connected members'
+            ' of the app. All serializable datastructures are supported for the'
+            ' `message`, including `Buffer`.'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            DartCode("""
+altogic.realtime.broadcast("${eventNameController.text}", "${messageController.text}");
+    """)
+          ];
 
   @override
   String get name => "Broadcast";
@@ -426,15 +494,26 @@ class SendMethod extends MethodWrap {
 
   @override
   List<DocumentationObject> get description => [
-        const Description('Broadcast message to channel'),
+        const AutoSpan(
+            'Sends the message identified by the `eventName` to the provided channel'
+            ' members only. All serializable datastructures are supported for the'
+            ' `message`, including `Buffer`.'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            DartCode("""
+altogic.realtime.send("${channelName.text}", "${eventNameController.text}", "${messageController.text}");
+    """)
+          ];
 
   @override
-  String get name => "Broadcast";
+  String get name => "Send";
 }
 
 class JoinChannel extends MethodWrap {
@@ -463,12 +542,23 @@ class JoinChannel extends MethodWrap {
 
   @override
   List<DocumentationObject> get description => [
-        const Description('Join channel'),
+        const AutoSpan(
+            'Adds the realtime socket to the specified channel. As a result of this'
+            ' action a `channel:join` event is sent to all members of the channel'
+            ' notifying the new member arrival.'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            DartCode("""
+altogic.realtime.join("${channelNameController.text}");
+    """)
+          ];
 
   @override
   String get name => "Join Channel";
@@ -497,50 +587,61 @@ class LeaveChannel extends MethodWrap {
 
   @override
   List<DocumentationObject> get description => [
-        const Description('Leave channel'),
+        const AutoSpan(
+            'Removes the realtime socket from the specified channel. As a result of'
+            ' this action a `channel:leave` event is sent to all members of the channel'
+            ' notifying the departure of existing member.'),
       ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            DartCode("""
+altogic.realtime.leave("${channelNameController.text}");
+    """)
+          ];
 
   @override
   String get name => "Leave Channel";
 }
 
-class GetMembers extends MethodWrap {
-  TextEditingController channelNameController = TextEditingController();
-
-  @override
-  List<Widget> children(BuildContext context) {
-    return [
-      AltogicInput(
-          hint: 'Channel Name', editingController: channelNameController),
-      AltogicButton(
-          body: 'Get Members',
-          listenable: channelNameController,
-          enabled: () => channelNameController.text.isNotEmpty,
-          onPressed: () {
-            asyncWrapper(() async {
-              RealtimeService.of(context)
-                  .getMembers(channelNameController.text);
-            });
-          })
-    ];
-  }
-
-  @override
-  List<DocumentationObject> get description => [
-        const Description('Get members of channel'),
-      ];
-
-  @override
-  List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
-
-  @override
-  String get name => "Get Members";
-}
+// class GetMembers extends MethodWrap {
+//   TextEditingController channelNameController = TextEditingController();
+//
+//   @override
+//   List<Widget> children(BuildContext context) {
+//     return [
+//       AltogicInput(
+//           hint: 'Channel Name', editingController: channelNameController),
+//       AltogicButton(
+//           body: 'Get Members',
+//           listenable: channelNameController,
+//           enabled: () => channelNameController.text.isNotEmpty,
+//           onPressed: () {
+//             asyncWrapper(() async {
+//               RealtimeService.of(context)
+//                   .getMembers(channelNameController.text);
+//             });
+//           })
+//     ];
+//   }
+//
+//   @override
+//   List<DocumentationObject> get description => [
+//         const Description('Get members of channel'),
+//       ];
+//
+//   @override
+//   List<DocumentationObject> Function(BuildContext context)?
+//       get documentationBuilder => null;
+//
+//   @override
+//   String get name => "Get Members";
+// }
 
 class UpdateUserData extends MethodWrap {
   TextEditingController dataController = TextEditingController();
@@ -561,12 +662,47 @@ class UpdateUserData extends MethodWrap {
     ];
   }
 
+  var r =
+      'Update the current realtime socket member data and broadcast an update'
+      ' event to each joined channel so that other channel members can get the'
+      ' information about the updated member data. Whenever the socket joins a'
+      ' new channel, this updated member data will be broadcasted to channel'
+      ' members. As a result of this action a `channel:update` event is sent to'
+      ' all members of the subscribed channels notifying the member data update.'
+      ''
+      'As an example if you are developing a realtime chat application it might'
+      ' be a good idea to store the username and user profile picture URL in'
+      ' member data so that joined chat channels can get updated user information.';
+
   @override
-  List<DocumentationObject> get description => [];
+  List<DocumentationObject> get description => [
+        const AutoSpan(
+            'Update the current realtime socket member data and broadcast an update'
+            ' event to each joined channel so that other channel members can get the'
+            ' information about the updated member data. Whenever the socket joins a'
+            ' new channel, this updated member data will be broadcasted to channel'
+            ' members. As a result of this action a `channel:update` event is sent to'
+            ' all members of the subscribed channels notifying the member data update.'),
+      ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => null;
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            const AutoSpan(
+                'As an example if you are developing a realtime chat application it might'
+                ' be a good idea to store the username and user profile picture URL in'
+                ' member data so that joined chat channels can get updated user information.'),
+            vSpace,
+            LeftSpace.enforceSession,
+            vSpace,
+            DartCode("""
+altogic.realtime.updateProfile(MemberData(
+        id: ${currentUser.user.id},
+        data: {'name': ${currentUser.user.name}, 'data': ${dataController.text}));
+    """)
+          ];
 
   @override
   String get name => "Update User Data";

@@ -88,6 +88,7 @@ class SignUpWithPhoneMethod extends MethodWrap {
       AltogicInput(hint: 'Phone', editingController: phoneController),
       AltogicInput(hint: 'Password', editingController: passwordController),
       AltogicInput(hint: 'User Name', editingController: nameController),
+      const PhoneNotAvailable(),
       AltogicButton(
           body: 'Sign Up',
           onPressed: () {
@@ -105,6 +106,32 @@ class SignUpWithPhoneMethod extends MethodWrap {
                 passwordController.text.isNotEmpty;
           }),
     ];
+  }
+}
+
+class PhoneNotAvailable extends StatelessWidget {
+  const PhoneNotAvailable({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: Column(
+        children: const [
+          Text(
+            "Phone number authentication is not available in this example.",
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.red, fontSize: 18),
+          ),
+          Text(
+            "You can configure it in your Altogic authorization settings. "
+            "Twilio, MessageBird and Vonage services supported.",
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.black),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -171,6 +198,7 @@ class SignInWithPhoneMethod extends MethodWrap {
     return [
       AltogicInput(hint: 'Phone', editingController: phoneController),
       AltogicInput(hint: 'Password', editingController: passwordController),
+      const PhoneNotAvailable(),
       AltogicButton(
           body: 'Sign In',
           onPressed: () {
@@ -214,6 +242,7 @@ class SignInWithCodeMethod extends MethodWrap {
     return [
       AltogicInput(hint: 'Phone', editingController: phoneController),
       AltogicInput(hint: 'Code', editingController: codeController),
+      const PhoneNotAvailable(),
       AltogicButton(
           body: 'Sign In',
           onPressed: () {
@@ -235,13 +264,98 @@ class SignInWithCodeMethod extends MethodWrap {
 class SignInWithProviderMethod extends MethodWrap {
   SignInWithProviderMethod();
 
+  var r =
+      'Signs in a user using the Oauth2 flow of the specified provider. Calling'
+      ' this method with the name of the sign in provider will return a URL that'
+      ' user have to redirect.'
+      ''
+      'If the provider sign in completes successfully, Altogic directs the user'
+      ' to the redirect URL with an access token that you can use to fetch the'
+      ' authentication grants (e.g., user and session data).'
+      ''
+      'If you are using this package with Flutter, ``signInWithProviderFlutter``'
+      ' function will launch redirect URL automatically. Then, you can use the'
+      ' ``handleRedirectUri`` function in `onGenerateRoute` or'
+      ' `onGenerateInitialRoute` to get auth information when your application is'
+      ' opened again with the redirect URL you specified in the Altogic interface.'
+      ''
+      'To access the ``signInWithProviderFlutter`` and ``handleRedirectUri``'
+      ' methods, you must import the altogic_flutter package.'
+      ''
+      'If this is the first time a user is using this provider then a new user'
+      ' record is created in the database, otherwise the lastLoginAt field value'
+      ' of the existing user record is updated.'
+      ''
+      '[provider] can be :'
+      '   "google" |'
+      '   "facebook" |'
+      '   "twitter" |'
+      '   "discord" |'
+      '   "github"';
+
   @override
-  List<DocumentationObject> get description =>
-      const [AutoSpan('Documentation will be added')];
+  List<DocumentationObject> get description => const [
+        AutoSpan(
+            'Signs in a user using the Oauth2 flow of the specified provider. Calling'
+            ' this method with the name of the sign in provider will return a URL that'
+            ' user have to redirect.'),
+        vSpace,
+        AutoSpan(
+            'If the provider sign in completes successfully, Altogic directs the user'
+            ' to the redirect URL with an access token that you can use to fetch the'
+            ' authentication grants (e.g., user and session data).'),
+        vSpace,
+        AutoSpan(
+            'Available providers: google, facebook, twitter, discord, github'),
+      ];
 
   @override
   List<DocumentationObject> Function(BuildContext context)?
-      get documentationBuilder => (c) => [const AutoSpan('Will be added')];
+      get documentationBuilder => (c) => [
+            ...description,
+            vSpace,
+            const AutoSpan(
+                'If you are using this package with Flutter, `signInWithProviderFlutter`'
+                ' function will launch redirect URL automatically. Then, you can use the'
+                ' `handleRedirectUri` function in `onGenerateRoute` or'
+                ' `onGenerateInitialRoute` to get auth information when your application is'
+                ' opened again with the redirect URL you specified in the Altogic interface.'
+                '\n\n'
+                'To access the `signInWithProviderFlutter` and `handleRedirectUri`'
+                ' methods, you must import the altogic_flutter package.'
+                '\n\n'
+                'If this is the first time a user is using this provider then a new user'
+                ' record is created in the database, otherwise the lastLoginAt field value'
+                ' of the existing user record is updated.'),
+            vSpace,
+            const DartCode("""
+altogic.auth.signInWithProviderFlutter(provider);
+    """),
+            vSpace,
+            const AutoSpan(
+                'Now, the oAuth screen opens. After the user signs in, the'
+                ' redirect URL is opened again. You can use the `handleRedirectUri`'),
+            vSpace,
+            const Header('Handling redirect', level: 2),
+            vSpace,
+            const Header("Flutter Web / Dart WebDev", level: 3),
+            vSpace,
+            const AutoSpan(
+                'If you are using Flutter Web or Dart WebDev, you can use the `handleRedirectUri`'
+                ' function in redirect page, you can route to the redirect page'
+                ' in `onGenerateInitialRoute` in the get auth information'
+                ' when your application is opened again with the redirect URL you specified in the'
+                ' Altogic interface.'),
+            vSpace,
+            const Header('Other Platforms', level: 3),
+            vSpace,
+            const AutoSpan(
+                'If you are using other platforms, you can use the `uni_links` package and deep linking.'
+                ' On your application splash screen, you can check if the '
+                ' application is opened with deep link and the url which open your app.'
+                '\n\n'
+                'If your app opened with deep link, you can use the `handleRedirectUri` to get auth result.'),
+          ];
 
   @override
   String get name => 'Sign In With Provider';
@@ -263,13 +377,6 @@ class SignInWithProviderMethod extends MethodWrap {
               await AuthService.of(context).signInWithProvider('github');
             });
           }),
-      AltogicButton(
-          body: 'Facebook',
-          onPressed: () {
-            asyncWrapper(() async {
-              await AuthService.of(context).signInWithProvider('facebook');
-            });
-          })
     ];
   }
 }
@@ -473,6 +580,7 @@ if (errors != null) {
   List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: 'Phone', editingController: phoneController),
+      const PhoneNotAvailable(),
       AltogicButton(
           body: 'Send',
           onPressed: () {
@@ -676,6 +784,7 @@ if (errors != null) {
   List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: 'Phone Number', editingController: phoneController),
+      const PhoneNotAvailable(),
       AltogicButton(
           body: 'Send',
           onPressed: () {
@@ -746,6 +855,7 @@ if (errors != null) {
   List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: 'Phone Number', editingController: phoneController),
+      const PhoneNotAvailable(),
       AltogicButton(
           body: 'Send',
           onPressed: () {
@@ -867,6 +977,7 @@ if (errors != null) {
       AltogicInput(hint: 'Phone', editingController: phoneController),
       AltogicInput(hint: 'Code', editingController: codeController),
       AltogicInput(hint: 'New Password', editingController: newPwdController),
+      const PhoneNotAvailable(),
       AltogicButton(
           body: 'Change',
           onPressed: () {
@@ -1106,6 +1217,7 @@ class ChangePhone extends MethodWrap {
     return [
       AltogicInput(hint: 'New Phone', editingController: phoneController),
       AltogicInput(hint: 'Password', editingController: passwordController),
+      const PhoneNotAvailable(),
       AltogicButton(
           body: 'Change',
           onPressed: () {

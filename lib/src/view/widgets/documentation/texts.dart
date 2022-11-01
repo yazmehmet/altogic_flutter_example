@@ -1,7 +1,6 @@
 import 'dart:collection';
 
 import 'package:altogic_flutter_example/src/view/widgets/documentation/base.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 

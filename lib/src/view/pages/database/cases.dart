@@ -6,6 +6,7 @@ import 'package:altogic_flutter_example/src/view/widgets/case.dart';
 import 'package:altogic_flutter_example/src/view/widgets/documentation/base.dart';
 import 'package:altogic_flutter_example/src/view/widgets/documentation/code.dart';
 import 'package:altogic_flutter_example/src/view/widgets/input.dart';
+import 'package:altogic_flutter_example/src/view/widgets/suggestion.dart';
 import 'package:flutter/material.dart';
 
 import '../../../controller/user_controller.dart';
@@ -375,9 +376,12 @@ var res = await altogic.db
     .model('market.contacts')
     .object()
     .append({
-      'name': ${nameController.text},
-      'email': ${emailController.text},
-    }, ${currentUser.market.id});
+        'name': ${nameController.text},
+        'email': ${emailController.text},
+      }, 
+      "${currentUser.market.id}",
+      options: const AppendOptions(returnTop: true)
+    );
             """),
           ];
 
@@ -784,7 +788,7 @@ var res = await altogic.db
         ],
         onPressed: () async {
           await asyncWrapper<List<String>?>(() async {
-            var res = await DbService.of(context).groupCategories();
+            var res = await DbService.of(context).groupCategories(true);
             categories.addAll(res ?? []);
             return res;
           });
@@ -998,7 +1002,7 @@ class GetMarketProducts extends MethodWrap {
 var res = await altogic.db
   .model('product')
   .sort('${filter.currentField}',
-      ${filter.asc} ? "Direction.asc" : "Direction.desc"})
+      ${filter.asc} ? Direction.asc : Direction.desc})
   .filter('market == "${currentUser.market.id}"')
   .get();
 """),
@@ -1006,6 +1010,188 @@ var res = await altogic.db
 
   @override
   String get name => 'Get Market Products (filter)';
+}
+
+class FilterAllProducts extends MethodWrap {
+  final filter = FilterService();
+
+  final TextEditingController expression = TextEditingController();
+
+  final TextEditingController limitController = TextEditingController(
+    text: '10',
+  );
+  final TextEditingController pageController = TextEditingController(
+    text: '1',
+  );
+
+  FilterAllProducts();
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Future.wait([
+        DbService.of(context).groupCategories(false),
+        DbService.of(context).groupProperties(false)
+      ]).then((value) {
+        if (mounted) {
+          setState(() {
+            categories = value[0];
+            properties = value[1];
+          });
+        }
+      });
+    });
+    super.initState();
+  }
+
+  List<String>? categories;
+  List<String>? properties;
+
+  @override
+  List<Widget> children(BuildContext context) {
+    var sorting = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text('Sorting With:'),
+        DropdownButton(
+            value: filter.currentField,
+            items: filter.fields
+                .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                .toList(),
+            onChanged: (v) {
+              setState(() {
+                filter.currentField = v as String;
+              });
+            }),
+        const SizedBox(
+          width: 20,
+        ),
+        SizedBox(
+          width: 100,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text('Ascending'),
+              Switch(
+                  value: filter.asc,
+                  onChanged: (v) {
+                    setState(() {
+                      filter.asc = v;
+                    });
+                  }),
+            ],
+          ),
+        ),
+      ],
+    );
+    var size = MediaQuery.of(context).size;
+    return [
+      AltogicInput(
+          vertical: true,
+          suffixIcon: (c) => IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () {
+                expression.clear();
+              }),
+          hint: 'Filter Expression',
+          editingController: expression),
+      BasicSuggestions(
+          values: [
+            ...BasicSuggestions.logicalOperators,
+            if (categories != null && categories!.isNotEmpty)
+              ...BasicSuggestions.equalitySuggestions('category',
+                  valueName: categories!.first, string: true),
+            ...BasicSuggestions.comparisonSuggestions('price',
+                valueName: "1000"),
+            if (properties != null && properties!.isNotEmpty)
+              BasicSuggestions.arrayIn('properties',
+                  valueName: properties!.first)
+          ],
+          onSelected: (v) {
+            expression.text = expression.text + v;
+          }),
+      // Sort with
+      Container(
+        width: MediaQuery.of(context).size.width,
+        alignment: Alignment.center,
+        child: SizedBox(
+            width: MediaQuery.of(context).size.width.clamp(0, 500),
+            child: size.width < 350
+                ? SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: sorting,
+                  )
+                : sorting),
+      ),
+      vSpace.doc(context),
+
+      // Limit
+      AltogicInput(
+        editingController: limitController,
+        hint: 'Limit',
+        info: const [
+          AutoSpan('Limit is used to limit the number of results.'),
+          vSpace,
+          AutoSpan('Default value is 10.'),
+        ],
+      ),
+
+      // Page
+      AltogicInput(
+        editingController: pageController,
+        hint: 'Page',
+        info: const [
+          AutoSpan('Page is used to get the next page of results.'),
+          vSpace,
+          AutoSpan('Default value is 1.'),
+        ],
+      ),
+
+      AltogicButton(
+          body: 'Get Products',
+          listenable: Listenable.merge([
+            limitController,
+            pageController,
+          ]),
+          enabled: () =>
+              !loading &&
+              int.tryParse(limitController.text) != null &&
+              int.tryParse(pageController.text) != null,
+          onPressed: () {
+            asyncWrapper(() async {
+              await DbService.of(context).filterProducts(
+                  expression: expression.text,
+                  sortEntry: SortEntry(filter.currentField,
+                      filter.asc ? Direction.asc : Direction.desc),
+                  limit: int.tryParse(limitController.text) ?? 20,
+                  page: int.tryParse(pageController.text) ?? 1);
+            });
+          })
+    ];
+  }
+
+  @override
+  List<DocumentationObject> get description => [
+        const AutoSpan("This case is used to get all products with filter."),
+      ];
+
+  @override
+  List<DocumentationObject> Function(BuildContext context)?
+      get documentationBuilder => (c) => [
+            const AutoSpan(
+                'Filter products function uses `.get` method of ``QueryBuilder'),
+            vSpace,
+            DartCode("""
+var res = await altogic.db
+  .model('product')
+  .sort('${filter.currentField}', ${filter.asc ? Direction.asc : Direction.desc})
+  .filter('${expression.text}')
+  .get();
+"""),
+          ];
+
+  @override
+  String get name => 'Filter Products (filter)';
 }
 
 class SearchProducts extends MethodWrap {
@@ -1069,11 +1255,7 @@ class SearchFuzzyProducts extends MethodWrap {
 
   final List<String> fields = [
     'name',
-    'price',
     'category',
-    'createdAt',
-    'updatedAt',
-    'properties'
   ];
 
   final ValueNotifier<String> currentField = ValueNotifier('name');
@@ -1823,7 +2005,7 @@ class GroupCategories extends MethodWrap {
         body: 'Group Categories',
         onPressed: () {
           asyncWrapper(() async {
-            await DbService.of(context).groupCategories();
+            await DbService.of(context).groupCategories(true);
           });
         },
         enabled: () => !loading,

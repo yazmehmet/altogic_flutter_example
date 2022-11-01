@@ -7,6 +7,8 @@ import 'package:altogic_flutter_example/src/view/widgets/documentation/base.dart
 import 'package:altogic_flutter_example/src/view/widgets/documentation/code.dart';
 import 'package:altogic_flutter_example/src/view/widgets/documentation/texts.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class MagicLinkRedirect extends StatefulWidget {
   const MagicLinkRedirect({Key? key, required this.arguments})
@@ -58,17 +60,31 @@ class _MagicLinkRedirectState extends State<MagicLinkRedirect> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              Documentation(children: [
-                vSpace,
-                const Header('Magic Link Redirect'),
-                vSpace,
-                const Description('Documentation will be added'),
-                vSpace,
-                const Header('Arguments', level: 3),
-                vSpace,
-                DartCode(const JsonEncoder.withIndent('   ')
-                    .convert(widget.arguments)),
-              ]),
+              Builder(builder: (context) {
+                var query = StringBuffer()..write('?');
+                var args = widget.arguments.entries.toList();
+                for (var i = 0; i < args.length; i++) {
+                  query.write('${args[i].key}=${args[i].value}');
+                  if (i < args.length - 1) {
+                    query.write('&');
+                  }
+                }
+                var url = 'altogic://altogic-flutter.com/auth-redirect$query';
+
+                return Documentation(children: [
+                  vSpace,
+                  const Header('Magic Link Redirect'),
+                  vSpace,
+                  const Description('Documentation will be added'),
+                  vSpace,
+                  const Header('Arguments', level: 3),
+                  vSpace,
+                  DartCode(url),
+                  vSpace,
+                  DartCode(const JsonEncoder.withIndent('   ')
+                      .convert(widget.arguments)),
+                ]);
+              }),
               vSpace.doc(context),
               ValueListenableBuilder(
                   valueListenable: response,

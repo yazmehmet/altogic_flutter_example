@@ -9,11 +9,15 @@ import 'package:altogic_flutter_example/src/view/widgets/documentation/code.dart
 import 'package:altogic_flutter_example/src/view/widgets/documentation/texts.dart';
 import 'package:altogic_flutter_example/src/view/widgets/input.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class ResetPwdRedirect extends StatefulWidget {
-  const ResetPwdRedirect({Key? key, required this.arguments}) : super(key: key);
+  const ResetPwdRedirect(
+      {Key? key, required this.arguments, required this.path})
+      : super(key: key);
 
   final Map<String, dynamic> arguments;
+  final String path;
 
   @override
   State<ResetPwdRedirect> createState() => _ResetPwdRedirectState();
