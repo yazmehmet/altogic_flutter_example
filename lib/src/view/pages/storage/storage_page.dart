@@ -1,5 +1,4 @@
-
-import 'package:altogic_flutter/altogic_flutter.dart';
+import 'package:altogic/altogic.dart';
 import 'package:altogic_flutter_example/src/service/service_base.dart';
 import 'package:altogic_flutter_example/src/service/storage_service.dart';
 import 'package:altogic_flutter_example/src/service/suggestion_service.dart';
@@ -117,6 +116,14 @@ class CreateBucket extends MethodWrap {
   final TextEditingController tagController = TextEditingController();
   final BucketCreatingManager manager = BucketCreatingManager();
 
+  void _submitTags(String? submitted) {
+    if (submitted != null && submitted.isNotEmpty) {
+      manager.tags.add(submitted);
+      tagController.clear();
+      setState(() {});
+    }
+  }
+
   @override
   List<Widget> children(BuildContext context) {
     return [
@@ -124,13 +131,12 @@ class CreateBucket extends MethodWrap {
       AltogicInput(
         editingController: tagController,
         hint: "Tags",
+        onSubmitted: _submitTags,
         suffixIcon: (c) => IconButton(
             onPressed: tagController.text.isEmpty
                 ? null
                 : () {
-                    manager.tags.add(tagController.text);
-                    tagController.clear();
-                    setState(() {});
+                    _submitTags(tagController.text);
                   },
             icon: const Icon(Icons.add)),
       ),

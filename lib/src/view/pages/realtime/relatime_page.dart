@@ -472,7 +472,7 @@ class SendMethod extends MethodWrap {
       AltogicInput(hint: 'Message', editingController: messageController),
       vSpace.doc(context),
       AltogicButton(
-          body: 'Broadcast',
+          body: 'Broadcast to Channel',
           listenable: Listenable.merge([
             eventNameController,
             messageController,

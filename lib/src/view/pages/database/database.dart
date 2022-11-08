@@ -52,7 +52,7 @@ class _DatabasePageState extends State<DatabasePage> {
       ),
       const AutoSpan(
               "This page is used to show database operations with a simple "
-              "scenario. The scenario is ... (will be added)")
+              "scenario. The scenario is ... (will be added) ")
           .doc(ctx),
       Container(
         width: double.infinity,
@@ -60,7 +60,7 @@ class _DatabasePageState extends State<DatabasePage> {
         child: SizedBox(
           width: 600,
           child: Image.network(
-              'https://c1-na.altogic.com/_storage/62d3ea1510b444043a4f80b7/62d3ea1510b444043a4f80b7/6336f0b778ce5bb8a7f3e0ec'),
+              'https://c1-na.altogic.com/_storage/62d3ea1510b444043a4f80b7/62d3ea1510b444043a4f80b7/63626f16043d31db9ee6af50'),
         ),
       ),
       vSpace.doc(ctx),

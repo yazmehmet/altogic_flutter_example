@@ -1,4 +1,4 @@
-import 'package:altogic_flutter/altogic_flutter.dart';
+import 'package:altogic/altogic.dart';
 import 'package:altogic_flutter_example/main.dart';
 import 'package:altogic_flutter_example/src/service/service_base.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +9,7 @@ class CacheService extends ServiceBase {
 
   Future<void> setCache(String key, dynamic value, int? ttl) async {
     response.loading();
-    var res = await altogic.cache.set(key, value, ttl: ttl);
+    var res = await altogic.cache.set(key, value,ttl);
     response.error(res);
   }
 
@@ -27,13 +27,13 @@ class CacheService extends ServiceBase {
 
   Future<void> increment(String key, int amount) async {
     response.loading();
-    var res = await altogic.cache.increment(key, amount);
+    var res = await altogic.cache.increment(key, increment: amount);
     response.response(res);
   }
 
   Future<void> decrement(String key, int amount) async {
     response.loading();
-    var res = await altogic.cache.decrement(key, amount);
+    var res = await altogic.cache.decrement(key, decrement: amount);
     response.response(res);
   }
 

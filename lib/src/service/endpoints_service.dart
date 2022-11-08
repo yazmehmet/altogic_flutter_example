@@ -1,4 +1,4 @@
-import 'package:altogic_flutter/altogic_flutter.dart';
+import 'package:altogic/altogic.dart';
 import 'package:altogic_flutter_example/main.dart';
 import 'package:altogic_flutter_example/src/service/service_base.dart';
 import 'package:flutter/cupertino.dart';
@@ -34,12 +34,10 @@ class EndpointService extends ServiceBase {
   }
 
   Future<List<Map<String, dynamic>>?> getObjects() async {
-    var re = await altogic.db.model("count").sort('count', Direction.asc).get();
+    var re = await altogic.endpoint.get('/get_counts').asList();
     response.response(re);
     if (re.errors == null) {
-      return re.data!
-          .map<Map<String, dynamic>>((e) => e as Map<String, dynamic>)
-          .toList();
+      return re.data!;
     } else {
       return null;
     }

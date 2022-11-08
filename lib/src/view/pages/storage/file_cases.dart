@@ -1,4 +1,4 @@
-import 'package:altogic_flutter/altogic_flutter.dart';
+import 'package:altogic/altogic.dart';
 import 'package:altogic_flutter_example/src/service/file_manager.dart';
 import 'package:altogic_flutter_example/src/service/suggestion_service.dart';
 import 'package:altogic_flutter_example/src/view/widgets/button.dart';
@@ -21,6 +21,7 @@ String _getFileManager(BuildContext context) {
         .bucket("${FileManagerService.of(context).bucket}")
         .file("${FileManagerService.of(context).fileNameOrId}")""";
 }
+
 class FileExistsCase extends MethodWrap {
   FileExistsCase();
 
@@ -72,7 +73,7 @@ class GetFileInfoMethod extends MethodWrap {
           body: 'Get File Info',
           onPressed: () {
             asyncWrapper(() async {
-              FileManagerService.of(context).getInfo();
+              FileManagerService.of(context).getInfo(true);
             });
           })
     ];
@@ -837,17 +838,24 @@ class AddTagsFileManager extends MethodWrap {
 
   final List<String> tagging = [];
 
+  void _submitTags(String? submitted) {
+    if (submitted != null && submitted.isNotEmpty) {
+      tagging.add(submitted);
+      tagsController.clear();
+      setState(() {});
+    }
+  }
+
   @override
   List<Widget> children(BuildContext context) {
     return [
       AltogicInput(
         hint: "Tags",
+        onSubmitted: _submitTags,
         editingController: tagsController,
         suffixIcon: (c) => IconButton(
             onPressed: () {
-              tagging.add(tagsController.text);
-              tagsController.clear();
-              setState(() {});
+              _submitTags(tagsController.text);
             },
             icon: const Icon(Icons.add)),
       ),
@@ -1090,10 +1098,17 @@ class UpdateInfoFileManager extends MethodWrap {
 
   late List<String> tagging;
 
+  void _submitTags(String? submitted) {
+    if (submitted != null && submitted.isNotEmpty) {
+      tagging.add(submitted);
+      tagsController.clear();
+      setState(() {});
+    }
+  }
+
   @override
   List<Widget> children(BuildContext context) {
     tagging = (file['tags'] as List).cast<String>();
-
     return [
       AltogicInput(
         hint: "New Name",
@@ -1101,12 +1116,11 @@ class UpdateInfoFileManager extends MethodWrap {
       ),
       AltogicInput(
         hint: "Tags",
+        onSubmitted: _submitTags,
         editingController: tagsController,
         suffixIcon: (c) => IconButton(
             onPressed: () {
-              tagging.add(tagsController.text);
-              tagsController.clear();
-              setState(() {});
+              _submitTags(tagsController.text);
             },
             icon: const Icon(Icons.add)),
       ),
@@ -1184,8 +1198,6 @@ class UpdateInfoFileManager extends MethodWrap {
           })
     ];
   }
-
-
 
   @override
   List<DocumentationObject> get description => [

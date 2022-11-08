@@ -1,46 +1,39 @@
-import 'dart:convert';
-
+import 'package:altogic/altogic.dart';
 import 'package:flutter/material.dart';
 
 import '../../../service/auth_service.dart';
 import '../../../service/service_base.dart';
 import '../../widgets/base_viewer.dart';
+import '../../widgets/button.dart';
 import '../../widgets/documentation/base.dart';
 import '../../widgets/documentation/code.dart';
 import '../../widgets/documentation/texts.dart';
 
-class RedirectProvider extends StatefulWidget {
-  const RedirectProvider({Key? key, required this.arguments}) : super(key: key);
+class RedirectProviderPage extends StatefulWidget {
+  const RedirectProviderPage({Key? key, required this.redirect})
+      : super(key: key);
 
-  final Map<String, dynamic> arguments;
+  final OauthRedirect redirect;
 
   @override
-  State<RedirectProvider> createState() => _RedirectProviderState();
+  State<RedirectProviderPage> createState() => _RedirectProviderPageState();
 }
 
-class _RedirectProviderState extends State<RedirectProvider> {
-  ValueNotifier<String> response = ValueNotifier<String>('Getting grant...');
-
+class _RedirectProviderPageState extends State<RedirectProviderPage> {
   AuthService authService = AuthService();
 
   @override
   void initState() {
-    _get();
     super.initState();
   }
 
   _get() async {
     await Future.delayed(const Duration(milliseconds: 200));
-    if (!widget.arguments.containsKey('access_token')) {
-      response.value = 'Path arguments *incorrect*. For verify email,'
-          ' `access_token` *must be provided*.';
+    if (widget.redirect.error != null) {
+      authService.response.message('redirect.error: ${widget.redirect.error}');
       return;
     }
-    response.value = '';
-    await authService.getAuthGrant(widget.arguments['access_token']!);
-    if (authService.currentUserController.isLogged) {
-      response.value = 'Signed In!';
-    }
+    await authService.getAuthGrant(widget.redirect.token);
   }
 
   @override
@@ -49,28 +42,66 @@ class _RedirectProviderState extends State<RedirectProvider> {
       service: authService,
       child: BaseViewer(
         leadingHome: true,
-        body: Padding(
+        body: SingleChildScrollView(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Documentation(children: [
-                vSpace,
-                const Header('Oauth Redirect Page'),
-                vSpace,
-                const Description('Documentation will be added'),
-                vSpace,
-                const Header('Arguments', level: 3),
-                vSpace,
-                DartCode(const JsonEncoder.withIndent('   ')
-                    .convert(widget.arguments)),
-              ]),
-              vSpace.doc(context),
-              ValueListenableBuilder(
-                  valueListenable: response,
-                  builder: (c, v, w) {
-                    return Documentation(children: [AutoSpan(v)]);
-                  }),
-            ],
+          child: Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 500,
+                  child: Documentation(children: [
+                    vSpace,
+                    const Header('Oauth Sign in Redirect Page'),
+                    vSpace,
+                    const AutoSpan(
+                        "This page is used to sign in with oauth provider link."
+                        " The page opened after signing in from the provider."
+                        "\n\n"
+                        "After user signed in, Altogic will redirect the "
+                        "user to the *redirect url*"
+                        "In the Altogic setting you can specify the *redirect url*."),
+                    vSpace,
+                    const Header('Handling Redirect Url', level: 2),
+                    vSpace,
+                    const AutoSpan(
+                        "Check the deep linking configuration documentation."),
+                    const LinkText(
+                        "Blog Post / Documentation", "www.google.com"),
+                    vSpace,
+                    const AutoSpan("Current redirect url is : "),
+                    vSpace,
+                    DartCode(widget.redirect.url),
+                    vSpace,
+                    const AutoSpan(
+                        "If `error` parameter is null, link is valid and "
+                        "you can get the auth grant from the `access_token` parameter."),
+                    vSpace,
+                    if (widget.redirect.error == null) DartCode("""
+var result = await altogic.auth.getAuthGrant('${widget.redirect.token}');
+// OR
+var result = await altogic.auth.getAuthGrant(redirect.token); 
+
+
+if (result.errors == null) {
+  // user is signed in
+}
+                      """) else AutoSpan("Error: ${widget.redirect.error}"),
+                  ]),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                AltogicButton(
+                    body: "Get Auth Grant",
+                    onPressed: () {
+                      _get();
+                    }),
+                const SizedBox(
+                  height: 20,
+                ),
+              ],
+            ),
           ),
         ),
       ),

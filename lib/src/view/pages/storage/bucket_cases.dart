@@ -1,4 +1,4 @@
-import 'package:altogic_flutter/altogic_flutter.dart';
+import 'package:altogic/altogic.dart';
 import 'package:altogic_flutter_example/src/service/suggestion_service.dart';
 import 'package:altogic_flutter_example/src/view/widgets/documentation/code.dart';
 import 'package:altogic_flutter_example/src/view/widgets/suggestion.dart';
@@ -100,7 +100,7 @@ class GetBucketInfo extends MethodWrap {
           body: "Get Bucket Info",
           onPressed: () {
             asyncWrapper(() async {
-              await BucketService.of(context).getBucketInfo(detailed.value);
+              await BucketService.of(context).getBucketInfo(detailed.value,true);
             });
           })
     ];
@@ -1030,17 +1030,24 @@ class AddTagsBucketManager extends MethodWrap {
 
   final List<String> tagging = [];
 
+  void _submitTags(String? submitted) {
+    if (submitted != null && submitted.isNotEmpty) {
+      tagging.add(submitted);
+      tagsController.clear();
+      setState(() {});
+    }
+  }
+
   @override
   List<Widget> children(BuildContext context) {
     return [
       AltogicInput(
         hint: "Tags",
+        onSubmitted: _submitTags,
         editingController: tagsController,
         suffixIcon: (c) => IconButton(
             onPressed: () {
-              tagging.add(tagsController.text);
-              tagsController.clear();
-              setState(() {});
+              _submitTags(tagsController.text);
             },
             icon: const Icon(Icons.add)),
       ),
@@ -1269,6 +1276,14 @@ class UpdateInfoBucketManager extends MethodWrap {
               ?.cast<String>() ??
           <String>[]);
 
+  void _submitTags(String? submitted) {
+    if (submitted != null && submitted.isNotEmpty) {
+      tagging.add(submitted);
+      tagsController.clear();
+      setState(() {});
+    }
+  }
+
   @override
   List<Widget> children(BuildContext context) {
     return [
@@ -1278,12 +1293,11 @@ class UpdateInfoBucketManager extends MethodWrap {
       ),
       AltogicInput(
         hint: "Tags",
+        onSubmitted: _submitTags,
         editingController: tagsController,
         suffixIcon: (c) => IconButton(
             onPressed: () {
-              tagging.add(tagsController.text);
-              tagsController.clear();
-              setState(() {});
+              _submitTags(tagsController.text);
             },
             icon: const Icon(Icons.add)),
       ),

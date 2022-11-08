@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:altogic_flutter/altogic_flutter.dart';
+import 'package:altogic/altogic.dart';
 import 'package:flutter/cupertino.dart';
 
 class ResponseViewController with ChangeNotifier {
@@ -23,11 +23,11 @@ class ResponseViewController with ChangeNotifier {
     if (error == null) {
       _setValue = "No error";
     } else {
-      _setValue = error.toString();
+      _setValue = const JsonEncoder.withIndent("    ").convert(error.toJson());
     }
   }
 
-  void message(String message){
+  void message(String message) {
     _setValue = message;
   }
 

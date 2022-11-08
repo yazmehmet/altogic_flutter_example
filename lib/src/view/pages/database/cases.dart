@@ -1,6 +1,9 @@
-import 'package:altogic_flutter/altogic_flutter.dart';
+import 'dart:math';
+
+import 'package:altogic/altogic.dart';
 import 'package:altogic_flutter_example/src/service/db_service.dart';
 import 'package:altogic_flutter_example/src/service/suggestion_service.dart';
+import 'package:altogic_flutter_example/src/utils/lorem.dart';
 import 'package:altogic_flutter_example/src/view/widgets/button.dart';
 import 'package:altogic_flutter_example/src/view/widgets/case.dart';
 import 'package:altogic_flutter_example/src/view/widgets/documentation/base.dart';
@@ -674,6 +677,14 @@ class CreateProduct extends MethodWrap {
 
   CreateProduct();
 
+  void _submitProperty(String? submitted) {
+    if (submitted != null && submitted.isNotEmpty) {
+      properties.add(propertyController.text);
+      propertyController.clear();
+      setState(() {});
+    }
+  }
+
   @override
   List<Widget> children(BuildContext context) {
     return [
@@ -706,13 +717,12 @@ class CreateProduct extends MethodWrap {
       AltogicInput(
         editingController: propertyController,
         hint: "Product Property",
+        onSubmitted: _submitProperty,
         suffixIcon: (c) => IconButton(
             onPressed: propertyController.text.isEmpty
                 ? null
                 : () {
-                    properties.add(propertyController.text);
-                    propertyController.clear();
-                    setState(() {});
+                    _submitProperty(propertyController.text);
                   },
             icon: const Icon(Icons.add)),
         info: const [
@@ -770,7 +780,7 @@ class CreateProduct extends MethodWrap {
           ),
         ),
       AltogicButton(
-        body: 'Group Categories',
+        body: 'Get Category Suggestions',
         documentationBuilder: (c) => const [
           AutoSpan('Group categories function uses `.group` and `.compute` '
               'method of ``QueryBuilder'),
@@ -794,6 +804,20 @@ var res = await altogic.db
           });
         },
         enabled: () => !loading,
+      ),
+      AltogicButton(
+        body: 'Fill with Lorem Ipsum ',
+        onPressed: () {
+          nameController.text = createProductName();
+          descriptionController.text = createProductDescription();
+          priceController.text = Random().nextInt(100).toString();
+          quantityController.text = Random().nextInt(100).toString();
+          categoryController.text = createProductCategory();
+          propertyController.clear();
+          properties.clear();
+          properties.addAll(createProductProperties());
+          setState(() {});
+        },
       ),
       AltogicButton(
         body: 'Create Product',
@@ -1224,14 +1248,15 @@ class SearchProducts extends MethodWrap {
   }
 
   @override
-  // TODO: implement description
   List<DocumentationObject> get description => [
         const AutoSpan(
             "This case is used to search for products of the current market."),
+        vSpace,
+        const AutoSpan(
+            "`QueryBuilder.search` searches by exact match. You can use `searchFuzzy` to search without an exact match."),
       ];
 
   @override
-  // TODO: implement documentationBuilder
   List<DocumentationObject> Function(BuildContext context)?
       get documentationBuilder => (c) => [
             const AutoSpan(
@@ -1246,7 +1271,7 @@ var res = await altogic.db
           ];
 
   @override
-  String get name => 'Search Products';
+  String get name => 'Search Products (QueryBuilder.search)';
 }
 
 // search fuzzy
@@ -1548,7 +1573,7 @@ var res = await altogic.db
           ];
 
   @override
-  String get name => 'Change Product Price';
+  String get name => 'Change Product Price (QueryBuilder.update)';
 }
 
 // Delete Product
@@ -2070,15 +2095,15 @@ class GetMarketWithAvgPrice extends MethodWrap {
   List<DocumentationObject> Function(BuildContext context)?
       get documentationBuilder => (c) {
             return [
-              DartCode("""
-var res = await altogic.db.model('product')
-    .filter('market == "${currentUser.market.id}"')
-    .compute(
-    GroupComputation(
-        sort: Direction.desc,
-        name: 'avg',
-        type: GroupComputationType.avg,
-        expression: 'price'));
+              const DartCode("""
+var res = await altogic.db
+        .model('product')
+        .group('market')
+        .compute(GroupComputation(
+            sort: Direction.desc,
+            name: 'avg',
+            type: GroupComputationType.avg,
+            expression: 'price'));
 """),
             ];
           };
@@ -2115,15 +2140,17 @@ class GetMarketWithTotalStockValue extends MethodWrap {
   List<DocumentationObject> Function(BuildContext context)?
       get documentationBuilder => (c) {
             return [
-              DartCode("""
-var res = await altogic.db.model('product')
-    .filter('market == "${currentUser.market.id}"')
+              const DartCode("""
+var res = await altogic
+    .db
+    .model('product')
+    .group('market')
     .compute(
-    GroupComputation(
-        sort: Direction.desc,
-        name: 'value',
-        type: GroupComputationType.sum,
-        expression: 'price * quantity'));
+        GroupComputation(
+            sort: Direction.desc,
+            name: 'value',
+            type: GroupComputationType.sum,
+            expression: 'price * amount'));
 """),
             ];
           };
@@ -2159,14 +2186,16 @@ class GetMarketProductCount extends MethodWrap {
   List<DocumentationObject> Function(BuildContext context)?
       get documentationBuilder => (c) {
             return [
-              DartCode("""
-var res = await altogic.db
+              const DartCode("""
+var res = await altogic
+    .db
     .model('product')
-    .filter('market == "${currentUser.market.id}"')
-    .compute(GroupComputation(
-        sort: Direction.desc,
-        name: 'count',
-        type: GroupComputationType.count));
+    .group('market')
+    .compute(
+        GroupComputation(
+            sort: Direction.desc,
+            name: 'count',
+            type: GroupComputationType.count));
 """),
             ];
           };

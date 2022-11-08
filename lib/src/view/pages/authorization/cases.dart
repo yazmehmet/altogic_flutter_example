@@ -20,7 +20,11 @@ class SignUpWithEmailMethod extends MethodWrap {
   List<DocumentationObject> get description => const [
         AutoSpan('Creates a new user using the email and password '
             'authentication method in the database.'),
-        Description('For setting other fields of user look more information.')
+        vSpace,
+        Description('For setting other fields of user look more information.'),
+        vSpace,
+        LeftSpace('A confirmation mail will '
+            'be sent when the sign-up method works successfully.'),
       ];
 
   @override

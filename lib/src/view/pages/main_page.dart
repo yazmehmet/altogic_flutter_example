@@ -24,6 +24,7 @@ class _MainPageState extends State<MainPage> {
     '/queue',
     '/storage',
     '/realtime',
+    '/cache'
   };
 
   @override

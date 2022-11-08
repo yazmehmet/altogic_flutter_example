@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:altogic_flutter/altogic_flutter.dart';
+import 'package:altogic/altogic.dart';
 import 'package:altogic_flutter_example/src/service/service_base.dart';
 import 'package:altogic_flutter_example/src/view/pages/storage/utils/upload.dart'
     if (dart.library.html) 'package:altogic_flutter_example/src/view/pages/storage/utils/web_upload.dart'
@@ -17,7 +17,7 @@ class FileManagerService extends ServiceBase {
       InheritedService.of<FileManagerService>(context);
   ValueNotifier<Map<String, dynamic>?> fileInfo =
       ValueNotifier<Map<String, dynamic>?>(null);
-  final String fileNameOrId;
+  String fileNameOrId;
   final String bucket;
 
   FileManager get file => altogic.storage.bucket(bucket).file(fileNameOrId);
@@ -28,10 +28,10 @@ class FileManagerService extends ServiceBase {
     response.response(res);
   }
 
-  Future<Map<String, dynamic>?> getInfo() async {
-    response.loading();
+  Future<Map<String, dynamic>?> getInfo(bool printResult) async {
+    if (printResult) response.loading();
     var res = await file.getInfo();
-    response.response(res);
+    if (printResult) response.response(res);
     if (res.data != null) {
       fileInfo.value = res.data;
     }
@@ -53,7 +53,7 @@ class FileManagerService extends ServiceBase {
   Future<Uint8List?> downloadFile() {
     response.loading();
     return file.download().then((value) async {
-      var info = await getInfo();
+      var info = await getInfo(false);
       response.message('Downloaded : ${value.data?.length} bytes ');
       download(info!['fileName'], value.data!);
     }).catchError((e) {
@@ -65,7 +65,8 @@ class FileManagerService extends ServiceBase {
     response.loading();
     var res = await file.rename(newName);
     response.response(res);
-    getInfo();
+    fileNameOrId = newName;
+    fileInfo.value = res.data;
   }
 
   Future<void> duplicate(String newName) async {
@@ -77,8 +78,8 @@ class FileManagerService extends ServiceBase {
   Future<void> delete() async {
     response.loading();
     var errors = await file.delete();
-    getInfo();
     response.error(errors);
+    if (errors == null) fileInfo.value = null;
   }
 
   Future<void> replace(Uint8List data, void Function(int, int, double) onLoad,
@@ -105,13 +106,14 @@ class FileManagerService extends ServiceBase {
     response.loading();
     var res = await file.addTags(tags);
     response.response(res);
-    getInfo();
+
+    fileInfo.value = res.data;
   }
 
   Future<void> removeTags(List<String> tags) async {
     response.loading();
     var res = await file.removeTags(tags);
-    getInfo();
+    fileInfo.value = res.data;
     response.response(res);
   }
 
@@ -123,7 +125,8 @@ class FileManagerService extends ServiceBase {
     var res =
         await file.updateInfo(newName: newName, isPublic: isPublic, tags: tags);
     response.response(res);
-    getInfo();
+    fileNameOrId = newName ?? fileNameOrId;
+    fileInfo.value = res.data;
   }
 
   Future<dynamic> listBucket(

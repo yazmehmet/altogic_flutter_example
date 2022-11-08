@@ -36,17 +36,27 @@ abstract class DocumentationObject {
 class ImageDoc extends DocumentationObject {
   const ImageDoc(this.path,
       {this.maxWidth,
-      this.padding = const EdgeInsets.symmetric(horizontal: 16)});
+      this.padding = const EdgeInsets.symmetric(horizontal: 16),
+      this.alignment = Alignment.center});
 
   final String path;
   final EdgeInsets padding;
   final double? maxWidth;
+  final Alignment alignment;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: padding,
-      child: Image.network(path, width: maxWidth, fit: BoxFit.cover),
+      child: Align(
+        alignment: alignment,
+        child: Image.network(
+          path,
+          width: maxWidth,
+          fit: BoxFit.cover,
+          alignment: alignment,
+        ),
+      ),
     );
   }
 }

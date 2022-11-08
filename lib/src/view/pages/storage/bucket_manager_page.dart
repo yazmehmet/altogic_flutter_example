@@ -25,7 +25,7 @@ class _BucketManagerPageState extends State<BucketManagerPage> {
   @override
   void initState() {
     bucketService.bucketInfo.addListener(_listener);
-    bucketService.getBucketInfo(false);
+    bucketService.getBucketInfo(false, false);
     super.initState();
   }
 
@@ -44,7 +44,6 @@ class _BucketManagerPageState extends State<BucketManagerPage> {
   @override
   Widget build(BuildContext context) {
     var list = [
-
       GetBucketExists.new,
       GetBucketInfo.new,
       EmptyBucket.new,
@@ -92,7 +91,11 @@ class _BucketManagerPageState extends State<BucketManagerPage> {
     return InheritedService(
       service: bucketService,
       child: BaseViewer(
-        leadingHome: !Navigator.canPop(context),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed('/storage');
+            },
+            icon: const Icon(Icons.arrow_back_rounded)),
         body: ListView.builder(
             padding: const EdgeInsets.symmetric(
               horizontal: 16,

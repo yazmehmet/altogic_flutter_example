@@ -129,7 +129,11 @@ class GetMethod extends EndpointWrap {
   List<DocumentationObject> get description => [
         const AutoSpan(
             "This method is used to get the sum of two numbers as an example."
-            " The endpoint allow the numbers as a query parameter."),
+            " The endpoint allow the numbers as a query parameter. "),
+        vSpace,
+        const ImageDoc(
+            "https://c1-na.altogic.com/_storage/62d3ea1510b444043a4f80b7/62d3ea1510b444043a4f80b7/63627096ae654277fc2d582a",
+            maxWidth: 700),
         vSpace,
         const Bold('Path:'),
         const InlineCode('/test/get\n'),
@@ -199,6 +203,10 @@ class PostMethod extends EndpointWrap {
         const AutoSpan(
             "This method is used to get the multiply of two numbers as an example."
             " The endpoint allow the numbers as a json body."),
+        vSpace,
+        const ImageDoc(
+            "https://c1-na.altogic.com/_storage/62d3ea1510b444043a4f80b7/62d3ea1510b444043a4f80b7/636270bcae654277fc2d582b",
+            maxWidth: 700),
         vSpace,
         const Bold('Path:'),
         const InlineCode('/test/post\n'),
@@ -297,6 +305,10 @@ class DeleteMethod extends MethodWrap {
               var res = await EndpointService.of(context)
                   .deleteMethod(controller.text);
               suggestion.values.add(res.data ?? {});
+              suggestion.values
+                  .removeWhere((element) => element['_id'] == controller.text);
+              suggestion.values
+                  .sort((a, b) => a['count'].compareTo(b['count']));
               controller.clear();
             });
           },
@@ -309,6 +321,14 @@ class DeleteMethod extends MethodWrap {
   List<DocumentationObject> get description => [
         const AutoSpan("This method is used to delete object as an example."
             " The endpoint allow the deleting object id in path."),
+        vSpace,
+        const ImageDoc(
+            "https://c1-na.altogic.com/_storage/62d3ea1510b444043a4f80b7/62d3ea1510b444043a4f80b7/636270f98b2e22a92742b89d",
+            maxWidth: 700),
+        vSpace,
+        const ImageDoc(
+            "https://c1-na.altogic.com/_storage/62d3ea1510b444043a4f80b7/62d3ea1510b444043a4f80b7/636271138b2e22a92742b89e",
+            maxWidth: 700),
         vSpace,
         const Bold('Path:'),
         const InlineCode('/test/delete/<id>\n'),
@@ -359,6 +379,10 @@ class PutMethod extends EndpointWrap {
         const AutoSpan(
             "This method is used to get the divide of numbers as an example."
             " The endpoint allow the numbers in request headers."),
+        vSpace,
+        const ImageDoc(
+            "https://c1-na.altogic.com/_storage/62d3ea1510b444043a4f80b7/62d3ea1510b444043a4f80b7/636270d9ae654277fc2d582c",
+            maxWidth: 700),
         vSpace,
         const Bold('Path:'),
         const InlineCode('/test/put\n'),

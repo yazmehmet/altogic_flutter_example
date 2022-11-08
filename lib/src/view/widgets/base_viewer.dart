@@ -1,15 +1,18 @@
+import 'package:altogic_flutter_example/main.dart';
 import 'package:altogic_flutter_example/src/controller/response_controller.dart';
 import 'package:altogic_flutter_example/src/controller/user_controller.dart';
 import 'package:altogic_flutter_example/src/service/service_base.dart';
 import 'package:flutter/material.dart';
 
 class BaseViewer extends StatefulWidget {
-  const BaseViewer({Key? key, required this.body, this.leadingHome = true})
+  const BaseViewer(
+      {Key? key, required this.body, this.leadingHome = true, this.leading})
       : super(key: key);
 
   final bool leadingHome;
 
   final Widget body;
+  final Widget? leading;
 
   @override
   State<BaseViewer> createState() => _BaseViewerState();
@@ -62,6 +65,7 @@ class _BaseViewerState extends State<BaseViewer> {
           preferredSize: const Size.fromHeight(60),
           child: AltogicAppBar(
             leadingHome: widget.leadingHome,
+            leading: widget.leading,
           )),
     );
   }
@@ -120,11 +124,15 @@ class _AreaResizerState extends State<AreaResizer> {
 
 class AltogicAppBar extends StatefulWidget {
   const AltogicAppBar(
-      {Key? key, this.leadingHome = false, this.autoImplementLeading = true})
+      {Key? key,
+      this.leadingHome = false,
+      this.autoImplementLeading = true,
+      this.leading})
       : super(key: key);
 
   final bool leadingHome;
   final bool autoImplementLeading;
+  final Widget? leading;
 
   @override
   State<AltogicAppBar> createState() => _AltogicAppBarState();
@@ -152,54 +160,28 @@ class _AltogicAppBarState extends State<AltogicAppBar> {
     return AppBar(
       automaticallyImplyLeading:
           !widget.leadingHome && widget.autoImplementLeading,
-      leading: widget.leadingHome
-          ? IconButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed('/');
-              },
-              icon: const Icon(Icons.home))
-          : null,
+      leading: widget.leading ??
+          (widget.leadingHome
+              ? IconButton(
+                  onPressed: () {
+                    Navigator.of(context).pushNamed('/');
+                  },
+                  icon: const Icon(Icons.home))
+              : null),
       title: Text(controller.isLogged
           ? 'Hello ${controller.user.name ?? controller.user.mailOrPhone} !'
           : 'Welcome To Test App'),
       actions: [
         if (controller.isLogged)
           Tooltip(
-            message: 'Live Chat',
-            child: IconButton(
-              icon: const Icon(Icons.mark_chat_unread_rounded),
-              onPressed: () {
-                Navigator.of(context).pushNamed('/chat');
-              },
-            ),
-          ),
-        if (controller.isLogged)
-          Tooltip(
             message: 'Logout',
             child: IconButton(
               icon: const Icon(Icons.logout),
-              onPressed: () {
-                Navigator.of(context).pushNamed('/auth');
-              },
-            ),
-          ),
-        if (!controller.isLogged)
-          Tooltip(
-            message: 'Login',
-            child: IconButton(
-              icon: const Icon(Icons.login),
-              onPressed: () {
-                Navigator.of(context).pushNamed('/auth');
-              },
-            ),
-          ),
-        if (controller.hasMarket)
-          Tooltip(
-            message: 'Market',
-            child: IconButton(
-              icon: const Icon(Icons.shopping_cart),
-              onPressed: () {
-                Navigator.of(context).pushNamed('/database');
+              onPressed: () async {
+                await altogic.auth.signOut();
+                CurrentUserController().user = null;
+                CurrentUserController().market = null;
+                if (mounted) Navigator.of(context).pushNamed('/');
               },
             ),
           ),

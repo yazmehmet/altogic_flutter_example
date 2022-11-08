@@ -9,7 +9,8 @@ class AltogicInput extends StatefulWidget {
       required this.editingController,
       this.info,
       this.suffixIcon,
-      this.vertical = false})
+      this.vertical = false,
+      this.onSubmitted})
       : super(key: key);
 
   final String hint;
@@ -17,12 +18,15 @@ class AltogicInput extends StatefulWidget {
   final List<DocumentationObject>? info;
   final WidgetBuilder? suffixIcon;
   final bool vertical;
+  final void Function(String)? onSubmitted;
 
   @override
   State<AltogicInput> createState() => _AltogicInputState();
 }
 
 class _AltogicInputState extends State<AltogicInput> {
+  final FocusNode _focusNode = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     var info = widget.info != null
@@ -44,6 +48,11 @@ class _AltogicInputState extends State<AltogicInput> {
         : null;
 
     Widget field = TextField(
+      focusNode: _focusNode,
+      onSubmitted: (value) {
+        widget.onSubmitted?.call(value);
+        _focusNode.requestFocus();
+      },
       onChanged: widget.suffixIcon != null
           ? (value) {
               setState(() {});

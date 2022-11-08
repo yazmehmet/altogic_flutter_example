@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:altogic_flutter/altogic_flutter.dart';
+import 'package:altogic/altogic.dart';
 import 'package:altogic_flutter_example/src/controller/user_controller.dart';
 import 'package:altogic_flutter_example/src/models/market.dart';
 import 'package:altogic_flutter_example/src/models/product.dart';
@@ -74,7 +74,7 @@ class DbService extends ServiceBase {
   Future<Market?> getMarketWithLookup(String marketId) async {
     var res = await altogic.db
         .model('market')
-        .lookup(SimpleLookup(field: 'user'))
+        .lookup(SimpleLookup('user'))
         .filter('_id == "$marketId"')
         .get();
     response.response(res);
@@ -123,7 +123,7 @@ class DbService extends ServiceBase {
       'name': name,
       'email': email,
     }, currentUserController.market.id,
-        options: const AppendOptions(returnTop: true, cache: Cache.nocache));
+        const AppendOptions(returnTop: true, cache: Cache.nocache));
 
     response.response(res);
 
@@ -251,7 +251,6 @@ class DbService extends ServiceBase {
       return null;
     }
   }
-
 
   Future<List<Map<String, dynamic>>?> getMarketProductsNames(
       {SortEntry? sortEntry,
@@ -468,11 +467,8 @@ class DbService extends ServiceBase {
   }
 
   Future<void> getAvgPrices() async {
-    var res = await altogic.db
-        .model('product')
-        .group('market')
-        .filter('market == "${currentUserController.market.id}"')
-        .compute(GroupComputation(
+    var res = await altogic.db.model('product').group('market').compute(
+        GroupComputation(
             sort: Direction.desc,
             name: 'avg',
             type: GroupComputationType.avg,
@@ -497,10 +493,8 @@ class DbService extends ServiceBase {
   }
 
   Future<void> getProductCount() async {
-    var res = await altogic.db
-        .model('product')
-        .filter('market == "${currentUserController.market.id}"')
-        .compute(GroupComputation(
+    var res = await altogic.db.model('product').group('market').compute(
+        GroupComputation(
             sort: Direction.desc,
             name: 'count',
             type: GroupComputationType.count));

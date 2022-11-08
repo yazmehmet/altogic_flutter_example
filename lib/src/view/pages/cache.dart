@@ -90,7 +90,7 @@ class SetCacheMethod extends MethodWrap {
     return [
       AltogicInput(hint: "Key", editingController: keyController),
       AltogicInput(hint: "Value (integer)", editingController: valueController),
-      AltogicInput(hint: "TTL (optional)", editingController: ttlController),
+      AltogicInput(hint: "TTL in seconds (optional)", editingController: ttlController),
       AltogicButton(
         body: "Set Cache",
         onPressed: () {
@@ -381,7 +381,7 @@ class ExpireCacheMethod extends MethodWrap {
   List<Widget> children(BuildContext context) {
     return [
       AltogicInput(hint: "Key", editingController: keyController),
-      AltogicInput(hint: "TTL", editingController: ttlController),
+      AltogicInput(hint: "TTL in seconds", editingController: ttlController),
       AltogicButton(
         body: "Expire Cache",
         onPressed: () {

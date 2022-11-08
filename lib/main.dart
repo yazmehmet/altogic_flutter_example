@@ -1,10 +1,11 @@
-import 'package:altogic_flutter/altogic_flutter.dart';
+import 'package:altogic/altogic.dart';
 import 'package:altogic_flutter_example/src/controller/user_controller.dart';
 import 'package:altogic_flutter_example/src/view/pages/authorization/authorization.dart';
 import 'package:altogic_flutter_example/src/view/pages/database/database.dart';
 import 'package:altogic_flutter_example/src/view/pages/main_page.dart';
 import 'package:altogic_flutter_example/src/view/pages/queue_page.dart';
 import 'package:altogic_flutter_example/src/view/pages/realtime/relatime_page.dart';
+import 'package:altogic_flutter_example/src/view/pages/redirect/change_email.dart';
 import 'package:altogic_flutter_example/src/view/pages/redirect/magic_link_redirect.dart';
 import 'package:altogic_flutter_example/src/view/pages/redirect/password_reset_redirect.dart';
 import 'package:altogic_flutter_example/src/view/pages/redirect/provider_redirect.dart';
@@ -32,14 +33,14 @@ void main() async {
 }
 
 // USE THIS FOR WEB DEPLOYMENT
-// AltogicClient altogic = createClient(
-//     "https://c1-na.altogic.com/e:62d3ea1510b444043a4f80b7",
-//     "eb673068d11b468997bbe93c33fdc5f5");
+AltogicClient altogic = createClient(
+    "https://c1-na.altogic.com/e:62d3ea1510b444043a4f80b7",
+    "eb673068d11b468997bbe93c33fdc5f5");
 
 // USE THIS FOR LOCAL DEPLOYMENT
-AltogicClient altogic = createClient(
-    "https://c4-na.altogic.com/e:633bd89b98cd8243629533e3",
-    "eb673068d11b468997bbe93c33fdc5f5");
+// AltogicClient altogic = createClient(
+//     "https://c4-na.altogic.com/e:633bd89b98cd8243629533e3",
+//     "eb673068d11b468997bbe93c33fdc5f5");
 
 final Map<String, WidgetBuilder> pages = {
   '/': (c) => const MainPage(),
@@ -73,10 +74,41 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends AltogicState<MyApp> {
   final primaryColor = const Color.fromRGBO(25, 118, 210, 1);
 
-  // This widget is the root of your application.
+  @override
+  void onOauthProviderLink(BuildContext? context, OauthRedirect redirect) {
+    // TODO: if you want to handle oauth redirect in mobile app
+    // implement this method
+  }
+
+  @override
+  void onEmailChangeLink(BuildContext? context, ChangeEmailRedirect redirect) {
+    // TODO: if you want to handle oauth redirect in mobile app
+    // implement this method
+  }
+
+  @override
+  void onPasswordResetLink(
+      BuildContext? context, PasswordResetRedirect redirect) {
+    // TODO: if you want to handle oauth redirect in mobile app
+    // implement this method
+  }
+
+  @override
+  void onEmailVerificationLink(
+      BuildContext? context, EmailVerificationRedirect redirect) {
+    // TODO: if you want to handle oauth redirect in mobile app
+    // implement this method
+  }
+
+  @override
+  void onMagicLink(BuildContext? context, MagicLinkRedirect redirect) {
+    // TODO: if you want to handle oauth redirect in mobile app
+    // implement this method
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -117,8 +149,47 @@ class _MyAppState extends State<MyApp> {
         return null;
       },
       onGenerateInitialRoutes: (path) {
-        var uri = Uri.parse(path);
+        // In web we can get initial route from url
+        var redirect = getWebRedirect(path);
 
+        if (redirect != null) {
+          switch (redirect.action) {
+            case RedirectAction.emailConfirm:
+              return [
+                MaterialPageRoute(
+                    builder: (c) => RedirectEmailPage(
+                        redirect: redirect as EmailVerificationRedirect))
+              ];
+            case RedirectAction.provider:
+              return [
+                MaterialPageRoute(
+                    builder: (c) => RedirectProviderPage(
+                        redirect: redirect as OauthRedirect))
+              ];
+            case RedirectAction.passwordReset:
+              return [
+                MaterialPageRoute(
+                    builder: (c) => ResetPwdRedirectPage(
+                        redirect: redirect as PasswordResetRedirect))
+              ];
+            case RedirectAction.magicLink:
+              return [
+                MaterialPageRoute(
+                    builder: (c) => MagicLinkRedirectPage(
+                          redirect: redirect as MagicLinkRedirect,
+                        ))
+              ];
+            case RedirectAction.changeEmail:
+              return [
+                MaterialPageRoute(
+                    builder: (c) => ChangeMailRedirectPage(
+                          redirect: redirect as ChangeEmailRedirect,
+                        ))
+              ];
+          }
+        }
+
+        var uri = Uri.parse(path);
         if (path.startsWith('/bucket')) {
           return [
             MaterialPageRoute(
@@ -135,45 +206,6 @@ class _MyAppState extends State<MyApp> {
             MaterialPageRoute(
                 builder: (c) => FileManagerPage(bucket: args[0], file: args[1]))
           ];
-        }
-
-        if (uri.queryParameters.isNotEmpty) {
-          switch (uri.queryParameters["action"]) {
-            case "email-confirm":
-              return [
-                MaterialPageRoute(
-                    builder: (c) =>
-                        RedirectEmail(arguments: uri.queryParameters))
-              ];
-            case "oauth-signin":
-              return [
-                MaterialPageRoute(
-                    builder: (c) =>
-                        RedirectProvider(arguments: uri.queryParameters))
-              ];
-            case "reset-pwd":
-              return [
-                MaterialPageRoute(
-                    builder: (c) => ResetPwdRedirect(
-                          arguments: uri.queryParameters,
-                          path: uri.toString(),
-                        ))
-              ];
-            case "magic-link":
-              return [
-                MaterialPageRoute(
-                    builder: (c) => MagicLinkRedirect(
-                          arguments: uri.queryParameters,
-                        ))
-              ];
-            default:
-              return [
-                MaterialPageRoute(
-                  builder: (context) =>
-                      RedirectProvider(arguments: uri.queryParameters),
-                ),
-              ];
-          }
         }
 
         if (pages.containsKey(uri.path)) {

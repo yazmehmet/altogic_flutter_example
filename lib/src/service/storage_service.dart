@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:altogic_flutter/altogic_flutter.dart';
+import 'package:altogic/altogic.dart';
 import 'package:altogic_flutter_example/main.dart';
 import 'package:altogic_flutter_example/src/service/service_base.dart';
 import 'package:flutter/material.dart';
@@ -78,18 +78,20 @@ class BucketService extends ServiceBase {
   static BucketService of(BuildContext context) =>
       InheritedService.of<BucketService>(context);
 
-  final String bucket;
+  String bucket;
 
   ValueNotifier<Map<String, dynamic>?> bucketInfo =
       ValueNotifier<Map<String, dynamic>?>(null);
 
-  Future<void> getBucketInfo(bool detailed) async {
-    response.loading();
+  Future<void> getBucketInfo(bool detailed, bool printResponse) async {
+    if (printResponse) response.loading();
     var res = await altogic.storage.bucket(bucket).getInfo(detailed);
     if (res.data != null) {
       bucketInfo.value = res.data;
     }
-    response.response(res);
+    if (printResponse) {
+      response.response(res);
+    }
   }
 
   Future<void> getBucketExists() async {
@@ -107,7 +109,9 @@ class BucketService extends ServiceBase {
   Future<void> renameBucket(String newName) async {
     response.loading();
     var res = await altogic.storage.bucket(bucket).rename(newName);
+    bucket = newName;
     response.response(res);
+    bucketInfo.value = res.data;
   }
 
   Future<void> deleteBucket() async {
@@ -119,13 +123,14 @@ class BucketService extends ServiceBase {
   Future<void> makePublic(bool includeFiles) async {
     response.loading();
     var res = await altogic.storage.bucket(bucket).makePublic(includeFiles);
-    response.response(res);
+    response.response(res);    bucketInfo.value = res.data;
   }
 
   Future<void> makePrivate(bool includeFiles) async {
     response.loading();
     var res = await altogic.storage.bucket(bucket).makePrivate(includeFiles);
     response.response(res);
+    bucketInfo.value = res.data;
   }
 
   Future<dynamic> listFiles(
@@ -167,14 +172,14 @@ class BucketService extends ServiceBase {
     response.loading();
     var res = await altogic.storage.bucket(bucket).addTags(tags);
     response.response(res);
-    getBucketInfo(false);
+    bucketInfo.value = res.data;
   }
 
   Future<void> removeTags(List<String> tags) async {
     response.loading();
     var res = await altogic.storage.bucket(bucket).removeTags(tags);
     response.response(res);
-    getBucketInfo(false);
+    bucketInfo.value = res.data;
   }
 
   Future<void> updateInfo(
@@ -189,6 +194,7 @@ class BucketService extends ServiceBase {
         newName: newName,
         tags: tags);
     response.response(res);
-    getBucketInfo(false);
+    bucket = newName ?? bucket;
+    bucketInfo.value = res.data;
   }
 }

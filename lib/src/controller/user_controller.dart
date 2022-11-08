@@ -1,4 +1,5 @@
-import 'package:altogic_flutter/altogic_flutter.dart';
+
+import 'package:altogic/altogic.dart';
 import 'package:altogic_flutter_example/src/models/altogic_user.dart';
 import 'package:altogic_flutter_example/src/models/market.dart';
 import 'package:flutter/cupertino.dart';

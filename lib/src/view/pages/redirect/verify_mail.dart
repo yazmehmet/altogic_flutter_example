@@ -1,5 +1,6 @@
-import 'dart:convert';
 
+import 'package:altogic/altogic.dart';
+import 'package:altogic_flutter_example/src/view/widgets/button.dart';
 import 'package:flutter/material.dart';
 
 import '../../../service/auth_service.dart';
@@ -9,37 +10,34 @@ import '../../widgets/documentation/base.dart';
 import '../../widgets/documentation/code.dart';
 import '../../widgets/documentation/texts.dart';
 
-class RedirectEmail extends StatefulWidget {
-  const RedirectEmail({Key? key, required this.arguments}) : super(key: key);
+class RedirectEmailPage extends StatefulWidget {
+  const RedirectEmailPage({Key? key, required this.redirect}) : super(key: key);
 
-  final Map<String, dynamic> arguments;
+  final EmailVerificationRedirect redirect;
 
   @override
-  State<RedirectEmail> createState() => _RedirectEmailState();
+  State<RedirectEmailPage> createState() => _RedirectEmailState();
 }
 
-class _RedirectEmailState extends State<RedirectEmail> {
-  ValueNotifier<String> response = ValueNotifier<String>('Getting grant...');
-
+class _RedirectEmailState extends State<RedirectEmailPage> {
   AuthService authService = AuthService();
 
   @override
   void initState() {
-    _get();
+    //_get();
     super.initState();
   }
 
   _get() async {
     await Future.delayed(const Duration(milliseconds: 200));
-    if (!widget.arguments.containsKey('access_token')) {
-      response.value = 'Path arguments *incorrect*. For verify email,'
-          ' `access_token` *must be provided*.';
+    if (widget.redirect.error != null) {
+      authService.response.message('redirect.error: ${widget.redirect.error}');
       return;
     }
-    response.value = '';
-    await authService.getAuthGrant(widget.arguments['access_token']!);
+    authService.response.message('Getting grant...');
+    await authService.getAuthGrant(widget.redirect.token);
     if (authService.currentUserController.isLogged) {
-      response.value = 'Signed In!';
+      authService.response.message('Signed in');
     }
   }
 
@@ -49,31 +47,71 @@ class _RedirectEmailState extends State<RedirectEmail> {
       service: authService,
       child: BaseViewer(
         leadingHome: true,
-        body: Padding(
+        body: SingleChildScrollView(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Documentation(children: [
-                vSpace,
-                const Header('Email Verify Redirect Page'),
-                vSpace,
-                const Description('Documentation will be added'),
-                vSpace,
-                const Header('Arguments', level: 3),
-                vSpace,
-                DartCode(const JsonEncoder.withIndent('   ')
-                    .convert(widget.arguments)),
-              ]),
-              vSpace.doc(context),
-              ValueListenableBuilder(
-                  valueListenable: response,
-                  builder: (c, v, w) {
-                    return Documentation(children: [AutoSpan(v)]);
-                  }),
-            ],
+          child: Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 500,
+                  child: Documentation(children: [
+                    vSpace,
+                    const Header('Email Verification Redirect Page'),
+                    vSpace,
+                    const AutoSpan(
+                        "This page is used to verify the user's email address."
+                        " The page opened after clicking on the link in the email."
+                        "\n\n"
+                        "After user clicking the link, Altogic will redirect the "
+                        "user to the *redirect url*"
+                        "In the Altogic setting you can specify the *redirect url*."),
+                    vSpace,
+                    const Header('Handling Redirect Url', level: 2),
+                    vSpace,
+                    const AutoSpan(
+                        "Check the deep linking configuration documentation."),
+                    const LinkText(
+                        "Blog Post / Documentation", "www.google.com"),
+                    vSpace,
+                    const AutoSpan("Current redirect url is : "),
+                    vSpace,
+                    DartCode(widget.redirect.url),
+                    vSpace,
+                    const AutoSpan(
+                        "If `error` parameter is null, link is valid and "
+                        "you can get the auth grant from the `access_token` parameter."),
+                    vSpace,
+                    if (widget.redirect.error == null) DartCode("""
+var result = await altogic.auth.getAuthGrant('${widget.redirect.token}');
+// OR
+var result = await altogic.auth.getAuthGrant(redirect.token); 
+
+
+if (result.errors == null) {
+  // user is signed in
+}
+                      """) else AutoSpan("Error: ${widget.redirect.error}"),
+                  ]),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                AltogicButton(
+                    body: "Get Auth Grant",
+                    onPressed: () {
+                      _get();
+                    }),
+                const SizedBox(
+                  height: 20,
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
+
+// http://localhost:3000/?status=400&action=email-confirm&error=Invalid+or+expired+access+token

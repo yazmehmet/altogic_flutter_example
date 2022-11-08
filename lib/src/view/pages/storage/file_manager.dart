@@ -29,7 +29,7 @@ class _FileManagerPageState extends State<FileManagerPage> {
   @override
   void initState() {
     service.fileInfo.addListener(_listener);
-    service.getInfo();
+    service.getInfo(false);
     super.initState();
   }
 
@@ -69,6 +69,12 @@ class _FileManagerPageState extends State<FileManagerPage> {
     return InheritedService(
       service: service,
       child: BaseViewer(
+        leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed('/bucket/${widget.bucket}');
+            },
+            icon: const Icon(Icons.arrow_back_rounded)),
+        leadingHome: false,
         body: ListView.builder(
           itemBuilder: (c, i) {
             if (i == 0) {
